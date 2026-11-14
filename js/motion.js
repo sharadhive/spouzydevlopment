@@ -6,18 +6,240 @@
   const pointer = matchMedia('(hover:hover) and (pointer:fine)');
   const el = (tag, cls) => Object.assign(document.createElement(tag), {className:cls});
   const clamp = n => Math.min(1,Math.max(0,n));
-  const track = one('.care-track');
-  if (track) {
-    const buttons = all('.care-slider button');
-    const move = dir => track.scrollBy({left:dir*(track.children[1].offsetLeft-track.children[0].offsetLeft),behavior:reduced.matches?'instant':'smooth'});
-    buttons.forEach((btn,i)=>btn.onclick=()=>move(i?1:-1));
-    const limits=()=>{
-      buttons[0].disabled=track.scrollLeft<2;
-      buttons[1].disabled=track.scrollLeft+track.clientWidth>=track.scrollWidth-2;
-    };
-    track.addEventListener('scroll',limits,{passive:true});
-    new ResizeObserver(limits).observe(track);
-    track.onkeydown=e=>{if(['ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();move(e.key==='ArrowLeft'?-1:1)}};
+  // -------------------------------------------------------------------------
+  // CONTINUOUS SERVICE CARDS SLIDER (.care-slider .care-track)
+  // -------------------------------------------------------------------------
+  const careSection = one('.care-slider');
+  if (careSection) {
+    const track = careSection.querySelector('.care-track');
+    const buttons = all('button', careSection.querySelector('.motion-controls') || careSection);
+    const originalCards = track ? all('.care-card', track) : [];
+
+    // Verify correct section by checking for the five specialized service cards
+    const expectedServices = ['Counselling', 'Coaching', 'Training', 'Treatment', 'Webinar'];
+    const hasExpectedCards = originalCards.length >= 5 && expectedServices.every(name =>
+      originalCards.some(c => c.textContent.includes(name))
+    );
+
+    if (track && hasExpectedCards) {
+      // Configuration: Linear autoplay speed in pixels per second (adjustable in one place)
+      const SPEED_PX_PER_SEC = 45;
+
+      // Duplicate cards to build a seamless infinite loop
+      // 2 clone sets ensure seamless bi-directional wrap with zero gap or jump
+      for (let s = 0; s < 2; s++) {
+        originalCards.forEach((card, idx) => {
+          const clone = card.cloneNode(true);
+          clone.setAttribute('aria-hidden', 'true');
+          clone.dataset.cloneSet = String(s + 1);
+          clone.dataset.originalIndex = String(idx);
+          // Prevent duplicate keyboard tab stops while keeping visible pointer clicks/taps functional
+          clone.querySelectorAll('a, button').forEach(el => el.setAttribute('tabindex', '-1'));
+          track.appendChild(clone);
+        });
+      }
+
+      let setWidth = 0;
+      let cardStep = 0;
+      function measure() {
+        const allCards = all('.care-card', track);
+        if (allCards.length >= 10) {
+          setWidth = allCards[5].offsetLeft - allCards[0].offsetLeft;
+          cardStep = allCards[1].offsetLeft - allCards[0].offsetLeft;
+        }
+      }
+      measure();
+      new ResizeObserver(measure).observe(track);
+
+      // Interaction & animation state
+      let isHovered = false;
+      let isFocused = false;
+      let isTouching = false;
+      let isManualScrolling = false;
+      let isVisible = false;
+      let manualTimer = null;
+      let touchTimer = null;
+      let lastTimestamp = performance.now();
+      let scrollPos = track.scrollLeft;
+
+      function normalize() {
+        if (!setWidth) return;
+        if (track.scrollLeft >= setWidth) {
+          track.scrollLeft -= setWidth;
+          scrollPos = track.scrollLeft;
+        } else if (track.scrollLeft < 0) {
+          track.scrollLeft += setWidth;
+          scrollPos = track.scrollLeft;
+        }
+      }
+
+      function shouldAutoplay() {
+        const hasFocus = isFocused || (document.activeElement && careSection.contains(document.activeElement) && document.activeElement !== document.body);
+        return (
+          !reduced.matches &&
+          isVisible &&
+          !isHovered &&
+          !hasFocus &&
+          !isTouching &&
+          !isManualScrolling &&
+          !document.hidden
+        );
+      }
+
+      // Linear motion frame loop
+      function step(now) {
+        const delta = Math.min(0.1, (now - lastTimestamp) / 1000);
+        lastTimestamp = now;
+
+        if (shouldAutoplay() && setWidth > 0) {
+          track.style.scrollSnapType = 'none';
+          scrollPos += SPEED_PX_PER_SEC * delta;
+          if (scrollPos >= setWidth) {
+            scrollPos -= setWidth;
+            track.scrollLeft = scrollPos;
+          } else {
+            track.scrollLeft = scrollPos;
+          }
+        } else {
+          scrollPos = track.scrollLeft;
+        }
+
+        requestAnimationFrame(step);
+      }
+
+      // Intersection Observer: Only animate when slider is in viewport
+      const observer = new IntersectionObserver(([entry]) => {
+        isVisible = entry.isIntersecting;
+        if (isVisible) {
+          lastTimestamp = performance.now();
+          scrollPos = track.scrollLeft;
+        }
+      }, { threshold: 0.1 });
+      observer.observe(careSection);
+
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && isVisible) {
+          lastTimestamp = performance.now();
+          scrollPos = track.scrollLeft;
+        }
+      });
+
+      // Hover Interaction: Freeze immediately at exact position
+      track.addEventListener('pointerenter', (e) => {
+        if (e.pointerType !== 'touch') {
+          isHovered = true;
+          scrollPos = track.scrollLeft;
+        }
+      });
+
+      track.addEventListener('pointerleave', (e) => {
+        if (e.pointerType !== 'touch') {
+          isHovered = false;
+          lastTimestamp = performance.now();
+          scrollPos = track.scrollLeft;
+        }
+      });
+
+      // Keyboard Focus: Pause when focus is inside the slider
+      careSection.addEventListener('focusin', () => {
+        isFocused = true;
+        scrollPos = track.scrollLeft;
+      });
+
+      careSection.addEventListener('focusout', (e) => {
+        if (!careSection.contains(e.relatedTarget)) {
+          isFocused = false;
+          lastTimestamp = performance.now();
+          scrollPos = track.scrollLeft;
+        }
+      });
+
+      // Touchscreen: Native swiping with seamless resume after momentum
+      track.addEventListener('touchstart', () => {
+        isTouching = true;
+        clearTimeout(touchTimer);
+        scrollPos = track.scrollLeft;
+      }, { passive: true });
+
+      function onTouchEnd() {
+        clearTimeout(touchTimer);
+        touchTimer = setTimeout(() => {
+          normalize();
+          scrollPos = track.scrollLeft;
+          isTouching = false;
+          lastTimestamp = performance.now();
+        }, 350);
+      }
+
+      track.addEventListener('touchend', onTouchEnd, { passive: true });
+      track.addEventListener('touchcancel', onTouchEnd, { passive: true });
+
+      track.addEventListener('scroll', () => {
+        if (isTouching || isManualScrolling) {
+          normalize();
+          scrollPos = track.scrollLeft;
+          if (isTouching) {
+            clearTimeout(touchTimer);
+            touchTimer = setTimeout(() => {
+              normalize();
+              scrollPos = track.scrollLeft;
+              isTouching = false;
+              lastTimestamp = performance.now();
+            }, 300);
+          }
+        }
+      }, { passive: true });
+
+      // Previous & Next navigation buttons
+      function moveByCard(dir) {
+        isManualScrolling = true;
+        clearTimeout(manualTimer);
+        measure();
+        const step = cardStep || 280;
+
+        track.scrollBy({
+          left: dir * step,
+          behavior: reduced.matches ? 'instant' : 'smooth'
+        });
+
+        manualTimer = setTimeout(() => {
+          normalize();
+          scrollPos = track.scrollLeft;
+          isManualScrolling = false;
+          lastTimestamp = performance.now();
+        }, reduced.matches ? 60 : 450);
+      }
+
+      if (buttons.length >= 2) {
+        buttons[0].onclick = () => moveByCard(-1);
+        buttons[1].onclick = () => moveByCard(1);
+        buttons[0].disabled = false;
+        buttons[1].disabled = false;
+      }
+
+      // Keyboard Left/Right arrow navigation
+      track.onkeydown = (e) => {
+        if (['ArrowLeft', 'ArrowRight'].includes(e.key)) {
+          e.preventDefault();
+          moveByCard(e.key === 'ArrowLeft' ? -1 : 1);
+        }
+      };
+
+      // Reduced motion support
+      if (reduced.matches) {
+        track.style.scrollSnapType = 'x mandatory';
+      }
+      reduced.addEventListener('change', () => {
+        if (reduced.matches) {
+          track.style.scrollSnapType = 'x mandatory';
+        } else {
+          lastTimestamp = performance.now();
+          scrollPos = track.scrollLeft;
+        }
+      });
+
+      requestAnimationFrame(step);
+    }
   }
 
   // Testimonial Carousel — Smooth Automatic Horizontal Slider

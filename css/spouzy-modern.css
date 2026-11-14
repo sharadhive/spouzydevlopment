@@ -48,11 +48,11 @@
    1. TOP ANNOUNCEMENT & CONFIDENTIALITY BAR
    -------------------------------------------------------------------------- */
 .sp-topbar-modern {
-  background: linear-gradient(90deg, #1d0c12 0%, #2e141d 50%, #1f0d14 100%);
-  color: #f7e6dc;
-  font-size: 12.5px;
+  background: linear-gradient(90deg, #18090f 0%, #2b121c 45%, #240d16 80%, #190910 100%);
+  color: #F7EAE2;
+  font-size: 14px;
   line-height: 1.4;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(191, 103, 79, 0.28);
   position: relative;
   z-index: 1001;
 }
@@ -60,11 +60,13 @@
 .sp-topbar-container {
   max-width: 1440px;
   margin: 0 auto;
-  padding: 8px 24px;
+  padding: 5px 24px;
+  min-height: 42px;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 28px;
 }
 
 .sp-topbar-left {
@@ -81,13 +83,15 @@
   position: relative;
   display: flex;
   align-items: center;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 12px, #000 calc(100% - 12px), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 12px, #000 calc(100% - 12px), transparent 100%);
 }
 
 .sp-topbar-track {
   display: flex;
   width: max-content;
   align-items: center;
-  animation: sp-glide-right 32s linear infinite;
+  animation: sp-glide-left 22s linear infinite;
   will-change: transform;
 }
 
@@ -95,24 +99,69 @@
   display: inline-flex;
   align-items: center;
   flex-shrink: 0;
-  padding-right: 72px;
   box-sizing: border-box;
 }
 
 .sp-topbar-sentence {
-  color: #f7e6dc;
-  font-size: 12.5px;
+  color: #F7EAE2;
+  font-family: var(--sp-font-sans);
+  font-size: 14px;
   font-weight: 500;
+  line-height: 1.4;
   white-space: nowrap;
   letter-spacing: 0.01em;
+  display: inline;
+  vertical-align: baseline;
 }
 
-@keyframes sp-glide-right {
+/* Inline visual hierarchy */
+.sp-topbar-brand {
+  color: #F3BA9D;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  display: inline;
+  vertical-align: baseline;
+}
+
+.sp-topbar-psg {
+  color: #F7EAE2;
+  font-weight: 600;
+  display: inline;
+  vertical-align: baseline;
+}
+
+.sp-topbar-year {
+  color: #F3BA9D;
+  font-weight: 600;
+  display: inline;
+  vertical-align: baseline;
+}
+
+/* Decorative diamond separator between repetitions */
+.sp-topbar-sep {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 24px;
+  color: rgba(200, 125, 102, 0.72);
+  vertical-align: middle;
+  line-height: 1;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.sp-topbar-sep svg {
+  display: block;
+  width: 7px;
+  height: 7px;
+}
+
+@keyframes sp-glide-left {
   0% {
-    transform: translateX(-50%);
+    transform: translateX(0);
   }
   100% {
-    transform: translateX(0);
+    transform: translateX(-50%);
   }
 }
 
@@ -1963,6 +2012,23 @@ html, body {
   position: relative;
 }
 
+/* Switch to compact navigation when desktop navbar no longer fits on one line (<= 1140px) */
+@media (max-width: 1140px) {
+  .sp-desktop-nav,
+  .sp-menu-list {
+    display: none !important;
+  }
+  .sp-mobile-toggle {
+    display: flex !important;
+  }
+  .sp-search-key-hint {
+    display: none;
+  }
+  .sp-nav-container {
+    padding: 14px 20px;
+  }
+}
+
 /* Tablet Optimizations (Screens <= 1024px) */
 @media (max-width: 1024px) {
   .sp-desktop-nav,
@@ -2027,6 +2093,14 @@ html, body {
     display: flex;
     align-items: center;
     height: 22px;
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 12px, #000 calc(100% - 12px), transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0, #000 12px, #000 calc(100% - 12px), transparent 100%);
+  }
+  .sp-topbar-sentence {
+    font-size: 13px;
+  }
+  .sp-topbar-sep {
+    margin: 0 18px;
   }
   .sp-topbar-right {
     display: flex;
@@ -2050,6 +2124,26 @@ html, body {
     font-size: 11px;
     padding: 3px 8px;
   }
+}
+
+/* Extra small mobile adjustments (<= 360px) */
+@media (max-width: 360px) {
+  .sp-topbar-container {
+    padding: 5px 8px 6px;
+  }
+  .sp-topbar-right {
+    gap: 4px;
+  }
+  .sp-topbar-link {
+    font-size: 10px;
+  }
+  .sp-book-top {
+    font-size: 10.5px;
+    padding: 3px 6px;
+  }
+}
+
+@media (max-width: 767px) {
   .sp-nav-container {
     padding: 10px 14px;
   }
@@ -2066,6 +2160,13 @@ html, body {
     width: 34px;
     height: 34px;
     font-size: 14px;
+    padding: 0;
+    justify-content: center;
+    border-radius: var(--sp-radius-full);
+  }
+  .sp-search-btn span,
+  .sp-search-btn .sp-search-kbd {
+    display: none !important;
   }
   .sp-header-actions .sp-cta-primary {
     padding: 7px 11px;
@@ -2209,6 +2310,12 @@ html, body {
 /* --------------------------------------------------------------------------
    13. MOBILE DRAWER NAVIGATION STYLING
    -------------------------------------------------------------------------- */
+.sp-mobile-drawer:not(.is-open) {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
 .sp-mobile-drawer {
   position: fixed;
   inset: 0;
@@ -2218,12 +2325,15 @@ html, body {
   z-index: 2500;
   opacity: 0;
   visibility: hidden;
+  pointer-events: none;
   transition: opacity 0.3s ease, visibility 0.3s;
 }
 
 .sp-mobile-drawer.is-open {
+  display: block !important;
   opacity: 1;
-  visibility: visible;
+  visibility: visible !important;
+  pointer-events: auto !important;
 }
 
 .sp-drawer-panel {
@@ -4084,6 +4194,8 @@ html, body {
   .sp-topbar-message {
     overflow: visible;
     height: auto;
+    -webkit-mask-image: none !important;
+    mask-image: none !important;
   }
   .sp-topbar-track {
     animation: none !important;
@@ -4096,11 +4208,20 @@ html, body {
     padding-right: 0;
     white-space: normal;
   }
-  .sp-topbar-group[aria-hidden="true"] {
+  .sp-topbar-group[aria-hidden="true"],
+  .sp-topbar-track > .sp-topbar-group:nth-child(n+2) {
     display: none !important;
   }
   .sp-topbar-sentence {
     white-space: normal;
     display: inline;
   }
+  .sp-topbar-sep {
+    display: none !important;
+  }
+}
+.sp-header-modern .sp-brand-pill .sp-brand-pill-sub {
+  font-weight: 700;
+  font-style: italic;
+  color: #4A2C25;
 }
