@@ -1,0 +1,931 @@
+.care-slider .ed-heading{align-items:center}.motion-controls{display:flex;gap:9px}.motion-controls button{border:1px solid #ca9c88;color:#542533;background:#fffbf7;border-radius:50%;min-width:44px;height:44px;font:600 18px/1 Arial}.motion-controls button:disabled{opacity:.35;cursor:default}
+.care-track{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;padding:12px 4px 18px;scrollbar-color:#c48970 #f6eae4;scrollbar-width:thin}
+.care-card{position:relative;isolation:isolate;display:grid;grid-template-rows:repeat(2,1fr);flex:0 0 clamp(260px,25%,330px);min-height:420px;border:1px solid #cca594;border-radius:20px;background:#fffaf6;overflow:hidden;scroll-snap-align:start;color:#542d38!important;text-decoration:none!important}.care-card:focus-visible{outline:3px solid #884432;outline-offset:1px}
+.care-copy{padding:18px 20px;display:flex;flex-direction:column;align-items:start;flex:1;position:relative;z-index:1}.care-copy h3{font-size:clamp(18px,2.2vw,22px);margin:0 0 8px;line-height:1.2}.care-copy p{font-weight:400;color:#634f51;font-size:14px;line-height:1.55;margin:0}.care-copy span{margin-top:auto;padding-top:10px;font-weight:700;font-size:13.5px}.care-media{position:relative;flex:1 1 50%;min-height:160px;overflow:hidden;background:#925e60}.care-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}.tiles{position:absolute;inset:0;display:grid;grid-template-columns:repeat(6,1fr);grid-template-rows:repeat(2,1fr);pointer-events:none}
+
+@media(max-width:640px){.care-slider .ed-heading{display:flex;align-items:center;gap:12px}.care-slider .ed-heading h2{font-size:30px}.care-card{flex-basis:82%;min-height:380px}}
+@media(prefers-reduced-motion:no-preference){
+.motion-word{display:inline-block;white-space:nowrap}.motion-char{display:inline-block}
+.sp-hero-banner-slide.is-active .sp-banner-headline .motion-char{animation:letter-rise .66s cubic-bezier(.18,.75,.25,1) both;animation-delay:calc(var(--i)*12ms);transform-origin:50% 100%}
+@keyframes letter-rise{from{opacity:0;transform:perspective(420px) translateY(.5em) rotateX(-70deg)}}
+.motion-on .sp-banner-text-content{isolation:isolate;translate:0 calc(var(--shift,0px)*-.35)}
+.motion-on .sp-banner-text-content:before{position:absolute;content:"";z-index:-1;inset:5% -3% 8%;border-radius:22px;background:linear-gradient(100deg,#301b2540,transparent 90%);pointer-events:none}
+.is-active .sp-banner-text-content:before{animation:panel-in .7s ease both}
+@keyframes panel-in{from{scale:.96;opacity:0}}
+.motion-orb{position:absolute;z-index:3;pointer-events:none;inset:6% 0 15% 62%;background:radial-gradient(ellipse,#f8ab8b28,transparent 65%);translate:0 var(--shift,0px);animation:orb-float 9s ease-in-out infinite alternate}
+@keyframes orb-float{to{transform:translate(-8%,9%) scale(1.09)}}
+.motion-on :is(.ed-heading h2,.sp-section-title,#why-title) .motion-char{--alpha:clamp(.45,calc(var(--reveal,1)*var(--count) - var(--i) + .45),1);opacity:var(--alpha);color:color-mix(in srgb,#c48166 calc((1 - var(--alpha))*100%),currentColor);-webkit-text-fill-color:currentColor}
+.motion-on .sp-section-title .sp-text-shimmer{color:#854b3b}
+:is(.sp-section-kicker,.ed-kicker).entered{animation:tracking-in .8s both}@keyframes tracking-in{from{letter-spacing:.3em;opacity:.35}}
+.nav-glide{position:absolute;left:0;top:0;border-radius:22px;background:#e5c0af70;pointer-events:none;opacity:0;transition:transform .32s,width .32s,opacity .18s}.sp-menu-list{isolation:isolate}
+.motion-on .sp-header-modern{transition:translate .3s ease}.sp-header-modern.motion-hidden:not(:focus-within):not(:hover){translate:0 -105%}
+.motion-on .sp-menu-item:is(:hover,.is-open) :is(.sp-dropdown-menu,.sp-mega-menu){animation:fold-menu .28s ease both;transform-origin:top center}
+@keyframes fold-menu{from{opacity:0;transform:perspective(800px) rotateX(-10deg) translateY(7px)}}
+.motion-on .sp-menu-item:is(:hover,.is-open) :is(.sp-dropdown-item,.sp-mega-card-link){animation-name:menu-link}@keyframes menu-link{from{opacity:0;translate:-8px 0}}
+.roll-mask{display:inline-block;overflow:hidden;vertical-align:middle;line-height:1.25}.roll-word{position:relative;display:block;transition:transform .3s}.roll-word:after{content:attr(data-label);position:absolute;left:0;top:100%;width:100%}a:is(:hover,:focus-visible)>.roll-mask>.roll-word,button:is(:hover,:focus-visible)>.roll-mask>.roll-word{transform:translateY(-100%)}
+:is(.sp-cta-primary,.sp-banner-btn-primary,.sp-banner-btn-secondary){position:relative;overflow:hidden}
+:is(.sp-cta-primary,.sp-banner-btn-primary,.sp-banner-btn-secondary):hover:after{content:"";position:absolute;inset:-30% auto -30% -40%;width:24%;background:linear-gradient(90deg,transparent,#fff7,transparent);transform:skewX(-20deg);animation:sheen .7s;pointer-events:none}@keyframes sheen{to{left:130%}}
+.pointer-ring,.pointer-dot{position:fixed;left:0;top:0;z-index:9900;pointer-events:none;opacity:0}.pointer-ring{margin:-13px;width:26px;height:26px;border:1px solid #bb795c;border-radius:50%;transition:transform .12s ease-out,opacity .15s}.pointer-ring.over{width:34px;height:34px;margin:-17px}.pointer-dot{height:4px;width:4px;background:#be7758;border-radius:50%;margin:-2px}
+:is(.care-card, .sp-service-card-modern, .why-grid > li, .sp-metric-item, .sp-quiz-opt-btn, .ed-gallery-grid > .ed-photo).entered{animation:card-in .65s ease both}.care-card.entered .care-copy>*{animation:lift-in .5s .12s backwards}.care-card.entered .care-copy span{animation-delay:.23s}
+@keyframes card-in{from{opacity:.5;translate:calc(var(--side)*16px) 8px;rotate:y calc(var(--side)*7deg)}}
+@keyframes lift-in{from{translate:0 10px;opacity:.2}}
+@property --angle{syntax:'<angle>';initial-value:0deg;inherits:false}
+@keyframes border-turn{to{--angle:360deg}}
+
+/* --------------------------------------------------------------------------
+   UNIFIED HOME PAGE CARD HOVER & RADIAL BLOOM SYSTEM
+   Matches "Explore your care options" ripple, conic border & 3D tilt
+   -------------------------------------------------------------------------- */
+:is(
+  .care-card,
+  .sp-service-card-modern:not(.sp-testimonial-card),
+  .why-grid > li,
+  .sp-metric-item,
+  .sp-quiz-opt-btn,
+  .ed-gallery-grid > .ed-photo,
+  .sp-story-pill,
+  .sp-story-quote-card,
+  .ed-directory > details,
+  #questions details
+){
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  --angle:0deg;
+  --rx:0deg;
+  --ry:0deg;
+  background:linear-gradient(#fffaf6,#fffaf6) padding-box,conic-gradient(from var(--angle),#c78c77,#f3cdb3,#74384f,#c78c77) border-box !important;
+  border:2px solid transparent !important;
+  transform:perspective(850px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));
+  transition:transform .18s ease-out,box-shadow .25s ease !important;
+}
+
+:is(
+  .care-card,
+  .sp-service-card-modern:not(.sp-testimonial-card),
+  .why-grid > li,
+  .sp-metric-item,
+  .sp-quiz-opt-btn,
+  .ed-gallery-grid > .ed-photo,
+  .sp-story-pill,
+  .sp-story-quote-card,
+  .ed-directory > details,
+  #questions details
+) > *{
+  position:relative;
+  z-index:1;
+}
+
+:is(
+  .care-card,
+  .sp-service-card-modern:not(.sp-testimonial-card),
+  .why-grid > li,
+  .sp-metric-item,
+  .sp-quiz-opt-btn,
+  .ed-gallery-grid > .ed-photo,
+  .sp-story-pill,
+  .sp-story-quote-card,
+  .ed-directory > details,
+  #questions details
+):is(:hover,:focus-visible){
+  animation:border-turn 3s linear infinite !important;
+  box-shadow:0 22px 50px rgba(72,30,40,0.18) !important;
+  transform:perspective(850px) translateY(-4px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) !important;
+}
+
+/* Founder section dark cards maintain dark glass resting background */
+.sp-story-modern :is(.sp-story-pill,.sp-story-quote-card){
+  background:linear-gradient(rgba(45,22,32,0.8),rgba(30,14,21,0.9)) padding-box,conic-gradient(from var(--angle),#c78c77,#f3cdb3,#74384f,#c78c77) border-box !important;
+}
+
+/* The Expanding Color Ripple */
+:is(
+  .care-card,
+  .sp-service-card-modern:not(.sp-testimonial-card),
+  .why-grid > li,
+  .sp-metric-item,
+  .sp-quiz-opt-btn,
+  .ed-gallery-grid > .ed-photo,
+  .sp-story-pill,
+  .sp-story-quote-card,
+  .ed-directory > details,
+  #questions details
+)::before,
+:is(
+  .care-card,
+  .sp-service-card-modern:not(.sp-testimonial-card),
+  .why-grid > li,
+  .sp-metric-item,
+  .sp-quiz-opt-btn,
+  .ed-gallery-grid > .ed-photo,
+  .sp-story-pill,
+  .sp-story-quote-card,
+  .ed-directory > details,
+  #questions details
+):before{
+  content:"" !important;
+  position:absolute !important;
+  inset:0 !important;
+  top:0 !important;
+  left:0 !important;
+  right:0 !important;
+  bottom:0 !important;
+  width:auto !important;
+  height:auto !important;
+  opacity:1 !important;
+  background:linear-gradient(125deg,#573043 0%,#321d29 100%) !important;
+  clip-path:circle(0% at var(--ox,50%) var(--oy,50%)) !important;
+  transition:clip-path .55s cubic-bezier(0.25,1,0.5,1) !important;
+  pointer-events:none !important;
+  z-index:0 !important;
+}
+
+:is(
+  .care-card,
+  .sp-service-card-modern:not(.sp-testimonial-card),
+  .why-grid > li,
+  .sp-metric-item,
+  .sp-quiz-opt-btn,
+  .ed-gallery-grid > .ed-photo,
+  .sp-story-pill,
+  .sp-story-quote-card,
+  .ed-directory > details,
+  #questions details
+):is(:hover,:focus-visible)::before,
+:is(
+  .care-card,
+  .sp-service-card-modern:not(.sp-testimonial-card),
+  .why-grid > li,
+  .sp-metric-item,
+  .sp-quiz-opt-btn,
+  .ed-gallery-grid > .ed-photo,
+  .sp-story-pill,
+  .sp-story-quote-card,
+  .ed-directory > details,
+  #questions details
+):is(:hover,:focus-visible):before{
+  clip-path:circle(165% at var(--ox,50%) var(--oy,50%)) !important;
+}
+
+/* Smooth color transitions for all child elements */
+:is(
+  .care-card,
+  .sp-service-card-modern:not(.sp-testimonial-card),
+  .why-grid > li,
+  .sp-metric-item,
+  .sp-quiz-opt-btn,
+  .ed-gallery-grid > .ed-photo,
+  .sp-story-pill,
+  .sp-story-quote-card,
+  .ed-directory > details,
+  #questions details
+) :is(h3,h4,h5,p,span,a,li,b,summary,.sp-card-title,.sp-card-text,.sp-metric-number,.sp-metric-label,.sp-quiz-opt-title,.sp-quiz-opt-sub,.sp-card-icon-modern,.why-icon,.sp-metric-icon){
+  transition:color .35s ease,background .35s ease,border-color .35s ease,transform .25s ease,stroke .35s ease,fill .35s ease,opacity .35s ease;
+}
+
+/* Headings shift to radiant ivory */
+:is(
+  .care-card,
+  .sp-service-card-modern:not(.sp-testimonial-card),
+  .why-grid > li,
+  .sp-metric-item,
+  .sp-quiz-opt-btn,
+  .ed-gallery-grid > .ed-photo,
+  .sp-story-pill,
+  .sp-story-quote-card,
+  .ed-directory > details,
+  #questions details
+):is(:hover,:focus-visible) :is(h3,h4,h5,.sp-card-title,.sp-quiz-opt-title,.sp-metric-number,summary span:first-child){
+  color:#fff7ed !important;
+}
+
+/* Paragraphs & descriptions shift to warm soft cream */
+:is(
+  .care-card,
+  .sp-service-card-modern:not(.sp-testimonial-card),
+  .why-grid > li,
+  .sp-metric-item,
+  .sp-quiz-opt-btn,
+  .ed-gallery-grid > .ed-photo,
+  .sp-story-pill,
+  .sp-story-quote-card,
+  .ed-directory > details,
+  #questions details
+):is(:hover,:focus-visible) :is(p,.sp-card-text,.sp-quiz-opt-sub,.sp-metric-label,.ed-content p){
+  color:#f7e6df !important;
+}
+
+/* Services card details */
+.sp-service-card-modern:is(:hover,:focus-visible) .sp-card-bullets li{color:#faeade !important}
+.sp-service-card-modern:is(:hover,:focus-visible) .sp-card-bullets li::before{background:#e2927c !important}
+.sp-service-card-modern:is(:hover,:focus-visible) .sp-card-icon-modern{background:rgba(255,255,255,0.16) !important;color:#ffebd9 !important;border-color:rgba(255,255,255,0.28) !important;transform:scale(1.1) rotate(4deg) !important}
+.sp-service-card-modern:is(:hover,:focus-visible) .sp-card-tag{background:rgba(255,255,255,0.16) !important;color:#fff7ed !important;border:1px solid rgba(255,255,255,0.28) !important}
+.sp-service-card-modern:is(:hover,:focus-visible) .sp-card-tag.highlight{background:linear-gradient(135deg,#c76f57,#773145) !important;color:#fff !important}
+.sp-service-card-modern:is(:hover,:focus-visible) .sp-card-action-row{border-top-color:rgba(255,255,255,0.16) !important}
+.sp-service-card-modern:is(:hover,:focus-visible) .sp-card-link-btn{color:#fbd6c4 !important;transform:translateX(4px)}
+.sp-service-card-modern:is(:hover,:focus-visible) .sp-card-action-row span{color:#dec3ba !important}
+
+/* Why SPOUZY Section Cards */
+.why-grid{gap:18px !important;align-items:stretch !important}
+.why-grid li+li{border-left:none !important}
+.why-grid li{padding:30px 20px 26px !important;border-radius:20px !important;display:flex !important;flex-direction:column !important;align-items:center !important;text-align:center !important}
+.why-grid li:is(:hover,:focus-visible) .why-icon{background:rgba(255,255,255,0.18) !important;border-color:rgba(255,255,255,0.3) !important;box-shadow:0 10px 24px rgba(0,0,0,0.3) !important;transform:translateY(-4px) rotate(-3deg) scale(1.08) !important}
+.why-grid li:is(:hover,:focus-visible) .why-icon svg path{stroke:#fff7ed !important}
+.why-grid li:is(:hover,:focus-visible) .why-icon .ink{stroke:#f8bba4 !important;fill:#f8bba4 !important}
+
+/* Key Metrics Cards */
+.sp-metrics-container{gap:18px !important}
+.sp-metric-item{border-right:none !important;padding:22px 20px !important;border-radius:20px !important}
+.sp-metric-item:is(:hover,:focus-visible) .sp-metric-icon{background:rgba(255,255,255,0.18) !important;color:#fff7ed !important;border-color:rgba(255,255,255,0.3) !important;transform:scale(1.1) rotate(6deg) !important}
+
+/* Quiz Option Cards */
+.sp-quiz-opt-btn{border-radius:18px !important;padding:22px 24px !important;cursor:pointer}
+.sp-quiz-opt-btn:is(:hover,:focus-visible) .sp-quiz-opt-icon{transform:scale(1.2) !important}
+
+/* Gallery "Where a session can begin" Photo Cards */
+.ed-gallery-grid>.ed-photo{border-radius:20px !important;text-decoration:none !important;display:flex !important;flex-direction:column !important}
+.ed-gallery-grid>.ed-photo img{width:100%;aspect-ratio:2.5;object-fit:cover;transition:transform 4s ease !important}
+.ed-gallery-grid>.ed-photo:is(:hover,:focus-visible) img{transform:scale(1.09) !important}
+.ed-gallery-grid>.ed-photo:is(:hover,:focus-visible) span{color:#ffcdb2 !important;transform:translateX(4px) !important}
+
+/* Directory Details Cards */
+.ed-directory>details{border-radius:20px !important}
+.ed-directory>details:is(:hover,:focus-visible) summary span{color:#fff7ed !important}
+.ed-directory>details:is(:hover,:focus-visible) summary b{color:#f3cdb3 !important}
+.ed-directory>details:is(:hover,:focus-visible) summary img{filter:brightness(1.2)}
+.ed-directory>details:is(:hover,:focus-visible) .ed-content li a{color:#ffcdb2 !important;border-top-color:rgba(255,255,255,0.15) !important}
+.ed-directory>details:is(:hover,:focus-visible) .ed-content li a:hover{color:#ffffff !important}
+
+/* FAQ Details Cards */
+#questions details{border-radius:18px !important;padding:18px 22px !important}
+#questions details:is(:hover,:focus-visible) summary span:first-child{color:#fff7ed !important}
+#questions details:is(:hover,:focus-visible) summary span:last-child{color:#f3cdb3 !important}
+#questions details:is(:hover,:focus-visible) p{color:#f7e6df !important}
+
+/* Image zoom in care-card */
+.care-media img{transition:scale 4s ease}.care-card:is(:hover,:focus-visible) .care-media img{scale:1.09}
+.care-card:is(:hover,:focus-visible) .care-copy span{translate:4px 0}
+
+@media(hover:hover) and (pointer:fine){
+  .tiles i{background:#905969ad;transition:transform .45s var(--delay),opacity .4s var(--delay)}
+  .tiles i:nth-child(3n){background:#d39b8299}
+  .care-card:is(:hover,:focus-visible) .tiles i{opacity:0;transform:translateY(100%) rotate(14deg)}
+}
+
+@media(max-width:950px){
+  .why-grid{grid-template-columns:repeat(3,minmax(0,1fr)) !important;gap:16px !important}
+  .sp-metrics-container{grid-template-columns:repeat(2,1fr) !important;gap:14px !important}
+}
+@media(max-width:640px){
+  .why-grid{display:block !important}
+  .why-grid li{display:grid !important;grid-template-columns:56px minmax(0,1fr) !important;gap:5px 17px !important;text-align:left !important;padding:18px !important;margin-bottom:12px !important}
+  .sp-metrics-container{grid-template-columns:1fr !important;gap:10px !important}
+}
+/* ==========================================================================
+   SUPPORT BEYOND RELATIONSHIPS — SIDE-BY-SIDE BEAUTIFUL SLIDING CARDS
+   High-contrast, crystal-clear dark typography, side-by-side 3-card grid,
+   and smooth staggered sliding animation on scroll & hover.
+   ========================================================================== */
+
+/* Section Backdrop & Atmosphere */
+.psg-cinema-section{
+  position:relative;
+  isolation:isolate;
+  padding:clamp(40px,5vw,70px) 0 !important;
+}
+.cinema-section-glow{
+  position:absolute;
+  top:15%;
+  left:50%;
+  transform:translateX(-50%);
+  width:min(1100px,94vw);
+  height:480px;
+  background:radial-gradient(ellipse 65% 50% at 50% 40%,rgba(191,103,79,0.1),rgba(72,30,40,0.03) 50%,transparent 75%);
+  pointer-events:none;
+  z-index:-1;
+  filter:blur(40px);
+}
+
+/* Side-by-Side 3-Card Grid Layout (NOT one below other!) */
+.ed-pillars,
+.psg-cinema-section .ed-pillars,
+.motion-on .ed-pillars{
+  display:grid !important;
+  grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  gap:22px !important;
+  max-width:1220px !important;
+  width:100% !important;
+  margin:32px auto 40px !important;
+  align-items:stretch !important;
+  position:static !important;
+}
+
+/* Base Card Styling: Luxury White/Porcelain with Sharp Dark Typography */
+.psg-cinema-card,
+.ed-pillars article,
+.motion-on .ed-pillars article{
+  position:relative !important;
+  display:flex !important;
+  flex-direction:column !important;
+  height:100% !important;
+  top:auto !important;
+  scale:1 !important;
+  filter:none !important;
+  opacity:1 !important;
+  margin:0 !important;
+  padding:26px 24px !important;
+  border-radius:20px !important;
+  background:#ffffff !important;
+  border:1px solid rgba(191,103,79,0.24) !important;
+  box-shadow:0 8px 24px rgba(45,19,29,0.06) !important;
+  color:#271219 !important;
+  overflow:hidden !important;
+  transition:transform 0.32s cubic-bezier(0.16,1,0.3,1),
+             box-shadow 0.32s cubic-bezier(0.16,1,0.3,1),
+             border-color 0.28s ease !important;
+}
+
+/* Ensure no pseudo-element ripple or circle overlay interferes */
+.ed-pillars article::before,
+.ed-pillars article::after,
+.psg-cinema-card::before,
+.psg-cinema-card::after{
+  display:none !important;
+  content:none !important;
+}
+
+/* Hover Sliding Lift & Glow */
+.ed-pillars article:hover,
+.psg-cinema-card:hover{
+  transform:translateY(-8px) scale(1.015) !important;
+  box-shadow:0 20px 42px rgba(45,19,29,0.13),0 0 24px rgba(191,103,79,0.12) !important;
+  border-color:rgba(191,103,79,0.5) !important;
+}
+
+/* Staggered Sliding Entrance Animations on Scroll */
+.motion-on .ed-pillars article.entered:nth-child(1){
+  animation:slideCardLeft 0.7s cubic-bezier(0.16,1,0.3,1) both;
+}
+.motion-on .ed-pillars article.entered:nth-child(2){
+  animation:slideCardUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.15s both;
+}
+.motion-on .ed-pillars article.entered:nth-child(3){
+  animation:slideCardRight 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s both;
+}
+@keyframes slideCardLeft{
+  from{opacity:0;transform:translateX(-40px)}
+  to{opacity:1;transform:translateX(0)}
+}
+@keyframes slideCardUp{
+  from{opacity:0;transform:translateY(40px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes slideCardRight{
+  from{opacity:0;transform:translateX(40px)}
+  to{opacity:1;transform:translateX(0)}
+}
+
+/* Sliding Sheen Light Sweep on Hover */
+.cinema-lens-flare{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:linear-gradient(
+    105deg,
+    transparent 25%,
+    rgba(255,255,255,0.7) 48%,
+    rgba(240,210,195,0.75) 50%,
+    rgba(255,255,255,0.7) 52%,
+    transparent 75%
+  );
+  transform:translateX(-160%) skewX(-20deg);
+  transition:transform 0.8s cubic-bezier(0.16,1,0.3,1);
+  z-index:5;
+}
+.ed-pillars article:hover .cinema-lens-flare{
+  transform:translateX(180%) skewX(-20deg);
+}
+
+/* Header & Tags: High-Contrast & Clearly Readable */
+.pillar-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:14px;
+  padding-bottom:12px;
+  border-bottom:1px solid rgba(72,30,40,0.08) !important;
+  position:relative;
+  z-index:3;
+}
+.pillar-tag{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  font:700 11px/1.3 'Plus Jakarta Sans',Arial,sans-serif;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:#8a3b25 !important; /* DARK COPPER - CRISP READABILITY */
+  background:rgba(191,103,79,0.1) !important;
+  border:1px solid rgba(191,103,79,0.25) !important;
+  padding:5px 12px;
+  border-radius:999px;
+}
+.cinema-pulse-dot{
+  display:inline-block;
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:#bf674f;
+  box-shadow:0 0 6px rgba(191,103,79,0.8);
+  animation:cinemaPulse 2s ease-in-out infinite;
+  margin-right:3px;
+  flex-shrink:0;
+}
+@keyframes cinemaPulse{
+  0%,100%{transform:scale(1);opacity:1}
+  50%{transform:scale(1.35);opacity:0.65}
+}
+.pillar-num{
+  font-family:'Playfair Display',Georgia,serif;
+  font-size:26px;
+  font-weight:700;
+  color:#bf674f !important; /* CRISP WARM COPPER */
+  line-height:1;
+}
+
+/* Card Body Typography (DARK & HIGH CONTRAST) */
+.cinema-card-body{
+  position:relative;
+  z-index:3;
+  display:flex;
+  flex-direction:column;
+  flex-grow:1;
+}
+.cinema-card-title,
+.ed-pillars h3{
+  font:600 clamp(20px,1.9vw,23px)/1.25 'Playfair Display',Georgia,serif;
+  color:#271219 !important; /* RICH DARK WINE - 100% CLEAR */
+  margin:0 0 10px !important;
+  font-weight:600 !important;
+}
+.cinema-card-desc,
+.ed-pillars p{
+  font-size:14px !important;
+  line-height:1.62 !important;
+  color:#49333b !important; /* DARK CHARCOAL-WINE - EASILY READABLE */
+  margin:0 0 16px !important;
+  flex-grow:1;
+}
+
+/* Feature Chips */
+.cinema-feature-chips{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  margin:0 0 18px;
+  position:relative;
+  z-index:3;
+}
+.cinema-chip{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:5px 12px;
+  background:#f9f3ee !important;
+  border:1px solid rgba(191,103,79,0.18) !important;
+  border-radius:14px;
+  font-size:11.5px;
+  font-weight:600;
+  color:#4d323b !important; /* DARK TEXT */
+  transition:all 0.22s ease;
+}
+.cinema-chip i{
+  color:#a64e37 !important;
+  font-size:11px;
+}
+.ed-pillars article:hover .cinema-chip{
+  background:rgba(191,103,79,0.12) !important;
+  border-color:rgba(191,103,79,0.35) !important;
+  color:#271219 !important;
+}
+
+/* Card Footer */
+.pillar-footer{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-top:auto;
+  padding-top:14px;
+  border-top:1px solid rgba(72,30,40,0.08) !important;
+  position:relative;
+  z-index:3;
+}
+.pillar-metric{
+  font-size:12px;
+  font-weight:600;
+  color:#633e4b !important; /* DARK READABLE TEXT */
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+}
+.pillar-metric i{
+  color:#bf674f !important;
+  font-size:12px;
+}
+.cinema-action-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:7px 16px;
+  background:#381822 !important; /* DARK LUXURY BUTTON */
+  border:1px solid rgba(56,24,34,0.3) !important;
+  border-radius:20px;
+  color:#ffffff !important; /* WHITE TEXT ON DARK BUTTON */
+  font-size:12px;
+  font-weight:700;
+  text-decoration:none !important;
+  box-shadow:0 3px 10px rgba(56,24,34,0.18);
+  transition:all 0.25s ease;
+}
+.cinema-action-btn:hover{
+  background:#bf674f !important; /* COPPER ON HOVER */
+  border-color:#bf674f !important;
+  color:#ffffff !important;
+  transform:translateX(3px);
+  box-shadow:0 4px 14px rgba(191,103,79,0.4);
+}
+
+/* Subtle Watermark Numeral */
+.cinema-watermark-num{
+  position:absolute;
+  right:16px;
+  bottom:10px;
+  font-family:'Playfair Display',Georgia,serif;
+  font-size:80px;
+  font-weight:800;
+  line-height:1;
+  color:#bf674f;
+  opacity:0.04;
+  pointer-events:none;
+  z-index:1;
+  user-select:none;
+}
+
+/* Custom Problem Box Upgrade */
+.cinema-custom-box{
+  max-width:1220px !important;
+  margin:28px auto 0 !important;
+  background:linear-gradient(145deg,#241019 0%,#180811 100%) !important;
+  border:1px solid rgba(224,139,115,0.28) !important;
+  box-shadow:0 12px 30px rgba(10,4,8,0.35) !important;
+  border-radius:18px !important;
+  padding:20px 28px !important;
+  color:#fffaf5 !important;
+  position:relative;
+  overflow:hidden;
+}
+.cinema-custom-badge{
+  display:inline-flex;
+  align-items:center;
+  font:700 10.5px/1.3 'Plus Jakarta Sans',sans-serif;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:#e08b73;
+  margin-bottom:4px;
+}
+.cinema-custom-box p{
+  font-size:14px !important;
+  line-height:1.55 !important;
+  color:#f0ded6 !important;
+}
+.cinema-custom-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:10px 20px;
+  background:linear-gradient(135deg,#bf674f 0%,#873549 100%) !important;
+  border:1px solid rgba(255,218,204,0.35) !important;
+  border-radius:999px !important;
+  color:#ffffff !important;
+  font-size:13px !important;
+  font-weight:700 !important;
+  text-decoration:none !important;
+  box-shadow:0 4px 14px rgba(191,103,79,0.3);
+  transition:all 0.25s ease !important;
+  flex-shrink:0;
+}
+.cinema-custom-btn:hover{
+  background:linear-gradient(135deg,#ce735b 0%,#9c3c54 100%) !important;
+  box-shadow:0 6px 20px rgba(191,103,79,0.45);
+  transform:translateY(-1px);
+  color:#ffffff !important;
+}
+
+/* Responsive Grid for Tablets & Mobile */
+@media(max-width:960px){
+  .ed-pillars,
+  .psg-cinema-section .ed-pillars,
+  .motion-on .ed-pillars{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:18px !important;
+  }
+}
+@media(max-width:640px){
+  .ed-pillars,
+  .psg-cinema-section .ed-pillars,
+  .motion-on .ed-pillars{
+    grid-template-columns:1fr !important;
+    gap:16px !important;
+  }
+  .psg-cinema-card,
+  .ed-pillars article,
+  .motion-on .ed-pillars article{
+    padding:20px 18px !important;
+  }
+  .cinema-custom-box{
+    display:block !important;
+  }
+  .cinema-custom-btn{
+    display:inline-block !important;
+    margin-top:14px;
+  }
+}
+.sp-ticker-section .sp-ticker-content{transform:skewX(var(--lean,0deg));transition:transform .25s}
+.draw-title{display:block;width:min(100%,340px);height:auto}.draw-title text{font:26px Georgia,serif;stroke:#edba9e;stroke-width:.75;fill:transparent;stroke-dasharray:650;stroke-dashoffset:650}.entered .draw-title text{animation:ink-text 2s ease forwards}@keyframes ink-text{70%{fill:transparent}to{stroke-dashoffset:0;fill:#fff3e8}}
+.iris-track{position:relative;padding-bottom:clamp(75px,13vh,125px)}.iris-track .ed-custom{position:sticky;top:100px;isolation:isolate;overflow:hidden;background:#442733}.iris-tone{position:absolute;inset:0;z-index:-1;background:linear-gradient(115deg,#733e49,#512c3b);clip-path:circle(var(--iris,0%) at 50% 50%)}
+.page-curtain{position:fixed;inset:0;pointer-events:none;display:flex;z-index:9800}.page-curtain i{flex:1;background:#55303c;transform-origin:bottom;animation:veil-in .25s ease both}.page-curtain i:nth-child(even){background:#63404a}@keyframes veil-in{from{scale:1 0}}.page-curtain.unveil i{transform-origin:top;animation:veil-out .28s ease both}@keyframes veil-out{to{scale:1 0}}
+.review-active p{animation:lift-in .45s ease both}.read-progress{position:fixed;z-index:9700;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#b06e5a,#f4c8ac);transform:scaleX(0);transform-origin:left;pointer-events:none}
+}
+@media(prefers-reduced-motion:no-preference){
+.iris-track .ed-custom{display:grid;padding:0}.iris-first,.iris-next{grid-area:1/1;align-self:stretch;padding:24px clamp(16px,3vw,36px);display:flex;align-items:center}
+.iris-first{font:500 clamp(20px,2vw,28px)/1.3 Georgia,serif;color:#ffeadb}
+.iris-next{gap:20px;justify-content:space-between;background:linear-gradient(110deg,#733f4b,#462836);clip-path:circle(var(--iris,0%) at center)}.iris-next:focus-within{clip-path:none}
+.hero-watermark{position:absolute;bottom:14%;right:4%;pointer-events:none;z-index:3;font:600 clamp(40px,6vw,110px)/1 Georgia,serif;letter-spacing:.12em;color:#fff2;translate:0 calc(var(--shift,0px)*-.8)}
+#services .sp-service-card-modern.entered .sp-card-icon-modern{animation:icon-in .6s both}
+#services .sp-service-card-modern.entered .sp-card-title{animation:lift-in .5s .12s backwards}
+@keyframes icon-in{from{opacity:.3;transform:perspective(500px) translateX(calc(var(--side)*17px)) rotateY(calc(var(--side)*22deg)) scale(.85)}}
+@media(max-width:640px){.hero-watermark{display:none}.iris-next{display:block}}
+}
+
+/* ==========================================================================
+   CLIENT TESTIMONIALS — SMOOTH AUTOMATIC HORIZONTAL SLIDER
+   High-contrast, crystal-clear dark typography, luxury porcelain card,
+   smooth sliding carousel with arrows & active dots.
+   ========================================================================== */
+
+.sp-testimonials-section{
+  position:relative !important;
+  isolation:isolate !important;
+  padding:clamp(50px,7vw,85px) 0 !important;
+}
+
+.sp-testimonials-carousel{
+  position:relative !important;
+  max-width:880px !important;
+  margin:32px auto 0 !important;
+  overflow:hidden !important;
+  border-radius:24px !important;
+  padding:4px !important;
+}
+
+/* Horizontal Sliding Track */
+.sp-testimonials-track{
+  display:flex !important;
+  width:100% !important;
+  transition:transform 0.65s cubic-bezier(0.22,1,0.36,1) !important;
+  will-change:transform !important;
+  align-items:stretch !important;
+}
+
+/* Individual Slide Card */
+.sp-testimonial-card{
+  width:100% !important;
+  flex:0 0 100% !important;
+  box-sizing:border-box !important;
+  margin:0 !important;
+  padding:clamp(30px,5vw,46px) clamp(26px,5.5vw,48px) !important;
+  background:#ffffff !important; /* CRISP LUXURY PORCELAIN */
+  border:1px solid rgba(191,103,79,0.24) !important;
+  border-radius:24px !important;
+  box-shadow:0 14px 40px rgba(45,19,29,0.07), 0 2px 10px rgba(191,103,79,0.05) !important;
+  position:relative !important;
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:space-between !important;
+  overflow:hidden !important;
+  opacity:1 !important;
+  visibility:visible !important;
+  pointer-events:auto !important;
+  transition:box-shadow 0.3s ease, border-color 0.3s ease, transform 0.3s ease !important;
+}
+
+.sp-testimonial-card:hover{
+  box-shadow:0 22px 52px rgba(45,19,29,0.11), 0 0 24px rgba(191,103,79,0.12) !important;
+  border-color:rgba(191,103,79,0.48) !important;
+  transform:translateY(-3px) !important;
+}
+
+/* Explicitly disable any universal ripple overlay */
+.sp-testimonial-card::before,
+.sp-testimonial-card::after{
+  display:none !important;
+  content:none !important;
+}
+
+/* Watermark Quote Icon */
+.sp-quote-watermark{
+  position:absolute;
+  top:22px;
+  right:28px;
+  font-size:54px;
+  line-height:1;
+  color:#bf674f;
+  opacity:0.1;
+  pointer-events:none;
+  user-select:none;
+  transition:opacity 0.3s ease, transform 0.3s ease;
+}
+.sp-testimonial-card:hover .sp-quote-watermark{
+  opacity:0.2;
+  transform:scale(1.08) rotate(-4deg);
+}
+
+/* Radiant Gold Stars */
+.sp-testi-stars{
+  display:flex !important;
+  align-items:center !important;
+  gap:5px !important;
+  color:#d97706 !important; /* WARM GOLDEN AMBER */
+  font-size:14.5px !important;
+  margin-bottom:18px !important;
+  position:relative !important;
+  z-index:2 !important;
+}
+.sp-testi-stars i{
+  color:#d97706 !important;
+  text-shadow:0 1px 3px rgba(217,119,6,0.25);
+}
+
+/* Testimonial Quote (HIGH-CONTRAST, DEEP DARK WINE, 100% CLEAR) */
+.sp-testi-quote,
+.sp-testimonial-card p{
+  font-family:var(--sp-font-serif),'Playfair Display',Georgia,serif !important;
+  font-size:clamp(17.5px,2.1vw,21.5px) !important;
+  font-style:italic !important;
+  line-height:1.65 !important;
+  color:#271219 !important; /* DEEP DARK WINE - 100% VISIBLE & LEGIBLE */
+  margin:0 0 26px !important;
+  font-weight:500 !important;
+  position:relative !important;
+  z-index:2 !important;
+  letter-spacing:-0.01em !important;
+}
+
+/* Testimonial Footer */
+.sp-testi-footer{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  flex-wrap:wrap !important;
+  gap:12px !important;
+  border-top:1px solid rgba(72,30,40,0.1) !important;
+  padding-top:18px !important;
+  margin-top:auto !important;
+  position:relative !important;
+  z-index:2 !important;
+}
+
+.sp-testi-author-info{
+  display:flex !important;
+  align-items:center !important;
+  gap:10px !important;
+  flex-wrap:wrap !important;
+}
+
+.sp-testi-author{
+  font-weight:700 !important;
+  font-size:15px !important;
+  color:#271219 !important; /* RICH DARK WINE */
+  letter-spacing:-0.01em !important;
+}
+
+.sp-testi-badge{
+  display:inline-flex !important;
+  align-items:center !important;
+  gap:4px !important;
+  font-size:11.5px !important;
+  font-weight:600 !important;
+  color:#2b7a3e !important; /* VERIFIED FOREST GREEN */
+  background:rgba(43,122,62,0.08) !important;
+  border:1px solid rgba(43,122,62,0.2) !important;
+  padding:3px 9px !important;
+  border-radius:999px !important;
+}
+
+.sp-testi-tag{
+  background:rgba(191,103,79,0.1) !important;
+  border:1px solid rgba(191,103,79,0.26) !important;
+  color:#8a3b25 !important; /* CRISP WARM COPPER */
+  font-size:12px !important;
+  font-weight:700 !important;
+  padding:5px 14px !important;
+  border-radius:999px !important;
+  letter-spacing:0.02em !important;
+}
+
+/* Navigation Controls (Arrows + Dots) */
+.sp-testimonials-nav{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:18px !important;
+  margin:24px auto 0 !important;
+  position:relative !important;
+  z-index:10 !important;
+}
+
+.sp-testi-arrow{
+  width:42px !important;
+  height:42px !important;
+  border-radius:50% !important;
+  background:#ffffff !important;
+  border:1.5px solid rgba(191,103,79,0.3) !important;
+  color:#381822 !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  font-size:18px !important;
+  cursor:pointer !important;
+  box-shadow:0 4px 12px rgba(45,19,29,0.08) !important;
+  transition:all 0.25s cubic-bezier(0.16,1,0.3,1) !important;
+}
+
+.sp-testi-arrow:hover{
+  background:#381822 !important;
+  border-color:#381822 !important;
+  color:#ffffff !important;
+  transform:scale(1.1) !important;
+  box-shadow:0 6px 18px rgba(56,24,34,0.22) !important;
+}
+
+.sp-testi-arrow:active{
+  transform:scale(0.94) !important;
+}
+
+.sp-testi-dots{
+  display:flex !important;
+  align-items:center !important;
+  gap:8px !important;
+}
+
+.sp-testi-dot{
+  min-width:10px !important;
+  height:10px !important;
+  width:10px !important;
+  padding:0 !important;
+  border:0 !important;
+  background:rgba(191,103,79,0.32) !important;
+  border-radius:50% !important;
+  cursor:pointer !important;
+  transition:all 0.35s cubic-bezier(0.16,1,0.3,1) !important;
+}
+
+.sp-testi-dot:hover{
+  background:rgba(191,103,79,0.6) !important;
+  transform:scale(1.2) !important;
+}
+
+.sp-testi-dot.active,
+.sp-testi-dot[aria-selected="true"]{
+  width:32px !important;
+  border-radius:10px !important;
+  background:#381822 !important; /* DARK WINE ACCENT */
+  box-shadow:0 2px 8px rgba(56,24,34,0.3) !important;
+}
+
+@media(max-width:640px){
+  .sp-testimonial-card{
+    padding:24px 20px !important;
+    border-radius:18px !important;
+  }
+  .sp-testi-quote{
+    font-size:16px !important;
+    line-height:1.55 !important;
+    margin-bottom:18px !important;
+  }
+  .sp-testi-footer{
+    flex-direction:column !important;
+    align-items:flex-start !important;
+    gap:10px !important;
+  }
+  .sp-quote-watermark{
+    font-size:38px !important;
+    top:16px !important;
+    right:16px !important;
+  }
+  .sp-testi-arrow{
+    width:36px !important;
+    height:36px !important;
+    font-size:15px !important;
+  }
+}
