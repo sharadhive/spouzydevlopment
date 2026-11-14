@@ -34,6 +34,71 @@
   --sp-transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* --------------------------------------------------------------------------
+   CUSTOM BRAND CURSORS (48x48 Metallic Rose Gold, Pointer: Fine)
+   -------------------------------------------------------------------------- */
+@media (pointer: fine) {
+  html,
+  body {
+    cursor: url('../image/cursors/spouzy-arrow.svg') 2 2, url('../image/cursors/spouzy-arrow.png') 2 2, default;
+  }
+
+  /* Links, buttons, interactive controls, and dropdown triggers */
+  a,
+  button,
+  summary,
+  select,
+  [role="button"],
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"],
+  input[type="checkbox"],
+  input[type="radio"],
+  label[for],
+  .guide-menu button,
+  .guide-links a,
+  .sp-policy-trigger,
+  .sp-dropdown-toggle,
+  .sp-brand-pill,
+  .sp-cta-primary,
+  .sp-cta-secondary,
+  .sp-search-btn,
+  .sp-booking-btn,
+  .sp-footer-share a,
+  .sp-footer-links a,
+  .sp-footer-policy-nav a,
+  .sp-floating-quick-pill,
+  .sp-card-tab,
+  .sp-faq-header,
+  .care-nav-prev,
+  .care-nav-next,
+  .slider-arrow,
+  [role="tab"] {
+    cursor: url('../image/cursors/spouzy-pointer.svg') 18 2, url('../image/cursors/spouzy-pointer.png') 18 2, pointer !important;
+  }
+
+  a *,
+  button *,
+  summary *,
+  [role="button"] * {
+    cursor: inherit;
+  }
+
+  /* Preserve text caret in input fields and editable areas */
+  input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="image"]),
+  textarea,
+  [contenteditable="true"],
+  [contenteditable=""] {
+    cursor: text !important;
+  }
+
+  /* Disabled state */
+  :disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed !important;
+  }
+}
+
 /* Reset overrides for SPOUZY modern components */
 .sp-modern-wrapper {
   font-family: var(--sp-font-sans);
@@ -1875,7 +1940,7 @@
 .sp-footer-modern {
   background: #1e0e13;
   color: #edd9d0;
-  padding: 70px 24px 30px;
+  padding: 40px 24px 20px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
@@ -1884,31 +1949,31 @@
   margin: 0 auto;
   display: grid;
   grid-template-columns: 1.4fr repeat(3, 1fr);
-  gap: 50px;
-  margin-bottom: 50px;
+  gap: 36px 40px;
+  margin-bottom: 24px;
 }
 
 .sp-footer-brand-logo,
 .sp-footer-logo,
 .sp-footer-brand-col img,
-.sp-footer-modern img.sp-footer-logo,
-.sp-footer-modern img {
-  height: 44px !important;
-  max-height: 48px !important;
+.sp-footer-modern img.sp-footer-brand-logo,
+.sp-footer-modern img.sp-footer-logo {
+  height: 42px !important;
+  max-height: 44px !important;
   width: auto !important;
   max-width: 220px !important;
   object-fit: contain !important;
   display: block;
   filter: brightness(1.2);
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
 
 .sp-footer-desc {
   font-size: 13.5px;
-  line-height: 1.65;
+  line-height: 1.55;
   color: #c9b4ab;
   max-width: 340px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .sp-footer-col-title {
@@ -1917,7 +1982,7 @@
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--sp-copper-light);
-  margin-bottom: 18px;
+  margin-bottom: 14px;
 }
 
 .sp-footer-links {
@@ -1926,7 +1991,7 @@
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .sp-footer-links a {
@@ -1944,14 +2009,14 @@
 .sp-footer-bottom {
   max-width: 1440px;
   margin: 0 auto;
-  padding-top: 28px;
+  padding-top: 14px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 16px;
-  font-size: 12.5px;
+  gap: 14px;
+  font-size: 12px;
   color: #a8948b;
 }
 
@@ -2282,19 +2347,23 @@ html, body {
 
   /* Footer on Mobile */
   .sp-footer-modern {
-    padding: 46px 16px 24px;
+    padding: 32px 16px 16px;
   }
   .sp-footer-grid {
     grid-template-columns: 1fr;
-    gap: 28px;
+    gap: 20px;
+    margin-bottom: 18px;
   }
   .sp-footer-bottom {
     flex-direction: column;
-    gap: 14px;
+    gap: 12px;
     text-align: center;
+    padding-top: 12px;
   }
   .sp-footer-badges {
     justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
   }
 
   /* Floating Action Pill on Mobile */
@@ -4225,3 +4294,394 @@ html, body {
   font-style: italic;
   color: #4A2C25;
 }
+/* ==========================================================================
+   NESTED POLICY SUBMENU & POLICY PAGES SYSTEM
+   ========================================================================== */
+
+/* Submenu trigger button in Who We Are dropdown */
+button.sp-submenu-trigger {
+  width: 100%;
+  border: none;
+  background: none;
+  cursor: pointer;
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border-radius: 9px;
+  padding: 9px 10px;
+  line-height: 1.3;
+  color: #4e3440;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  text-align: left;
+  transition: all 0.18s ease;
+}
+
+button.sp-submenu-trigger:hover,
+button.sp-submenu-trigger:focus-visible,
+button.sp-submenu-trigger[data-preview-active],
+button.sp-submenu-trigger[aria-expanded="true"] {
+  background: #522638 !important;
+  color: #fffaf7 !important;
+  outline: none;
+}
+
+button.sp-submenu-trigger .sp-submenu-arrow {
+  color: #f4bd9d;
+  font-size: 12px;
+  transition: transform 0.2s ease, color 0.18s ease;
+}
+
+button.sp-submenu-trigger:hover .sp-submenu-arrow,
+button.sp-submenu-trigger:focus-visible .sp-submenu-arrow,
+button.sp-submenu-trigger[data-preview-active] .sp-submenu-arrow,
+button.sp-submenu-trigger[aria-expanded="true"] .sp-submenu-arrow {
+  color: #fffaf7;
+  transform: translateX(2px);
+}
+
+/* Ensure Who We Are dropdown grid comfortably accommodates policy submenu list */
+.guide-menu:has(#sp-policy-submenu) .guide-links:not([hidden]),
+.guide-links.has-policy-submenu {
+  grid-template-columns: minmax(185px, 1fr) minmax(230px, 1.25fr) !important;
+  width: clamp(440px, 38vw, 560px) !important;
+  max-height: min(80vh, 520px) !important;
+  min-height: 360px;
+}
+
+/* Policy submenu panel replacing preview visuals */
+.sp-policy-submenu {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: #fffcf9;
+  border-radius: 11px;
+  border: 1px solid #ebd8ce;
+  box-shadow: 0 4px 18px rgba(66, 35, 49, 0.09);
+  z-index: 10;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+  overflow: hidden;
+}
+
+.sp-policy-submenu.is-active,
+.sp-policy-submenu:not([hidden]) {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+.sp-policy-submenu-header {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #8e4f3a;
+  padding: 10px 14px 7px;
+  border-bottom: 1px solid #ecdcd3;
+  background: #fbf3ec;
+  border-radius: 11px 11px 0 0;
+  flex-shrink: 0;
+}
+
+.sp-policy-submenu-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 6px 7px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overscroll-behavior: contain;
+}
+
+.sp-policy-submenu-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+.sp-policy-submenu-list::-webkit-scrollbar-track {
+  background: #faf4ef;
+  border-radius: 4px;
+}
+
+.sp-policy-submenu-list::-webkit-scrollbar-thumb {
+  background: #d8c2b7;
+  border-radius: 4px;
+}
+
+.sp-policy-submenu-list::-webkit-scrollbar-thumb:hover {
+  background: #b59b8f;
+}
+
+.sp-policy-sublink {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #4A2C25 !important;
+  text-decoration: none !important;
+  border-radius: 7px;
+  line-height: 1.35;
+  white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease, padding-left 0.15s ease;
+}
+
+.sp-policy-sublink:hover,
+.sp-policy-sublink:focus-visible {
+  background: #522638 !important;
+  color: #fffaf7 !important;
+  padding-left: 14px;
+  outline: none;
+}
+
+/* Mobile Drawer Nested Policy Submenu */
+.sp-drawer-policy-details {
+  border-top: 1px solid rgba(223, 207, 197, 0.4);
+  margin-top: 4px;
+}
+
+.sp-drawer-policy-trigger {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 20px !important;
+  font-size: 14.5px !important;
+  font-weight: 650 !important;
+  color: #4A2C25 !important;
+  cursor: pointer;
+  list-style: none;
+}
+
+.sp-drawer-policy-trigger::-webkit-details-marker {
+  display: none;
+}
+
+.sp-drawer-policy-trigger .sp-submenu-arrow {
+  color: #b87a62;
+  font-size: 12px;
+  transition: transform 0.22s ease;
+}
+
+.sp-drawer-policy-details[open] .sp-drawer-policy-trigger .sp-submenu-arrow {
+  transform: rotate(90deg);
+}
+
+.sp-drawer-nested-links {
+  padding: 4px 12px 10px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: rgba(82, 38, 56, 0.035);
+  border-left: 2px solid #e0c9be;
+  margin-left: 20px;
+  margin-bottom: 6px;
+}
+
+.sp-drawer-nested-link {
+  display: block;
+  padding: 8px 12px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #55342c !important;
+  text-decoration: none !important;
+  border-radius: 7px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.sp-drawer-nested-link:hover,
+.sp-drawer-nested-link:active {
+  background: rgba(82, 38, 56, 0.09);
+  color: #873f36 !important;
+}
+
+/* Policy Tables & Responsive Container */
+.sp-table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 18px 0 24px;
+  border-radius: 12px;
+  border: 1px solid #ebd8ce;
+  background: #fffdfb;
+}
+
+.sp-policy-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14.5px;
+  color: #4A2C25;
+  text-align: left;
+}
+
+.sp-policy-table th {
+  background: #f7ede6;
+  color: #422331;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 13.5px;
+  letter-spacing: 0.02em;
+  padding: 12px 16px;
+  border-bottom: 2px solid #dfcac0;
+  white-space: nowrap;
+}
+
+.sp-policy-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f0e2da;
+  vertical-align: top;
+  line-height: 1.55;
+}
+
+.sp-policy-table tr:last-child td {
+  border-bottom: none;
+}
+
+.sp-policy-table tr:nth-child(even) td {
+  background: rgba(247, 237, 230, 0.35);
+}
+
+/* Policy Page Meta Tag / Callout Boxes */
+.sp-policy-meta-box {
+  background: #fbf3ed;
+  border-left: 3px solid #b87a62;
+  padding: 12px 16px;
+  border-radius: 0 8px 8px 0;
+  margin: 14px 0 20px;
+  font-size: 14px;
+  color: #633f36;
+}
+
+.sp-policy-meta-box p {
+  margin: 0;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+}
+
+.sp-policy-nav-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.sp-policy-nav-card {
+  display: block;
+  padding: 12px 14px;
+  background: #fffcf9;
+  border: 1px solid #ebd8ce;
+  border-radius: 9px;
+  color: #4A2C25;
+  text-decoration: none !important;
+  font-weight: 600;
+  font-size: 13.5px;
+  transition: all 0.18s ease;
+}
+
+.sp-policy-nav-card:hover {
+  background: #522638;
+  color: #fffaf7 !important;
+  border-color: #522638;
+  transform: translateY(-1px);
+}
+
+/* Footer Policy Navigation */
+.sp-footer-policies {
+  border-top: 1px solid rgba(247, 234, 226, 0.12);
+  padding: 12px 0 8px;
+  margin-top: 14px;
+  text-align: center;
+  width: 100%;
+}
+
+.sp-footer-policy-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 6px 14px;
+  font-size: 13px;
+}
+
+.sp-footer-policy-nav a {
+  color: #F7EAE2;
+  text-decoration: none;
+  opacity: 0.88;
+  transition: opacity 0.18s ease, color 0.18s ease;
+  font-weight: 500;
+}
+
+.sp-footer-policy-nav a:hover,
+.sp-footer-policy-nav a:focus-visible {
+  color: #f3ba9d;
+  opacity: 1;
+  text-decoration: underline;
+}
+
+.sp-footer-policy-nav .sp-sep {
+  color: #dfcac0;
+  opacity: 0.45;
+  user-select: none;
+}
+
+@media (max-width: 768px) {
+  .sp-footer-policy-nav {
+    gap: 6px 10px;
+    font-size: 12px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   12. FIRST-VISIT ANIMATED LOGO LOADER (Transparent, Non-blocking)
+   -------------------------------------------------------------------------- */
+.sp-first-visit-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent !important;
+  pointer-events: none !important;
+  z-index: 99999;
+  opacity: 1;
+  transition: opacity 150ms ease-out;
+}
+
+.sp-first-visit-loader-img {
+  width: 240px;
+  max-width: 85vw;
+  height: auto;
+  display: block;
+  pointer-events: none !important;
+  user-select: none;
+  -webkit-user-drag: none;
+  filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.18));
+}
+
+.sp-first-visit-loader.sp-loader-fade-out {
+  opacity: 0 !important;
+}
+
+@media (max-width: 767px) {
+  .sp-first-visit-loader-img {
+    width: 180px;
+    max-width: 80vw;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sp-first-visit-loader {
+    display: none !important;
+  }
+}
+

@@ -3,6 +3,94 @@
  * Problem Solver Group (PSG) Specialist Wing
  */
 
+// ---------------------------------------------------------------------------
+// 0. FIRST-VISIT ANIMATED LOGO LOADER (Transparent, Non-blocking)
+// ---------------------------------------------------------------------------
+(function initFirstVisitLoader() {
+  'use strict';
+
+  // 1. Skip animation for reduced-motion users
+  try {
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return;
+    }
+  } catch (e) {}
+
+  // 2. Show once per browser-tab session across any first page visited
+  var SESSION_KEY = 'spouzy_loader_shown';
+  try {
+    if (sessionStorage.getItem(SESSION_KEY)) {
+      return;
+    }
+    sessionStorage.setItem(SESSION_KEY, '1');
+  } catch (e) {
+    // If storage is disabled or unavailable, exit gracefully without blocking
+    return;
+  }
+
+  // 3. Mount transparent loader overlay
+  function mountLoader() {
+    if (!document.body || document.getElementById('sp-first-visit-loader')) return;
+
+    var overlay = document.createElement('div');
+    overlay.id = 'sp-first-visit-loader';
+    overlay.className = 'sp-first-visit-loader';
+    overlay.setAttribute('aria-hidden', 'true');
+    overlay.setAttribute('role', 'presentation');
+
+    var img = document.createElement('img');
+    img.className = 'sp-first-visit-loader-img';
+    img.alt = '';
+    img.setAttribute('role', 'presentation');
+    img.src = 'image/SPOUZY-loader.webp';
+
+    var removed = false;
+    function removeLoader() {
+      if (removed) return;
+      removed = true;
+      overlay.classList.add('sp-loader-fade-out');
+      setTimeout(function () {
+        if (overlay && overlay.parentNode) {
+          overlay.parentNode.removeChild(overlay);
+        }
+      }, 160);
+    }
+
+    // If image fails to load, remove immediately without delay
+    img.onerror = function () {
+      if (img.src.indexOf('.webp') !== -1) {
+        // Fallback to GIF if WebP format is unsupported
+        img.src = 'image/SPOUZY-loader.gif';
+      } else {
+        if (overlay && overlay.parentNode) {
+          overlay.parentNode.removeChild(overlay);
+        }
+        removed = true;
+      }
+    };
+
+    // Play once: the ribbon reveal animation is ~2.78-2.9s.
+    // Start 150ms fade-out at ~2.65s so it finishes before the WebP/GIF loops.
+    img.onload = function () {
+      setTimeout(removeLoader, 2650);
+    };
+
+    // Fallback timer: ensure removal within 3.2s regardless of network or decode delays
+    setTimeout(function () {
+      if (!removed) removeLoader();
+    }, 3200);
+
+    overlay.appendChild(img);
+    document.body.appendChild(overlay);
+  }
+
+  if (document.body) {
+    mountLoader();
+  } else {
+    document.addEventListener('DOMContentLoaded', mountLoader);
+  }
+})();
+
 document.addEventListener('DOMContentLoaded', function () {
   'use strict';
 
@@ -42,20 +130,86 @@ document.addEventListener('DOMContentLoaded', function () {
   menus.forEach(menu => {
     const button = menu.querySelector('button');
     const visuals = [...menu.querySelectorAll('.nav-visual')];
-    const options = [...menu.querySelectorAll(".nav-options a")];
+    const options = [...menu.querySelectorAll(".nav-options a, .nav-options .sp-submenu-trigger")];
+    const policyTrigger = menu.querySelector('#sp-policy-trigger');
+    const policySubmenu = menu.querySelector('#sp-policy-submenu');
+
+    function closePolicySubmenu() {
+      if (!policySubmenu) return;
+      policySubmenu.hidden = true;
+      policySubmenu.classList.remove('is-active');
+      if (policyTrigger) {
+        policyTrigger.setAttribute('aria-expanded', 'false');
+        policyTrigger.removeAttribute('data-preview-active');
+      }
+    }
+
+    function openPolicySubmenu() {
+      if (!policySubmenu || !policyTrigger) return;
+      options.forEach(item => item.removeAttribute('data-preview-active'));
+      visuals.forEach(visual => visual.classList.remove('selected'));
+      policyTrigger.setAttribute('aria-expanded', 'true');
+      policyTrigger.setAttribute('data-preview-active', '');
+      policySubmenu.hidden = false;
+      policySubmenu.classList.add('is-active');
+    }
+
     function showOption(index) {
-      options.forEach((link, i) => link.toggleAttribute("data-preview-active", i === index));
+      if (options[index] === policyTrigger) {
+        openPolicySubmenu();
+        return;
+      }
+      closePolicySubmenu();
+      options.forEach((item, i) => item.toggleAttribute("data-preview-active", i === index));
       visuals.forEach((visual, i) => visual.classList.toggle('selected', i === index));
     }
-    menu.querySelectorAll('.nav-options a').forEach((link, index) => {
-      link.addEventListener('pointerenter', () => showOption(index));
-      link.addEventListener('focus', () => showOption(index));
+
+    options.forEach((item, index) => {
+      item.addEventListener('pointerenter', () => showOption(index));
+      item.addEventListener('focus', () => showOption(index));
     });
+
+    if (policyTrigger) {
+      policyTrigger.addEventListener('click', event => {
+        event.preventDefault();
+        event.stopPropagation();
+        if (policySubmenu && !policySubmenu.hidden && policySubmenu.classList.contains('is-active')) {
+          closePolicySubmenu();
+          showOption(0);
+        } else {
+          openPolicySubmenu();
+        }
+      });
+      policyTrigger.addEventListener('keydown', event => {
+        if (event.key === 'ArrowRight' || event.key === ' ' || event.key === 'Enter') {
+          event.preventDefault();
+          openPolicySubmenu();
+          const firstSublink = policySubmenu ? policySubmenu.querySelector('a') : null;
+          if (firstSublink) firstSublink.focus();
+        }
+      });
+    }
+
+    if (policySubmenu) {
+      policySubmenu.addEventListener('pointerenter', () => {
+        openPolicySubmenu();
+      });
+      policySubmenu.addEventListener('keydown', event => {
+        if (event.key === 'Escape' || event.key === 'ArrowLeft') {
+          event.preventDefault();
+          event.stopPropagation();
+          closePolicySubmenu();
+          if (policyTrigger) policyTrigger.focus();
+        }
+      });
+    }
+
     button.addEventListener('pointerenter', () => showOption(0));
     button.addEventListener('focus', () => showOption(0));
     button.addEventListener('click', event => {
       const closing = event.detail === 0 && button.getAttribute('aria-expanded') === 'true';
       toggleMenu(closing ? null : menu);
+      if (!closing) showOption(0);
     });
     menu.addEventListener('pointerenter', event => {
       if (event.pointerType === 'mouse' && !menu.matches(':focus-within')) {
@@ -63,21 +217,35 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
     menu.addEventListener('pointerleave', () => {
-      if (!menu.matches(':focus-within')) toggleMenu(null);
+      if (!menu.matches(':focus-within')) {
+        closePolicySubmenu();
+        toggleMenu(null);
+      }
     });
     menu.addEventListener('keydown', event => {
       if (event.key === 'Escape') {
+        if (policySubmenu && !policySubmenu.hidden && policySubmenu.contains(document.activeElement)) {
+          event.preventDefault();
+          closePolicySubmenu();
+          if (policyTrigger) policyTrigger.focus();
+          return;
+        }
+        closePolicySubmenu();
         button.focus();
         toggleMenu(null);
       }
       if (event.key === 'ArrowDown' && event.target === button) {
         event.preventDefault();
         toggleMenu(menu);
-        menu.querySelector('a').focus();
+        const firstOpt = menu.querySelector('.nav-options a, .nav-options button');
+        if (firstOpt) firstOpt.focus();
       }
     });
     menu.addEventListener('focusout', event => {
-      if (!menu.contains(event.relatedTarget)) toggleMenu(null);
+      if (!menu.contains(event.relatedTarget)) {
+        closePolicySubmenu();
+        toggleMenu(null);
+      }
     });
   });
   document.addEventListener('click', event => {

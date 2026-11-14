@@ -115,12 +115,12 @@
 
 .sp-footer-extras {
   display: flex !important;
-  justify-content: space-between !important;
+  justify-content: flex-start !important;
   align-items: flex-start !important;
   flex-wrap: wrap !important;
-  gap: 28px !important;
-  padding: 32px 0 28px !important;
-  margin: 40px auto 24px !important;
+  gap: 32px !important;
+  padding: 20px 0 16px !important;
+  margin: 20px auto 14px !important;
   border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
   max-width: 1440px !important;
   box-sizing: border-box !important;
@@ -130,7 +130,11 @@
   display: flex !important;
   flex-direction: column !important;
   align-items: flex-start !important;
-  gap: 12px !important;
+  gap: 8px !important;
+}
+
+.sp-footer-extras > .sp-footer-extra:last-child {
+  margin-left: auto !important;
 }
 
 .sp-footer-extras .sp-footer-col-title {
@@ -140,27 +144,28 @@
   text-transform: uppercase !important;
   letter-spacing: 0.12em !important;
   color: #e08b73 !important;
+  line-height: 1.2 !important;
 }
 
-/* Luxury Trust Badge Card (Porcelain White Base with Warm Copper Border) */
+/* Payment and Initiative Badges (Transparent, directly on dark background) */
 .sp-footer-badge-card {
   display: inline-flex !important;
   align-items: center !important;
-  justify-content: center !important;
-  background: #ffffff !important;
-  border: 1.5px solid rgba(224, 139, 115, 0.4) !important;
-  border-radius: 12px !important;
-  padding: 8px 18px !important;
-  height: 56px !important;
-  box-sizing: border-box !important;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.28), 0 0 12px rgba(191, 103, 79, 0.12) !important;
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease !important;
+  justify-content: flex-start !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  box-shadow: none !important;
+  transition: transform 0.2s ease !important;
 }
 
 .sp-footer-badge-card:hover {
-  transform: translateY(-2px) !important;
-  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.4), 0 0 18px rgba(191, 103, 79, 0.3) !important;
-  border-color: rgba(224, 139, 115, 0.75) !important;
+  transform: none !important;
+  box-shadow: none !important;
+  border: none !important;
 }
 
 /* Force override of any generic .sp-footer-modern img constraints */
@@ -168,10 +173,10 @@
 .sp-footer-badge-card img,
 .sp-footer-modern .sp-footer-badge-card img,
 .sp-footer-modern img.sp-footer-logo-strip {
-  height: 38px !important;
-  max-height: 38px !important;
+  height: 46px !important;
+  max-height: 46px !important;
   width: auto !important;
-  max-width: none !important;
+  max-width: 100% !important;
   object-fit: contain !important;
   display: block !important;
   margin: 0 !important;
@@ -187,7 +192,7 @@
   display: flex !important;
   align-items: center !important;
   gap: 10px !important;
-  height: 56px !important;
+  height: 46px !important;
 }
 
 .sp-footer-share a {
@@ -217,10 +222,14 @@
 
 @media (max-width: 820px) {
   .sp-footer-extras {
-    flex-direction: column !important;
-    align-items: flex-start !important;
+    justify-content: flex-start !important;
     gap: 24px !important;
-    padding: 24px 0 !important;
+    padding: 18px 0 14px !important;
+    margin: 18px auto 14px !important;
+  }
+  .sp-footer-extras > .sp-footer-extra:last-child {
+    margin-left: 0 !important;
+    width: 100% !important;
   }
 }
 
