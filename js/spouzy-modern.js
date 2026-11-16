@@ -730,48 +730,1160 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  // E. Confidential Booking & Contact Form Submission Feedback
-  const bookingForm = document.getElementById('spBookingForm');
-  if (bookingForm) {
-    bookingForm.addEventListener('submit', function (e) {
-      e.preventDefault();
-      const submitBtn = this.querySelector('button[type="submit"]');
-      const origText = submitBtn ? submitBtn.innerHTML : 'Submit';
-      if (submitBtn) {
-        submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Confirming Discretion...';
-        submitBtn.disabled = true;
+  // =========================================================================
+  // 16. SHARED SPOUZY CONTACT & WHATSAPP CONFIGURATION
+  // =========================================================================
+  const SPOUZY_CONTACT_CONFIG = {
+    phoneDisplay: '+91 85919 45055',
+    phoneTel: 'tel:+918591945055',
+    whatsappNumber: '918591945055',
+    whatsappBaseUrl: 'https://wa.me/918591945055'
+  };
+
+  // Safe WhatsApp Navigation & Fallback Handoff Function
+  function openWhatsAppHandoff(phone, messageText, feedbackContainer) {
+    const encodedMsg = encodeURIComponent(messageText);
+    const waUrl = 'https://wa.me/' + phone + '?text=' + encodedMsg;
+
+    // Direct navigation without delayed timers to prevent browser popup blocking
+    try {
+      window.open(waUrl, '_blank', 'noopener,noreferrer');
+    } catch (err) {}
+
+    // Safe DOM construction for feedback and fallback
+    if (feedbackContainer) {
+      feedbackContainer.innerHTML = '';
+      feedbackContainer.style.display = 'block';
+
+      const titleDiv = document.createElement('div');
+      titleDiv.className = 'sp-form-handoff-title';
+      titleDiv.innerHTML = '<i class="fa fa-whatsapp" style="color: #25D366; font-size: 20px;" aria-hidden="true"></i> Continue in WhatsApp and press Send to complete your enquiry.';
+
+      const textP = document.createElement('p');
+      textP.className = 'sp-form-handoff-text';
+      textP.textContent = 'Your form details have been prepared for SPOUZY at +91 85919 45055. Please review the prefilled message in WhatsApp and tap Send to dispatch.';
+
+      const btnWrap = document.createElement('div');
+      btnWrap.style.display = 'flex';
+      btnWrap.style.flexWrap = 'wrap';
+      btnWrap.style.gap = '10px';
+      btnWrap.style.marginTop = '12px';
+
+      const fallbackLink = document.createElement('a');
+      fallbackLink.href = waUrl;
+      fallbackLink.target = '_blank';
+      fallbackLink.rel = 'noopener noreferrer';
+      fallbackLink.className = 'sp-form-handoff-btn';
+      fallbackLink.innerHTML = '<i class="fa fa-whatsapp" aria-hidden="true"></i> Open WhatsApp with my enquiry ↗';
+      btnWrap.appendChild(fallbackLink);
+
+      if (messageText.length > 1800) {
+        const copyBtn = document.createElement('button');
+        copyBtn.type = 'button';
+        copyBtn.className = 'sp-form-copy-btn';
+        copyBtn.innerHTML = '<i class="fa fa-clone" aria-hidden="true"></i> Copy Enquiry Text';
+        copyBtn.addEventListener('click', function () {
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(messageText).then(() => {
+              copyBtn.innerHTML = '<i class="fa fa-check" aria-hidden="true"></i> Copied to Clipboard';
+              setTimeout(() => { copyBtn.innerHTML = '<i class="fa fa-clone" aria-hidden="true"></i> Copy Enquiry Text'; }, 2000);
+            });
+          }
+        });
+        btnWrap.appendChild(copyBtn);
       }
-      setTimeout(() => {
-        alert('Preview only. Your details stayed in this browser.');
-        bookingForm.reset();
-        if (submitBtn) {
-          submitBtn.innerHTML = origText;
-          submitBtn.disabled = false;
-        }
-      }, 900);
-    });
+
+      feedbackContainer.appendChild(titleDiv);
+      feedbackContainer.appendChild(textP);
+      feedbackContainer.appendChild(btnWrap);
+      feedbackContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
   }
 
-  const contactForm = document.getElementById('spContactForm');
-  if (contactForm) {
-    contactForm.addEventListener('submit', function (e) {
-      e.preventDefault();
-      const submitBtn = this.querySelector('button[type="submit"]');
-      const origText = submitBtn ? submitBtn.innerHTML : 'Submit';
-      if (submitBtn) {
-        submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Encrypting &amp; Sending...';
-        submitBtn.disabled = true;
+  // =========================================================================
+  // 16A. FLOATING CONTACT WIDGET (PULSING LAUNCHER, 5S/3S/2S AUTOMATIC TOOLTIP & PANEL)
+  // =========================================================================
+  function initSpouzyFloatingWidget() {
+    if (window.__spouzyFloatingWidgetInitialized) return;
+    window.__spouzyFloatingWidgetInitialized = true;
+
+    let widget = document.getElementById('spFloatingWidget');
+    if (!widget) {
+      widget = document.createElement('div');
+      widget.className = 'sp-floating-widget';
+      widget.id = 'spFloatingWidget';
+      widget.setAttribute('aria-label', 'Instant Chat & Talk - Contact SPOUZY');
+      widget.innerHTML = 
+        '<div class="sp-floating-panel" id="spFloatingPanel" role="dialog" aria-modal="false" aria-labelledby="spPanelHeading" hidden>' +
+          '<div class="sp-floating-panel-header">' +
+            '<div class="sp-floating-panel-title-wrap">' +
+              '<span class="sp-floating-wa-badge"><i class="fa fa-whatsapp" aria-hidden="true"></i></span>' +
+              '<div>' +
+                '<h3 class="sp-floating-panel-title" id="spPanelHeading">Talk to SPOUZY</h3>' +
+                '<p class="sp-floating-panel-sub"><i class="fa fa-bolt" aria-hidden="true" style="color: var(--sp-copper-light); margin-right: 3px;"></i>Instant Chat &amp; Talk</p>' +
+              '</div>' +
+            '</div>' +
+            '<button type="button" class="sp-floating-close-btn" id="spCloseWidgetBtn" aria-label="Close contact options">&times;</button>' +
+          '</div>' +
+          '<div class="sp-floating-panel-body">' +
+            '<p class="sp-floating-panel-text">Instant chat and talk support with our team on WhatsApp or direct call.</p>' +
+            '<div class="sp-floating-number-pill">' +
+              '<i class="fa fa-phone" aria-hidden="true"></i> +91 85919 45055' +
+            '</div>' +
+            '<div class="sp-floating-actions">' +
+              '<a href="https://wa.me/918591945055?text=Hello%20SPOUZY%2C%20I%20would%20like%20to%20know%20more%20about%20your%20services.%20Please%20help%20me%20with%20my%20enquiry." ' +
+                 'class="sp-floating-btn sp-floating-btn-wa" target="_blank" rel="noopener noreferrer">' +
+                '<i class="fa fa-whatsapp" aria-hidden="true"></i> Chat on WhatsApp' +
+              '</a>' +
+              '<a href="tel:+918591945055" class="sp-floating-btn sp-floating-btn-call">' +
+                '<i class="fa fa-phone" aria-hidden="true"></i> Call Now' +
+              '</a>' +
+            '</div>' +
+            '<div class="sp-floating-anim-toggle-wrap">' +
+              '<button type="button" class="sp-floating-anim-toggle-btn" id="spPauseAnimBtn" aria-pressed="false">' +
+                '<i class="fa fa-pause-circle" aria-hidden="true"></i> <span>Pause animations</span>' +
+              '</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '<button type="button" class="sp-floating-launcher" id="spWidgetLauncher" aria-expanded="false" aria-controls="spFloatingPanel" aria-label="Instant Chat &amp; Talk - Open SPOUZY contact options">' +
+          '<span class="sp-floating-launcher-inner">' +
+            '<i class="fa fa-whatsapp sp-floating-launcher-icon" aria-hidden="true"></i>' +
+          '</span>' +
+        '</button>' +
+        '<div class="sp-floating-hover-label" id="spFloatingHoverLabel" aria-hidden="true">Instant Chat &amp; Talk</div>';
+      document.body.appendChild(widget);
+    }
+
+    const launcher = widget.querySelector('#spWidgetLauncher');
+    const panel = widget.querySelector('#spFloatingPanel');
+    const closeBtn = widget.querySelector('#spCloseWidgetBtn');
+    const tooltip = widget.querySelector('#spFloatingHoverLabel');
+    const pauseBtn = widget.querySelector('#spPauseAnimBtn');
+
+    let showTimeout = null;
+    let hideTimeout = null;
+    let isPanelOpen = false;
+    let isHoveredOrFocused = false;
+    let isPausedByUser = false;
+
+    try {
+      isPausedByUser = localStorage.getItem('spouzy_pause_widget_anim') === 'true';
+    } catch (e) {
+      isPausedByUser = false;
+    }
+
+    const prefersReducedMotion = () => {
+      try {
+        return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      } catch (e) {
+        return false;
       }
+    };
+
+    function updatePauseButtonUI() {
+      if (!pauseBtn) return;
+      pauseBtn.setAttribute('aria-pressed', isPausedByUser ? 'true' : 'false');
+      const span = pauseBtn.querySelector('span');
+      const icon = pauseBtn.querySelector('i');
+      if (span) {
+        span.textContent = isPausedByUser ? 'Resume animations' : 'Pause animations';
+      }
+      if (icon) {
+        icon.className = isPausedByUser ? 'fa fa-play-circle' : 'fa fa-pause-circle';
+      }
+      if (isPausedByUser) {
+        widget.classList.add('is-anim-paused');
+      } else {
+        widget.classList.remove('is-anim-paused');
+      }
+    }
+    updatePauseButtonUI();
+
+    function clearTimers() {
+      if (showTimeout) {
+        clearTimeout(showTimeout);
+        showTimeout = null;
+      }
+      if (hideTimeout) {
+        clearTimeout(hideTimeout);
+        hideTimeout = null;
+      }
+    }
+
+    function hideTooltipAuto() {
+      if (hideTimeout) {
+        clearTimeout(hideTimeout);
+        hideTimeout = null;
+      }
+      // While hovered or focused, keep tooltip visible instead of letting automatic timer hide it
+      if (isHoveredOrFocused) {
+        return;
+      }
+      if (tooltip) {
+        tooltip.classList.remove('is-visible');
+      }
+
+      // Schedule next show after 2 seconds (3s visible + 2s hidden = 5s start-to-start)
+      if (!isPanelOpen && !isPausedByUser && !prefersReducedMotion() && !document.hidden) {
+        showTimeout = setTimeout(showTooltipAuto, 2000);
+      }
+    }
+
+    function showTooltipAuto() {
+      if (showTimeout) {
+        clearTimeout(showTimeout);
+        showTimeout = null;
+      }
+      if (isPanelOpen || isPausedByUser || prefersReducedMotion() || document.hidden) {
+        return;
+      }
+
+      if (tooltip) {
+        tooltip.classList.add('is-visible');
+      }
+
+      // Tooltip remains visible for exactly 3 seconds
+      hideTimeout = setTimeout(hideTooltipAuto, 3000);
+    }
+
+    function startAutoCycle(initialDelay = 5000) {
+      clearTimers();
+      if (isPanelOpen || isPausedByUser || prefersReducedMotion() || document.hidden) {
+        return;
+      }
+      showTimeout = setTimeout(showTooltipAuto, initialDelay);
+    }
+
+    function stopAutoCycle() {
+      clearTimers();
+      if (tooltip && !isHoveredOrFocused) {
+        tooltip.classList.remove('is-visible');
+      }
+    }
+
+    // Start 5-second initial countdown on page load
+    startAutoCycle(5000);
+
+    function openPanel() {
+      if (!panel || !launcher) return;
+      isPanelOpen = true;
+      stopAutoCycle();
+      if (tooltip) {
+        tooltip.classList.remove('is-visible');
+      }
+      widget.classList.add('panel-open');
+      panel.hidden = false;
+      panel.classList.add('is-open');
+      launcher.setAttribute('aria-expanded', 'true');
+      launcher.setAttribute('aria-label', 'Close SPOUZY contact options');
+      const firstAction = panel.querySelector('.sp-floating-btn-wa, button');
+      if (firstAction) firstAction.focus();
+    }
+
+    function closePanel(returnFocus = true) {
+      if (!panel || !launcher) return;
+      isPanelOpen = false;
+      panel.classList.remove('is-open');
+      widget.classList.remove('panel-open');
+      launcher.setAttribute('aria-expanded', 'false');
+      launcher.setAttribute('aria-label', 'Instant Chat & Talk - Open SPOUZY contact options');
       setTimeout(() => {
-        alert('Preview only. Your details stayed in this browser.');
-        contactForm.reset();
-        if (submitBtn) {
-          submitBtn.innerHTML = origText;
-          submitBtn.disabled = false;
+        if (!panel.classList.contains('is-open')) {
+          panel.hidden = true;
         }
-      }, 900);
+      }, 240);
+      if (returnFocus) launcher.focus();
+
+      // When panel closes, start a fresh 5-second wait before next automatic appearance
+      startAutoCycle(5000);
+    }
+
+    if (launcher) {
+      launcher.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (panel && panel.classList.contains('is-open')) {
+          closePanel();
+        } else {
+          openPanel();
+        }
+      });
+
+      launcher.addEventListener('pointerenter', function () {
+        isHoveredOrFocused = true;
+        widget.classList.add('is-launcher-hovered');
+        if (tooltip && !isPanelOpen) {
+          tooltip.classList.add('is-visible');
+        }
+      });
+
+      launcher.addEventListener('pointerleave', function () {
+        isHoveredOrFocused = false;
+        widget.classList.remove('is-launcher-hovered');
+        // Return to automatic behavior without flicker
+        if (!isPanelOpen && !isPausedByUser && !prefersReducedMotion() && !document.hidden) {
+          if (tooltip) {
+            tooltip.classList.remove('is-visible');
+          }
+          // Resume automatic cycle: 2 seconds hidden before next appearance
+          clearTimers();
+          showTimeout = setTimeout(showTooltipAuto, 2000);
+        } else {
+          if (tooltip) tooltip.classList.remove('is-visible');
+        }
+      });
+
+      launcher.addEventListener('focus', function () {
+        isHoveredOrFocused = true;
+        widget.classList.add('is-launcher-hovered');
+        if (tooltip && !isPanelOpen) {
+          tooltip.classList.add('is-visible');
+        }
+      });
+
+      launcher.addEventListener('blur', function () {
+        isHoveredOrFocused = false;
+        widget.classList.remove('is-launcher-hovered');
+        if (!isPanelOpen && !isPausedByUser && !prefersReducedMotion() && !document.hidden) {
+          if (tooltip) {
+            tooltip.classList.remove('is-visible');
+          }
+          clearTimers();
+          showTimeout = setTimeout(showTooltipAuto, 2000);
+        } else {
+          if (tooltip) tooltip.classList.remove('is-visible');
+        }
+      });
+    }
+
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        closePanel();
+      });
+    }
+
+    if (pauseBtn) {
+      pauseBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        isPausedByUser = !isPausedByUser;
+        try {
+          localStorage.setItem('spouzy_pause_widget_anim', isPausedByUser ? 'true' : 'false');
+        } catch (err) {}
+        updatePauseButtonUI();
+        if (isPausedByUser) {
+          stopAutoCycle();
+        } else {
+          startAutoCycle(5000);
+        }
+      });
+    }
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && panel && panel.classList.contains('is-open')) {
+        closePanel();
+      }
     });
+
+    document.addEventListener('click', function (e) {
+      if (panel && panel.classList.contains('is-open') && !widget.contains(e.target)) {
+        closePanel(false);
+      }
+    });
+
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) {
+        stopAutoCycle();
+      } else {
+        if (!isPanelOpen && !isPausedByUser) {
+          // When visible again, start a fresh 5-second wait. Do not replay missed cycles.
+          startAutoCycle(5000);
+        }
+      }
+    });
+
+    try {
+      const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+      if (motionQuery.addEventListener) {
+        motionQuery.addEventListener('change', function (e) {
+          if (e.matches) {
+            stopAutoCycle();
+          } else {
+            if (!isPanelOpen && !isPausedByUser) {
+              startAutoCycle(5000);
+            }
+          }
+        });
+      }
+    } catch (err) {}
   }
+
+  // =========================================================================
+  // 16B. CONTACT FORM HANDLER (contactus.htm)
+  // =========================================================================
+  function initSpouzyContactForm() {
+    const form = document.getElementById('spContactForm');
+    if (!form) return;
+
+    const validationError = document.getElementById('spContactValidationError');
+    const feedbackContainer = document.getElementById('spContactFeedback');
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      if (validationError) validationError.style.display = 'none';
+
+      const firstNameInput = document.getElementById('cfFirstName');
+      const lastNameInput = document.getElementById('cfLastName');
+      const phoneInput = document.getElementById('cfPhone');
+      const emailInput = document.getElementById('cfEmail');
+      const serviceSelect = document.getElementById('cfService');
+      const contactMethodSelect = document.getElementById('cfPreferredContact');
+      const messageInput = document.getElementById('cfMessage');
+
+      const firstName = firstNameInput ? firstNameInput.value.trim() : '';
+      const lastName = lastNameInput ? lastNameInput.value.trim() : '';
+      const phone = phoneInput ? phoneInput.value.trim() : '';
+      const email = emailInput ? emailInput.value.trim() : '';
+      const service = serviceSelect && serviceSelect.selectedIndex > 0 ? serviceSelect.options[serviceSelect.selectedIndex].text.trim() : '';
+      const preferredContact = contactMethodSelect && contactMethodSelect.selectedIndex >= 0 ? contactMethodSelect.options[contactMethodSelect.selectedIndex].text.trim() : '';
+      const message = messageInput ? messageInput.value.trim() : '';
+
+      if (!firstName) {
+        showContactError('Please provide your first name or alias.');
+        if (firstNameInput) firstNameInput.focus();
+        return;
+      }
+
+      if (!phone) {
+        showContactError('Please provide your contact phone or WhatsApp number.');
+        if (phoneInput) phoneInput.focus();
+        return;
+      }
+
+      if (!email || !email.includes('@')) {
+        showContactError('Please provide a valid email address.');
+        if (emailInput) emailInput.focus();
+        return;
+      }
+
+      if (!service) {
+        showContactError('Please select your area of concern / service.');
+        if (serviceSelect) serviceSelect.focus();
+        return;
+      }
+
+      const fullName = (firstName + (lastName ? ' ' + lastName : '')).trim();
+
+      const lines = [
+        'Hello SPOUZY, I have an enquiry.',
+        '',
+        'Name / Alias: ' + fullName,
+        'Phone: ' + phone,
+        'Email: ' + email,
+        'Subject / Service: ' + service,
+      ];
+
+      if (preferredContact) {
+        lines.push('Preferred Contact Method: ' + preferredContact);
+      }
+
+      lines.push('Message: ' + (message || 'Not provided'));
+      lines.push('');
+      lines.push('Please let me know the next steps.');
+
+      const fullMessage = lines.join('\n');
+      openWhatsAppHandoff('918591945055', fullMessage, feedbackContainer);
+    });
+
+    function showContactError(msg) {
+      if (validationError) {
+        validationError.innerHTML = '<i class="fa fa-exclamation-circle" aria-hidden="true"></i> ' + msg;
+        validationError.style.display = 'block';
+        validationError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else {
+        alert(msg);
+      }
+    }
+  }
+
+  // =========================================================================
+  // 16C. QUICK BOOKING FORM HANDLER (appointment.htm)
+  // =========================================================================
+  function initSpouzyQuickBookingForm() {
+    const form = document.getElementById('spBookingForm');
+    // Only target appointment.htm (which has spConsultDate and does not have spTimePickerTrigger)
+    if (!form || !document.getElementById('spConsultDate') || document.getElementById('spTimePickerTrigger')) return;
+
+    const validationError = document.getElementById('spQuickBookingValidationError');
+    const feedbackContainer = document.getElementById('spQuickBookingFeedback');
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      if (validationError) validationError.style.display = 'none';
+
+      const consultTypeSelect = document.getElementById('spConsultType');
+      const consultModeSelect = document.getElementById('spConsultMode');
+      const doctorSelect = document.getElementById('spDoctorSelect');
+      const patientNameInput = document.getElementById('spPatientName');
+      const patientPhoneInput = document.getElementById('spPatientPhone');
+      const patientEmailInput = document.getElementById('spPatientEmail');
+      const consultDateInput = document.getElementById('spConsultDate');
+      const selectedSlotEl = form.querySelector('.sp-slot-pill.is-selected');
+
+      const patientName = patientNameInput ? patientNameInput.value.trim() : '';
+      const patientPhone = patientPhoneInput ? patientPhoneInput.value.trim() : '';
+      const patientEmail = patientEmailInput ? patientEmailInput.value.trim() : '';
+      const dateVal = consultDateInput ? consultDateInput.value.trim() : '';
+      const slotVal = selectedSlotEl ? selectedSlotEl.textContent.trim() : '';
+
+      const service = consultTypeSelect && consultTypeSelect.selectedIndex >= 0 ? consultTypeSelect.options[consultTypeSelect.selectedIndex].text.trim() : '';
+      const mode = consultModeSelect && consultModeSelect.selectedIndex >= 0 ? consultModeSelect.options[consultModeSelect.selectedIndex].text.trim() : '';
+      const doctor = doctorSelect && doctorSelect.selectedIndex >= 0 ? doctorSelect.options[doctorSelect.selectedIndex].text.trim() : '';
+
+      if (!patientName) {
+        showQuickError('Please provide your name or alias.');
+        if (patientNameInput) patientNameInput.focus();
+        return;
+      }
+
+      if (!patientPhone) {
+        showQuickError('Please provide your mobile / WhatsApp number.');
+        if (patientPhoneInput) patientPhoneInput.focus();
+        return;
+      }
+
+      if (!patientEmail || !patientEmail.includes('@')) {
+        showQuickError('Please provide a valid email address.');
+        if (patientEmailInput) patientEmailInput.focus();
+        return;
+      }
+
+      if (!dateVal) {
+        showQuickError('Please select a preferred date.');
+        if (consultDateInput) consultDateInput.focus();
+        return;
+      }
+
+      const todayStr = new Date().toISOString().split('T')[0];
+      if (dateVal < todayStr) {
+        showQuickError('Past dates cannot be selected. Please choose today or a future date.');
+        if (consultDateInput) consultDateInput.focus();
+        return;
+      }
+
+      if (!slotVal) {
+        showQuickError('Please select a time slot.');
+        return;
+      }
+
+      let readableDate = dateVal;
+      try {
+        const [y, m, d] = dateVal.split('-').map(Number);
+        const dt = new Date(y, m - 1, d);
+        const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        readableDate = weekdays[dt.getDay()] + ', ' + d + ' ' + months[m - 1] + ' ' + y;
+      } catch (e) {}
+
+      const lines = [
+        'Hello SPOUZY, I would like to request an appointment.',
+        '',
+        'Name / Alias: ' + patientName,
+        'Phone: ' + patientPhone,
+        'Email: ' + patientEmail,
+        'Service: ' + (service || 'Relationship Guidance'),
+      ];
+
+      if (doctor && !doctor.toLowerCase().includes('first available')) {
+        lines.push('Practitioner: ' + doctor);
+      }
+
+      lines.push('Consultation Mode: ' + (mode || 'Encrypted Video'));
+      lines.push('Requested Date: ' + readableDate);
+      lines.push('Requested Time: ' + slotVal + ' (IST)');
+      lines.push('Duration: Standard Consultation');
+      lines.push('');
+      lines.push('Please confirm availability and the next steps.');
+
+      const fullMessage = lines.join('\n');
+      openWhatsAppHandoff('918591945055', fullMessage, feedbackContainer);
+    });
+
+    function showQuickError(msg) {
+      if (validationError) {
+        validationError.innerHTML = '<i class="fa fa-exclamation-circle" aria-hidden="true"></i> ' + msg;
+        validationError.style.display = 'block';
+        validationError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else {
+        alert(msg);
+      }
+    }
+  }
+
+  // =========================================================================
+  // 16D. ADVANCED SCHEDULER & BOOKING HANDLER (book-appoinment.htm)
+  // =========================================================================
+  function initSpouzyScheduler() {
+    const form = document.getElementById('spBookingForm');
+    // Only target book-appoinment.htm (which has spTimePickerTrigger or spBookingDate)
+    if (!form || !document.getElementById('spTimePickerTrigger')) return;
+
+    const SPOUZY_SCHEDULE_CONFIG = {
+      timezone: 'Asia/Kolkata',
+      weeklyHours: {
+        0: { open: '10:00', close: '14:00', mode: 'virtual' },
+        1: { open: '10:00', close: '19:00' },
+        2: { open: '10:00', close: '19:00' },
+        3: { open: '10:00', close: '19:00' },
+        4: { open: '10:00', close: '19:00' },
+        5: { open: '10:00', close: '19:00' },
+        6: { open: '10:00', close: '18:00' }
+      },
+      breakHours: [
+        { start: '13:00', end: '14:00', reason: 'Intermission' }
+      ],
+      sampleBookedSlotsByDay: {
+        1: ['10:30-11:00', '15:00-15:30', '15:30-16:00'],
+        2: ['11:30-12:00', '16:00-16:30'],
+        3: ['10:30-11:00', '14:30-15:00'],
+        4: ['12:00-12:30', '16:30-17:00'],
+        5: ['10:30-11:00', '17:00-17:30'],
+        6: ['11:00-11:30', '15:30-16:00'],
+        0: ['11:30-12:00']
+      }
+    };
+
+    const dateInput = document.getElementById('spBookingDate');
+    const formattedDateText = document.getElementById('spFormattedDateText');
+    const durationInput = document.getElementById('spBookingDuration');
+    const durationBtns = document.querySelectorAll('.sp-duration-btn');
+    const timePickerTrigger = document.getElementById('spTimePickerTrigger');
+    const timeDisplayVal = document.getElementById('spTimeDisplayVal');
+    const timePickerPopover = document.getElementById('spTimePickerPopover');
+    const popoverDateText = document.getElementById('spPopoverDateText');
+    const popoverDurationBadge = document.getElementById('spPopoverDurationBadge');
+    const closePopoverBtn = document.getElementById('spClosePopoverBtn');
+    const pickerBackdrop = document.getElementById('spPickerBackdrop');
+    const slotsContainer = document.getElementById('spSlotsContainer');
+    const slotNotice = document.getElementById('spSlotNotice');
+    const selectedSlotInput = document.getElementById('spSelectedTimeSlot');
+    const serviceSelect = document.getElementById('spServiceSelect');
+    const consultModeSelect = document.getElementById('spConsultMode');
+    const summaryBox = document.getElementById('spAppointmentSummaryBox');
+    const summaryContent = document.getElementById('spSummaryContent');
+    const summarySubContent = document.getElementById('spSummarySubContent');
+    const validationError = document.getElementById('spBookingValidationError');
+    const feedbackContainer = document.getElementById('spBookingFeedback');
+
+    function getNowIST() {
+      const now = new Date();
+      const istString = now.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' });
+      return new Date(istString);
+    }
+
+    function getISTDateString(d = getNowIST()) {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return y + '-' + m + '-' + day;
+    }
+
+    function formatFullDateIST(dateStr) {
+      if (!dateStr) return '';
+      const parts = dateStr.split('-');
+      if (parts.length !== 3) return '';
+      const y = parseInt(parts[0], 10);
+      const m = parseInt(parts[1], 10);
+      const d = parseInt(parts[2], 10);
+      const dt = new Date(y, m - 1, d);
+      const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      return weekdays[dt.getDay()] + ', ' + d + ' ' + months[m - 1] + ' ' + y;
+    }
+
+    function parseTimeToMinutes(t) {
+      const [h, m] = t.split(':').map(Number);
+      return h * 60 + m;
+    }
+
+    function formatMinutesTo12h(mins) {
+      let h = Math.floor(mins / 60);
+      const m = mins % 60;
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      h = h % 12;
+      if (h === 0) h = 12;
+      return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ' ' + ampm;
+    }
+
+    const todayISTString = getISTDateString();
+    if (dateInput) {
+      dateInput.min = todayISTString;
+      if (!dateInput.value) {
+        dateInput.value = todayISTString;
+      }
+      if (formattedDateText) {
+        formattedDateText.textContent = formatFullDateIST(dateInput.value);
+      }
+    }
+
+    function calculateSlots(dateStr, durationMinutes, mode) {
+      const parts = dateStr.split('-');
+      if (parts.length !== 3) return { error: 'Invalid date format', slots: [] };
+      const y = parseInt(parts[0], 10);
+      const m = parseInt(parts[1], 10);
+      const d = parseInt(parts[2], 10);
+      const dateObj = new Date(y, m - 1, d);
+      const dayOfWeek = dateObj.getDay();
+
+      const hoursConfig = SPOUZY_SCHEDULE_CONFIG.weeklyHours[dayOfWeek];
+      if (!hoursConfig) {
+        return { notice: 'Center is closed on this day. Please select another date.', slots: [] };
+      }
+
+      if (hoursConfig.mode === 'virtual' && mode && mode !== 'virtual') {
+        return { notice: 'Sunday consultations operate exclusively via Encrypted Video/Audio Telehealth.', slots: [] };
+      }
+
+      const openMinutes = parseTimeToMinutes(hoursConfig.open);
+      const closeMinutes = parseTimeToMinutes(hoursConfig.close);
+      const bookedRanges = (SPOUZY_SCHEDULE_CONFIG.sampleBookedSlotsByDay[dayOfWeek] || []).map(r => {
+        const [st, et] = r.split('-');
+        return { start: parseTimeToMinutes(st), end: parseTimeToMinutes(et) };
+      });
+
+      const breakRanges = (SPOUZY_SCHEDULE_CONFIG.breakHours || []).map(b => ({
+        start: parseTimeToMinutes(b.start),
+        end: parseTimeToMinutes(b.end),
+        reason: b.reason
+      }));
+
+      const isToday = dateStr === todayISTString;
+      const nowIST = getNowIST();
+      const currentMinutes = nowIST.getHours() * 60 + nowIST.getMinutes();
+
+      const slots = [];
+      const interval = 30;
+
+      for (let time = openMinutes; time + durationMinutes <= closeMinutes; time += interval) {
+        const slotStart = time;
+        const slotEnd = time + durationMinutes;
+        const label = formatMinutesTo12h(slotStart) + ' – ' + formatMinutesTo12h(slotEnd);
+
+        let status = 'available';
+        let reason = '';
+
+        if (isToday && slotStart <= currentMinutes + 30) {
+          status = 'disabled';
+          reason = 'Passed';
+        }
+
+        if (status === 'available') {
+          for (const brk of breakRanges) {
+            if (slotStart < brk.end && slotEnd > brk.start) {
+              status = 'disabled';
+              reason = brk.reason || 'Intermission';
+              break;
+            }
+          }
+        }
+
+        if (status === 'available') {
+          for (const booked of bookedRanges) {
+            if (slotStart < booked.end && slotEnd > booked.start) {
+              status = 'disabled';
+              reason = 'Booked';
+              break;
+            }
+          }
+        }
+
+        slots.push({ start: slotStart, end: slotEnd, label, status, reason });
+      }
+
+      return { slots };
+    }
+
+    function openTimePicker() {
+      if (!timePickerPopover || !timePickerTrigger) return;
+      if (timePickerTrigger.disabled) return;
+      timePickerPopover.hidden = false;
+      timePickerPopover.classList.add('is-open');
+      timePickerTrigger.setAttribute('aria-expanded', 'true');
+      if (pickerBackdrop) pickerBackdrop.classList.add('is-active');
+      updatePopoverHeader();
+      renderSlots();
+    }
+
+    function closeTimePicker() {
+      if (!timePickerPopover || !timePickerTrigger) return;
+      timePickerPopover.classList.remove('is-open');
+      timePickerTrigger.setAttribute('aria-expanded', 'false');
+      if (pickerBackdrop) pickerBackdrop.classList.remove('is-active');
+      setTimeout(() => {
+        if (!timePickerPopover.classList.contains('is-open')) {
+          timePickerPopover.hidden = true;
+        }
+      }, 200);
+    }
+
+    function updatePopoverHeader() {
+      if (popoverDateText && dateInput) {
+        popoverDateText.textContent = formatFullDateIST(dateInput.value) || 'No date chosen';
+      }
+      if (popoverDurationBadge && durationInput) {
+        const dur = durationInput.value === '60' ? '1 hour session' : '30 min session';
+        popoverDurationBadge.textContent = dur;
+      }
+    }
+
+    function updateTimeFieldState() {
+      if (!timePickerTrigger || !timeDisplayVal) return;
+      const dateVal = dateInput ? dateInput.value : '';
+      if (!dateVal) {
+        timePickerTrigger.disabled = true;
+        timePickerTrigger.classList.add('is-disabled');
+        timePickerTrigger.classList.remove('has-value');
+        timeDisplayVal.textContent = 'Choose an appointment date first';
+      } else {
+        timePickerTrigger.disabled = false;
+        timePickerTrigger.classList.remove('is-disabled');
+        if (selectedSlotInput && selectedSlotInput.value) {
+          timeDisplayVal.textContent = selectedSlotInput.value;
+          timePickerTrigger.classList.add('has-value');
+        } else {
+          timeDisplayVal.textContent = 'Select appointment time';
+          timePickerTrigger.classList.remove('has-value');
+        }
+      }
+    }
+
+    function renderSlots() {
+      if (!slotsContainer || !dateInput) return;
+      const dateVal = dateInput.value;
+      const durationVal = parseInt(durationInput ? durationInput.value : '30', 10) || 30;
+      const modeVal = consultModeSelect ? consultModeSelect.value : 'virtual';
+
+      if (!dateVal) {
+        slotsContainer.innerHTML = '';
+        if (slotNotice) {
+          slotNotice.innerHTML = '<i class="fa fa-info-circle"></i> Please choose an appointment date first.';
+          slotNotice.style.display = 'block';
+        }
+        return;
+      }
+
+      if (dateVal < todayISTString) {
+        slotsContainer.innerHTML = '';
+        if (slotNotice) {
+          slotNotice.innerHTML = '<i class="fa fa-exclamation-triangle"></i> Past dates cannot be selected. Please choose today or a future date.';
+          slotNotice.style.display = 'block';
+        }
+        return;
+      }
+
+      const result = calculateSlots(dateVal, durationVal, modeVal);
+      if (result.notice) {
+        slotsContainer.innerHTML = '';
+        if (slotNotice) {
+          slotNotice.innerHTML = '<i class="fa fa-info-circle"></i> ' + result.notice;
+          slotNotice.style.display = 'block';
+        }
+        updateSummary();
+        return;
+      }
+
+      const slots = result.slots || [];
+      slotsContainer.innerHTML = '';
+
+      slots.forEach(slot => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'sp-slot-range-btn';
+        btn.setAttribute('data-slot', slot.label);
+
+        if (slot.status === 'disabled') {
+          btn.classList.add('is-disabled');
+          btn.disabled = true;
+          btn.setAttribute('aria-disabled', 'true');
+          btn.innerHTML = '<span class="sp-slot-time">' + slot.label + '</span>' +
+                          '<span class="sp-slot-badge">' + (slot.reason || 'Unavailable') + '</span>';
+        } else {
+          btn.innerHTML = '<span class="sp-slot-time">' + slot.label + '</span>';
+          if (selectedSlotInput && selectedSlotInput.value === slot.label) {
+            btn.classList.add('is-selected');
+          }
+
+          btn.addEventListener('click', function () {
+            const chosenSlot = slot.label;
+            if (selectedSlotInput) selectedSlotInput.value = chosenSlot;
+            if (timeDisplayVal) timeDisplayVal.textContent = chosenSlot;
+            if (timePickerTrigger) {
+              timePickerTrigger.classList.add('has-value');
+              closeTimePicker();
+              timePickerTrigger.focus();
+            }
+            if (validationError) validationError.style.display = 'none';
+            updateSummary();
+          });
+        }
+        slotsContainer.appendChild(btn);
+      });
+
+      if (slotNotice) slotNotice.style.display = 'none';
+      updateSummary();
+    }
+
+    function updateSummary() {
+      if (!summaryContent) return;
+      const dateVal = dateInput ? dateInput.value : '';
+      const durationVal = durationInput ? durationInput.value : '30';
+      const slotVal = selectedSlotInput ? selectedSlotInput.value : '';
+      const durationText = durationVal === '60' ? '1 hour' : '30 minutes';
+
+      const serviceText = serviceSelect && serviceSelect.selectedIndex >= 0 ? 
+        serviceSelect.options[serviceSelect.selectedIndex].text.split('(')[0].trim() : 'Guidance Consultation';
+      const modeText = consultModeSelect && consultModeSelect.selectedIndex >= 0 ? 
+        consultModeSelect.options[consultModeSelect.selectedIndex].text.split('(')[0].trim() : 'Encrypted Telehealth';
+
+      if (dateVal && slotVal) {
+        const fullDate = formatFullDateIST(dateVal);
+        summaryContent.className = 'sp-summary-text is-ready';
+        summaryContent.innerHTML = 
+          '<span class="sp-summary-highlight"><i class="fa fa-calendar-check-o"></i> ' + fullDate + '</span>' +
+          '<span class="sp-summary-dot">·</span>' +
+          '<span class="sp-summary-highlight"><i class="fa fa-clock-o"></i> ' + slotVal + ' IST</span>' +
+          '<span class="sp-summary-dot">·</span>' +
+          '<span class="sp-summary-highlight"><i class="fa fa-hourglass-half"></i> ' + durationText + '</span>';
+        
+        if (summarySubContent) {
+          summarySubContent.style.display = 'block';
+          summarySubContent.innerHTML = '<strong>' + serviceText + '</strong> · ' + modeText;
+        }
+      } else {
+        summaryContent.className = 'sp-summary-text is-placeholder';
+        if (dateVal) {
+          summaryContent.textContent = 'Date: ' + formatFullDateIST(dateVal) + ' (' + durationText + '). Please choose an available appointment time above.';
+        } else {
+          summaryContent.textContent = 'Please choose an appointment date, duration, and appointment time above.';
+        }
+        if (summarySubContent) {
+          summarySubContent.style.display = 'none';
+        }
+      }
+    }
+
+    function showBookingError(msg) {
+      if (validationError) {
+        validationError.innerHTML = '<i class="fa fa-exclamation-circle" aria-hidden="true"></i> ' + msg;
+        validationError.style.display = 'block';
+        validationError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else {
+        alert(msg);
+      }
+    }
+
+    if (timePickerTrigger) {
+      timePickerTrigger.addEventListener('click', function (e) {
+        e.preventDefault();
+        if (timePickerPopover && timePickerPopover.classList.contains('is-open')) {
+          closeTimePicker();
+        } else {
+          openTimePicker();
+        }
+      });
+    }
+
+    if (closePopoverBtn) {
+      closePopoverBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        closeTimePicker();
+      });
+    }
+
+    if (pickerBackdrop) {
+      pickerBackdrop.addEventListener('click', function () {
+        closeTimePicker();
+      });
+    }
+
+    if (dateInput) {
+      dateInput.addEventListener('change', function () {
+        if (formattedDateText) {
+          formattedDateText.textContent = formatFullDateIST(this.value) || 'Select date';
+        }
+        if (selectedSlotInput) selectedSlotInput.value = '';
+        closeTimePicker();
+        updateTimeFieldState();
+        updatePopoverHeader();
+        renderSlots();
+        updateSummary();
+      });
+    }
+
+    if (durationBtns.length) {
+      durationBtns.forEach(btn => {
+        btn.addEventListener('click', function () {
+          durationBtns.forEach(b => {
+            b.classList.remove('is-active');
+            b.setAttribute('aria-checked', 'false');
+          });
+          this.classList.add('is-active');
+          this.setAttribute('aria-checked', 'true');
+
+          const chosenDuration = this.getAttribute('data-duration') || '30';
+          if (durationInput) durationInput.value = chosenDuration;
+          if (selectedSlotInput) selectedSlotInput.value = '';
+          closeTimePicker();
+          updateTimeFieldState();
+          updatePopoverHeader();
+          renderSlots();
+          updateSummary();
+        });
+      });
+    }
+
+    if (serviceSelect) {
+      serviceSelect.addEventListener('change', function () {
+        if (selectedSlotInput) selectedSlotInput.value = '';
+        closeTimePicker();
+        updateTimeFieldState();
+        renderSlots();
+        updateSummary();
+      });
+    }
+
+    if (consultModeSelect) {
+      consultModeSelect.addEventListener('change', function () {
+        if (selectedSlotInput) selectedSlotInput.value = '';
+        closeTimePicker();
+        updateTimeFieldState();
+        renderSlots();
+        updateSummary();
+      });
+    }
+
+    // Form Submission: Hand off to WhatsApp
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      if (validationError) validationError.style.display = 'none';
+
+      const dateVal = dateInput ? dateInput.value : '';
+      const slotVal = selectedSlotInput ? selectedSlotInput.value : '';
+      const durationVal = durationInput ? durationInput.value : '30';
+      const durationText = durationVal === '60' ? '1 hour' : '30 minutes';
+
+      const patientNameInput = document.getElementById('spPatientName');
+      const patientPhoneInput = document.getElementById('spPatientPhone');
+      const patientEmailInput = document.getElementById('spPatientEmail');
+      const patientNotesInput = document.getElementById('spPatientNotes');
+
+      const patientName = patientNameInput ? patientNameInput.value.trim() : '';
+      const patientPhone = patientPhoneInput ? patientPhoneInput.value.trim() : '';
+      const patientEmail = patientEmailInput ? patientEmailInput.value.trim() : '';
+      const patientNotes = patientNotesInput ? patientNotesInput.value.trim() : '';
+
+      if (!dateVal) {
+        showBookingError('Please choose an appointment date.');
+        if (dateInput) dateInput.focus();
+        return;
+      }
+
+      if (dateVal < todayISTString) {
+        showBookingError('Past dates cannot be selected. Please choose today or a future date.');
+        if (dateInput) dateInput.focus();
+        return;
+      }
+
+      if (!slotVal) {
+        showBookingError('Please select an appointment time.');
+        if (timePickerTrigger) {
+          timePickerTrigger.focus();
+          openTimePicker();
+        }
+        return;
+      }
+
+      if (!patientName) {
+        showBookingError('Please provide your name or discreet alias.');
+        if (patientNameInput) patientNameInput.focus();
+        return;
+      }
+
+      if (!patientPhone) {
+        showBookingError('Please provide your mobile / WhatsApp number.');
+        if (patientPhoneInput) patientPhoneInput.focus();
+        return;
+      }
+
+      if (!patientEmail || !patientEmail.includes('@')) {
+        showBookingError('Please provide a valid confidential email ID.');
+        if (patientEmailInput) patientEmailInput.focus();
+        return;
+      }
+
+      const fullDate = formatFullDateIST(dateVal);
+      const serviceText = serviceSelect && serviceSelect.selectedIndex >= 0 ? serviceSelect.options[serviceSelect.selectedIndex].text.trim() : 'Guidance Consultation';
+      const modeText = consultModeSelect && consultModeSelect.selectedIndex >= 0 ? consultModeSelect.options[consultModeSelect.selectedIndex].text.trim() : 'Encrypted Video';
+
+      const lines = [
+        'Hello SPOUZY, I would like to request an appointment.',
+        '',
+        'Name / Alias: ' + patientName,
+        'Phone: ' + patientPhone,
+        'Email: ' + patientEmail,
+        'Service: ' + serviceText,
+        'Consultation Mode: ' + modeText,
+        'Requested Date: ' + fullDate,
+        'Requested Time: ' + slotVal + ' (IST)',
+        'Duration: ' + durationText,
+        'Additional Information: ' + (patientNotes || 'Not provided'),
+        '',
+        'Please confirm availability and the next steps.'
+      ];
+
+      const fullMessage = lines.join('\n');
+      openWhatsAppHandoff('918591945055', fullMessage, feedbackContainer);
+    });
+
+    updateTimeFieldState();
+    updatePopoverHeader();
+    renderSlots();
+    updateSummary();
+  }
+
+  // Initialize form and widget handlers
+  initSpouzyFloatingWidget();
+  initSpouzyContactForm();
+  initSpouzyQuickBookingForm();
+  initSpouzyScheduler();
+
+  // -------------------------------------------------------------------------
+  // 17. INFINITE TICKER PAUSE/RESUME TOGGLE
+  // -------------------------------------------------------------------------
+  const tickerSections = document.querySelectorAll('.sp-ticker-section');
+  tickerSections.forEach(section => {
+    const toggleBtn = section.querySelector('.sp-ticker-toggle');
+    if (!toggleBtn) return;
+    const pauseIcon = toggleBtn.querySelector('.sp-ticker-icon-pause');
+    const playIcon = toggleBtn.querySelector('.sp-ticker-icon-play');
+
+    toggleBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      const isPaused = section.classList.toggle('is-paused');
+      section.setAttribute('data-paused', isPaused ? 'true' : 'false');
+      toggleBtn.setAttribute('aria-pressed', isPaused ? 'true' : 'false');
+      toggleBtn.setAttribute('aria-label', isPaused ? 'Resume ticker' : 'Pause ticker');
+      toggleBtn.setAttribute('title', isPaused ? 'Resume ticker' : 'Pause ticker');
+      if (pauseIcon && playIcon) {
+        pauseIcon.style.display = isPaused ? 'none' : 'block';
+        playIcon.style.display = isPaused ? 'block' : 'none';
+      }
+    });
+  });
 
 });
 
