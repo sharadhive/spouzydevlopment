@@ -28,9 +28,76 @@
     
     <!-- SPOUZY 2026 Modern Luxury & UI/UX Redesign System -->
     <link rel="stylesheet" href="css/spouzy-modern.css">
-<link rel="stylesheet" href="css/spouzy-edition.css"><link href="css/motion.css" rel="stylesheet"><link rel="stylesheet" href="css/guide.css"></head>
+<link rel="stylesheet" href="css/spouzy-edition.css"><link href="css/motion.css" rel="stylesheet"><link rel="stylesheet" href="css/guide.css">    <!-- Homepage Full Background Preview (#FFFACD) -->
+    <style>
+        /* 1. Root canvas */
+        html,
+        body.sp-home-preview {
+            background-color: #FFFACD !important;
+        }
 
-<body class="sp-modern-wrapper">
+        /* 2. Hero banner section canvas and ambient glow overlays */
+        body.sp-home-preview .sp-hero-banner-section {
+            background-color: #FFFACD !important;
+            background-image: none !important;
+        }
+        body.sp-home-preview .sp-hero-glow-1,
+        body.sp-home-preview .sp-hero-glow-2 {
+            display: none !important;
+        }
+
+        /* 3. Specialized Care Slider section ("Specialized Care for Life's Most Sensitive Decisions") */
+        body.sp-home-preview .care-slider,
+        body.sp-home-preview .ed-section.care-slider {
+            background-color: #FFFACD !important;
+            background-image: none !important;
+        }
+
+        /* 4. Why Spouzy benefits section */
+        body.sp-home-preview #why-spouzy,
+        body.sp-home-preview .why-spouzy,
+        body.sp-home-preview .why-inner {
+            background-color: #FFFACD !important;
+            background-image: none !important;
+        }
+
+        /* 5. Services section ("Our Range of Services") */
+        body.sp-home-preview #services,
+        body.sp-home-preview #services.sp-services-section,
+        body.sp-home-preview .sp-services-section {
+            background-color: #FFFACD !important;
+            background-image: none !important;
+        }
+
+        /* 6. Testimonials section */
+        body.sp-home-preview .sp-testimonials-section {
+            background: #FFFACD !important;
+            background-color: #FFFACD !important;
+            background-image: none !important;
+        }
+
+        /* 7. FAQ section ("Frequently Asked Questions") */
+        body.sp-home-preview #questions,
+        body.sp-home-preview #questions.sp-services-section {
+            background-color: #FFFACD !important;
+            background-image: none !important;
+        }
+
+        /* 8. Common section headers and layout wrappers to ensure seamless blending */
+        body.sp-home-preview .sp-section-header,
+        body.sp-home-preview .ed-heading,
+        body.sp-home-preview .care-track,
+        body.sp-home-preview .sp-services-grid,
+        body.sp-home-preview .sp-testimonials-carousel,
+        body.sp-home-preview .sp-testimonials-track,
+        body.sp-home-preview .hero-tip-layout {
+            background-color: transparent !important;
+            background-image: none !important;
+        }
+    </style>
+</head>
+
+<body class="sp-modern-wrapper sp-home-preview">
 
     <!-- 1. TOP ANNOUNCEMENT & DISCRETION RIBBON -->
     <div class="sp-topbar-modern">
@@ -536,7 +603,7 @@
     
 
     <!-- 8. VERIFIED CLIENT STORIES & REVIEWS -->
-    <section class="sp-services-section sp-testimonials-section" style="background: #faf6f1;" aria-label="Client Testimonials">
+    <section class="sp-services-section sp-testimonials-section" style="background: #FFFACD;" aria-label="Client Testimonials">
         <div class="sp-section-header sp-reveal">
             <span class="sp-section-kicker">Real Transformations</span>
             <h2 class="sp-section-title">Words from Those Who Found <span class="sp-text-shimmer">Their Way Back</span></h2>
