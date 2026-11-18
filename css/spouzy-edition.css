@@ -8,7 +8,7 @@
 .sp-nav-link{position:relative}.sp-nav-link:after{content:"";position:absolute;bottom:0;left:12%;right:12%;height:2px;background:linear-gradient(90deg,transparent,#c57f5f,transparent);transform:scaleX(0);transition:transform .24s}.sp-nav-link:hover:after,.sp-nav-link:focus-visible:after,.sp-nav-link[aria-expanded=true]:after{transform:scaleX(1)}
 
 /* Full-bleed photography. All four slides share a single fluid canvas. */
-.sp-hero-banner-section{padding:clamp(12px,1.45vw,24px) clamp(14px,2.5vw,48px);border:0;background:linear-gradient(135deg,#fbf5ef,#ecdcd2)}
+.sp-hero-banner-section{padding:clamp(12px,1.45vw,24px) clamp(14px,2.5vw,48px);border:0;background:var(--sp-page-bg, #FFFACD)}
 .sp-hero-banner-frame{width:100%;max-width:1600px;margin:0 auto;border:1px solid #51333a;border-radius:clamp(18px,1.8vw,30px);box-shadow:0 8px 26px #42232b18;min-height:0;height:auto}
 .sp-hero-banner-slides{display:grid;height:auto;min-height:0}
 .sp-hero-banner-slide{position:relative;inset:auto;grid-area:1/1;display:flex;align-items:center;min-width:0;min-height:clamp(455px,59svh,590px);background:#36282a}
@@ -39,7 +39,7 @@
 }
 
 /* The five care principles sit together immediately below the hero ribbon. */
-.why-spouzy{background:radial-gradient(ellipse at top,#fffaf5 16%,#f8eee7 92%);color:#482936;padding:clamp(44px,5vw,80px) 0;scroll-margin-top:100px}
+.why-spouzy{background:var(--sp-page-bg, #FFFACD);color:#482936;padding:clamp(44px,5vw,80px) 0;scroll-margin-top:100px}
 .why-inner{width:min(1260px,92%);margin:auto}
 .why-inner h2{text-align:center;font:500 clamp(36px,4vw,57px)/1.12 'Playfair Display',Georgia,serif;letter-spacing:-.035em;color:#452633;margin:0 0 36px}
 .why-inner h2 em{color:#965a42}

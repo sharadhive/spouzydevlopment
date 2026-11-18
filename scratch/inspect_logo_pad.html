@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<body>
+<canvas id="c"></canvas>
+<script>
+const img = new Image();
+img.onload = () => {
+  const c = document.getElementById('c');
+  c.width = img.width;
+  c.height = img.height;
+  const ctx = c.getContext('2d');
+  ctx.drawImage(img, 0, 0);
+  const data = ctx.getImageData(0, 0, c.width, c.height).data;
+  let top = -1, bottom = -1, left = c.width, right = -1;
+  for (let y = 0; y < c.height; y++) {
+    for (let x = 0; x < c.width; x++) {
+      const a = data[(y * c.width + x) * 4 + 3];
+      if (a > 10) {
+        if (top === -1) top = y;
+        bottom = y;
+        if (x < left) left = x;
+        if (x > right) right = x;
+      }
+    }
+  }
+  window.result = {
+    canvasWidth: c.width,
+    canvasHeight: c.height,
+    contentWidth: right - left + 1,
+    contentHeight: bottom - top + 1,
+    padTop: top,
+    padBottom: c.height - 1 - bottom,
+    padLeft: left,
+    padRight: c.width - 1 - right,
+    padTopRatio: top / c.height,
+    padBottomRatio: (c.height - 1 - bottom) / c.height
+  };
+};
+img.src = '../image/gif/spouzy-teddy-hug-static.png';
+</script>
+</body>
+</html>

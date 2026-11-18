@@ -1,0 +1,1742 @@
+{
+  "about-profile.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    },
+    {
+      "tag": "div",
+      "className": "sp-breadcrumbs",
+      "text": "Home\nAbout PSG\nHeritage & Leadership",
+      "color": "rgba(255, 255, 255, 0.65)",
+      "webkitTextFillColor": "rgba(255, 255, 255, 0.65)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Home",
+      "color": "rgb(255, 255, 255)",
+      "webkitTextFillColor": "rgb(255, 255, 255)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "About PSG",
+      "color": "rgb(255, 255, 255)",
+      "webkitTextFillColor": "rgb(255, 255, 255)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "span",
+      "className": "",
+      "text": "Heritage & Leadership",
+      "color": "rgba(255, 255, 255, 0.65)",
+      "webkitTextFillColor": "rgba(255, 255, 255, 0.65)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "h1",
+      "className": "sp-subpage-title",
+      "text": "The Heritage of Problem Solver Group",
+      "color": "rgb(255, 255, 255)",
+      "webkitTextFillColor": "rgb(255, 255, 255)",
+      "ratio": "1.06",
+      "minRequired": 3,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "p",
+      "className": "sp-subpage-subtitle",
+      "text": "Over 40 years of pioneering human-centric con",
+      "color": "rgba(255, 255, 255, 0.85)",
+      "webkitTextFillColor": "rgba(255, 255, 255, 0.85)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "span",
+      "className": "sp-hero-pill-badge",
+      "text": "Established in 2004",
+      "color": "rgb(255, 255, 255)",
+      "webkitTextFillColor": "rgb(255, 255, 255)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "span",
+      "className": "sp-hero-pill-badge",
+      "text": "Founded by Neilesh Jethmal",
+      "color": "rgb(255, 255, 255)",
+      "webkitTextFillColor": "rgb(255, 255, 255)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "span",
+      "className": "sp-hero-pill-badge",
+      "text": "4 Decades Advisory Experience",
+      "color": "rgb(255, 255, 255)",
+      "webkitTextFillColor": "rgb(255, 255, 255)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "span",
+      "className": "sp-kicker",
+      "text": "A MESSAGE FROM THE FOUNDER",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.76",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "span",
+      "className": "sp-kicker",
+      "text": "THE 3 PILLARS OF RESOLUTION",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.76",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    }
+  ],
+  "about-us.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    }
+  ],
+  "appointment.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    },
+    {
+      "tag": "div",
+      "className": "sp-breadcrumbs",
+      "text": "Home\nDoctors & Appointments",
+      "color": "rgba(255, 255, 255, 0.65)",
+      "webkitTextFillColor": "rgba(255, 255, 255, 0.65)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Home",
+      "color": "rgb(255, 255, 255)",
+      "webkitTextFillColor": "rgb(255, 255, 255)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "span",
+      "className": "",
+      "text": "Doctors & Appointments",
+      "color": "rgba(255, 255, 255, 0.65)",
+      "webkitTextFillColor": "rgba(255, 255, 255, 0.65)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "h1",
+      "className": "sp-subpage-title",
+      "text": "Verified Medical Doctors & Consultation Desk",
+      "color": "rgb(255, 255, 255)",
+      "webkitTextFillColor": "rgb(255, 255, 255)",
+      "ratio": "1.06",
+      "minRequired": 3,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "p",
+      "className": "sp-subpage-subtitle",
+      "text": "Access accredited clinical specialists across",
+      "color": "rgba(255, 255, 255, 0.85)",
+      "webkitTextFillColor": "rgba(255, 255, 255, 0.85)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "span",
+      "className": "sp-hero-pill-badge",
+      "text": "100% Doctor-Patient Privilege",
+      "color": "rgb(255, 255, 255)",
+      "webkitTextFillColor": "rgb(255, 255, 255)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "span",
+      "className": "sp-hero-pill-badge",
+      "text": "Encrypted Video or In-Person",
+      "color": "rgb(255, 255, 255)",
+      "webkitTextFillColor": "rgb(255, 255, 255)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "span",
+      "className": "sp-hero-pill-badge",
+      "text": "Same-Day Slots Available",
+      "color": "rgb(255, 255, 255)",
+      "webkitTextFillColor": "rgb(255, 255, 255)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "span",
+      "className": "sp-verified-badge",
+      "text": "Verified Specialist",
+      "color": "rgb(46, 213, 115)",
+      "webkitTextFillColor": "rgb(46, 213, 115)",
+      "ratio": "1.93",
+      "minRequired": 4.5,
+      "bg": "rgb(255,255,255)"
+    },
+    {
+      "tag": "span",
+      "className": "sp-verified-badge",
+      "text": "Verified Specialist",
+      "color": "rgb(46, 213, 115)",
+      "webkitTextFillColor": "rgb(46, 213, 115)",
+      "ratio": "1.93",
+      "minRequired": 4.5,
+      "bg": "rgb(255,255,255)"
+    },
+    {
+      "tag": "span",
+      "className": "sp-verified-badge",
+      "text": "Senior Fellow",
+      "color": "rgb(46, 213, 115)",
+      "webkitTextFillColor": "rgb(46, 213, 115)",
+      "ratio": "1.93",
+      "minRequired": 4.5,
+      "bg": "rgb(255,255,255)"
+    },
+    {
+      "tag": "span",
+      "className": "sp-verified-badge",
+      "text": "Verified Specialist",
+      "color": "rgb(46, 213, 115)",
+      "webkitTextFillColor": "rgb(46, 213, 115)",
+      "ratio": "1.93",
+      "minRequired": 4.5,
+      "bg": "rgb(255,255,255)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Terms of Use",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.99",
+      "minRequired": 4.5,
+      "bg": "rgb(255,255,255)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Privacy Policy",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.99",
+      "minRequired": 4.5,
+      "bg": "rgb(255,255,255)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Refund & Cancellation Policy",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.99",
+      "minRequired": 4.5,
+      "bg": "rgb(255,255,255)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Teleconsultation Policy",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.99",
+      "minRequired": 4.5,
+      "bg": "rgb(255,255,255)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Informed Consent",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.99",
+      "minRequired": 4.5,
+      "bg": "rgb(255,255,255)"
+    }
+  ],
+  "before-a-shared-decision.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    }
+  ],
+  "blog.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    }
+  ],
+  "book-appoinment.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    },
+    {
+      "tag": "div",
+      "className": "sp-breadcrumbs",
+      "text": "Home\nBook Confidential Consultation",
+      "color": "rgba(255, 255, 255, 0.65)",
+      "webkitTextFillColor": "rgba(255, 255, 255, 0.65)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Home",
+      "color": "rgb(255, 255, 255)",
+      "webkitTextFillColor": "rgb(255, 255, 255)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "span",
+      "className": "",
+      "text": "Book Confidential Consultation",
+      "color": "rgba(255, 255, 255, 0.65)",
+      "webkitTextFillColor": "rgba(255, 255, 255, 0.65)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "h1",
+      "className": "sp-subpage-title",
+      "text": "Schedule a Private & Confidential Consultatio",
+      "color": "rgb(255, 255, 255)",
+      "webkitTextFillColor": "rgb(255, 255, 255)",
+      "ratio": "1.06",
+      "minRequired": 3,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "p",
+      "className": "sp-subpage-subtitle",
+      "text": "Connect with certified endocrinologists, mari",
+      "color": "rgba(255, 255, 255, 0.85)",
+      "webkitTextFillColor": "rgba(255, 255, 255, 0.85)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "span",
+      "className": "sp-hero-pill-badge",
+      "text": "100% Doctor-Patient Privilege",
+      "color": "rgb(255, 255, 255)",
+      "webkitTextFillColor": "rgb(255, 255, 255)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "span",
+      "className": "sp-hero-pill-badge",
+      "text": "Encrypted Video or In-Person",
+      "color": "rgb(255, 255, 255)",
+      "webkitTextFillColor": "rgb(255, 255, 255)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "span",
+      "className": "sp-hero-pill-badge",
+      "text": "Same-Day Slots Available",
+      "color": "rgb(255, 255, 255)",
+      "webkitTextFillColor": "rgb(255, 255, 255)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Terms of Use",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.99",
+      "minRequired": 4.5,
+      "bg": "rgb(255,255,255)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Privacy Policy",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.99",
+      "minRequired": 4.5,
+      "bg": "rgb(255,255,255)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Refund & Cancellation Policy",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.99",
+      "minRequired": 4.5,
+      "bg": "rgb(255,255,255)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Teleconsultation Policy",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.99",
+      "minRequired": 4.5,
+      "bg": "rgb(255,255,255)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Informed Consent",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.99",
+      "minRequired": 4.5,
+      "bg": "rgb(255,255,255)"
+    }
+  ],
+  "cart.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Payment & Billing Policy",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.65",
+      "minRequired": 4.5,
+      "bg": "rgb(250,244,239)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Refund & Cancellation Policy",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.65",
+      "minRequired": 4.5,
+      "bg": "rgb(250,244,239)"
+    }
+  ],
+  "coaching.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    }
+  ],
+  "confidentiality.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    }
+  ],
+  "contactus.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    },
+    {
+      "tag": "div",
+      "className": "sp-breadcrumbs",
+      "text": "Home\nContact & Clinics",
+      "color": "rgba(255, 255, 255, 0.65)",
+      "webkitTextFillColor": "rgba(255, 255, 255, 0.65)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Home",
+      "color": "rgb(255, 255, 255)",
+      "webkitTextFillColor": "rgb(255, 255, 255)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "span",
+      "className": "",
+      "text": "Contact & Clinics",
+      "color": "rgba(255, 255, 255, 0.65)",
+      "webkitTextFillColor": "rgba(255, 255, 255, 0.65)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "h1",
+      "className": "sp-subpage-title",
+      "text": "Get in Touch • Strict Discretion Assured",
+      "color": "rgb(255, 255, 255)",
+      "webkitTextFillColor": "rgb(255, 255, 255)",
+      "ratio": "1.06",
+      "minRequired": 3,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "p",
+      "className": "sp-subpage-subtitle",
+      "text": "Reach our senior clinical counselors, mediati",
+      "color": "rgba(255, 255, 255, 0.85)",
+      "webkitTextFillColor": "rgba(255, 255, 255, 0.85)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "span",
+      "className": "sp-hero-pill-badge",
+      "text": "100% Encrypted & Confidential",
+      "color": "rgb(255, 255, 255)",
+      "webkitTextFillColor": "rgb(255, 255, 255)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "span",
+      "className": "sp-hero-pill-badge",
+      "text": "Direct WhatsApp & Call Line",
+      "color": "rgb(255, 255, 255)",
+      "webkitTextFillColor": "rgb(255, 255, 255)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "span",
+      "className": "sp-hero-pill-badge",
+      "text": "Flagship Clinic Mulund, Mumbai",
+      "color": "rgb(255, 255, 255)",
+      "webkitTextFillColor": "rgb(255, 255, 255)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Chat on WhatsApp ↗",
+      "color": "rgb(37, 211, 102)",
+      "webkitTextFillColor": "rgb(37, 211, 102)",
+      "ratio": "1.98",
+      "minRequired": 4.5,
+      "bg": "rgb(255,255,255)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Privacy Policy",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.65",
+      "minRequired": 4.5,
+      "bg": "rgb(250,244,239)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Grievance Redressal Policy",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.65",
+      "minRequired": 4.5,
+      "bg": "rgb(250,244,239)"
+    },
+    {
+      "tag": "span",
+      "className": "sp-kicker",
+      "text": "PAN-INDIA CLINICAL PRESENCE",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.76",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Book at this Clinic →",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.99",
+      "minRequired": 4.5,
+      "bg": "rgb(255,255,255)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Book at this Clinic →",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.99",
+      "minRequired": 4.5,
+      "bg": "rgb(255,255,255)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Book at this Clinic →",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.99",
+      "minRequired": 4.5,
+      "bg": "rgb(255,255,255)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Book at this Clinic →",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.99",
+      "minRequired": 4.5,
+      "bg": "rgb(255,255,255)"
+    }
+  ],
+  "cookie-policy.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    }
+  ],
+  "corporate-kamasutra.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    }
+  ],
+  "counselling.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Confidentiality Pledge",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.65",
+      "minRequired": 4.5,
+      "bg": "rgb(250,244,239)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Informed Consent for Counselling",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.65",
+      "minRequired": 4.5,
+      "bg": "rgb(250,244,239)"
+    }
+  ],
+  "create-account.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    },
+    {
+      "tag": "a",
+      "className": "sp-auth-tab is-active",
+      "text": "Create Account",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.99",
+      "minRequired": 4.5,
+      "bg": "rgb(255,255,255)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Terms of Use",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.99",
+      "minRequired": 4.5,
+      "bg": "rgb(255,255,255)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Privacy Policy",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.99",
+      "minRequired": 4.5,
+      "bg": "rgb(255,255,255)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Portal Access Notice →",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.99",
+      "minRequired": 4.5,
+      "bg": "rgb(255,255,255)"
+    }
+  ],
+  "delivery-policy.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    }
+  ],
+  "disclaimer.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    }
+  ],
+  "divorce-mediation.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Confidentiality Pledge",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.65",
+      "minRequired": 4.5,
+      "bg": "rgb(250,244,239)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Informed Consent for Mediation",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.65",
+      "minRequired": 4.5,
+      "bg": "rgb(250,244,239)"
+    }
+  ],
+  "faq.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    }
+  ],
+  "gen-z-kama-sutra.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    }
+  ],
+  "grievance-redressal.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    }
+  ],
+  "harassment-support.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    }
+  ],
+  "index.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    },
+    {
+      "tag": "span",
+      "className": "sp-section-kicker",
+      "text": "CLINICAL SPECTRUM • PROBLEM SOLVER GROUP",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.76",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "span",
+      "className": "sp-section-kicker",
+      "text": "REAL TRANSFORMATIONS",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.76",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "p",
+      "className": "",
+      "text": "Shared with client consent. Names withheld fo",
+      "color": "rgb(138, 115, 122)",
+      "webkitTextFillColor": "rgb(138, 115, 122)",
+      "ratio": "4.11",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Reviews & Testimonials Policy",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.76",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "span",
+      "className": "sp-section-kicker",
+      "text": "TRANSPARENT & REASSURING",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.76",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    }
+  ],
+  "index.html": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    },
+    {
+      "tag": "span",
+      "className": "sp-section-kicker",
+      "text": "CLINICAL SPECTRUM • PROBLEM SOLVER GROUP",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.76",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "span",
+      "className": "sp-section-kicker",
+      "text": "REAL TRANSFORMATIONS",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.76",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "p",
+      "className": "",
+      "text": "Shared with client consent. Names withheld fo",
+      "color": "rgb(138, 115, 122)",
+      "webkitTextFillColor": "rgb(138, 115, 122)",
+      "ratio": "4.11",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Reviews & Testimonials Policy",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.76",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "span",
+      "className": "sp-section-kicker",
+      "text": "TRANSPARENT & REASSURING",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.76",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    }
+  ],
+  "informed-consent.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    }
+  ],
+  "intimate-aesthetics-treatment.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Medical & Legal Disclaimer",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.65",
+      "minRequired": 4.5,
+      "bg": "rgb(250,244,239)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Teleconsultation Policy",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.65",
+      "minRequired": 4.5,
+      "bg": "rgb(250,244,239)"
+    }
+  ],
+  "intimate-health.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Medical & Legal Disclaimer",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.65",
+      "minRequired": 4.5,
+      "bg": "rgb(250,244,239)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Teleconsultation Policy",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.65",
+      "minRequired": 4.5,
+      "bg": "rgb(250,244,239)"
+    }
+  ],
+  "join-counsellor.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    }
+  ],
+  "join-doctor.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    }
+  ],
+  "military-families.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    }
+  ],
+  "mission-vision.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    }
+  ],
+  "mission.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    },
+    {
+      "tag": "div",
+      "className": "sp-breadcrumbs",
+      "text": "Home\nAbout PSG\nOur Mission",
+      "color": "rgba(255, 255, 255, 0.65)",
+      "webkitTextFillColor": "rgba(255, 255, 255, 0.65)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Home",
+      "color": "rgb(255, 255, 255)",
+      "webkitTextFillColor": "rgb(255, 255, 255)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "About PSG",
+      "color": "rgb(255, 255, 255)",
+      "webkitTextFillColor": "rgb(255, 255, 255)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "span",
+      "className": "",
+      "text": "Our Mission",
+      "color": "rgba(255, 255, 255, 0.65)",
+      "webkitTextFillColor": "rgba(255, 255, 255, 0.65)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "h1",
+      "className": "sp-subpage-title",
+      "text": "Practical Empathy • Sustainable Resolution",
+      "color": "rgb(255, 255, 255)",
+      "webkitTextFillColor": "rgb(255, 255, 255)",
+      "ratio": "1.06",
+      "minRequired": 3,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "p",
+      "className": "sp-subpage-subtitle",
+      "text": "Our mission is to help individuals and couple",
+      "color": "rgba(255, 255, 255, 0.85)",
+      "webkitTextFillColor": "rgba(255, 255, 255, 0.85)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "span",
+      "className": "sp-hero-pill-badge",
+      "text": "Empathy-Driven",
+      "color": "rgb(255, 255, 255)",
+      "webkitTextFillColor": "rgb(255, 255, 255)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "span",
+      "className": "sp-hero-pill-badge",
+      "text": "Uncompromising Discretion",
+      "color": "rgb(255, 255, 255)",
+      "webkitTextFillColor": "rgb(255, 255, 255)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "span",
+      "className": "sp-hero-pill-badge",
+      "text": "Evidence-Based Clinical Rigor",
+      "color": "rgb(255, 255, 255)",
+      "webkitTextFillColor": "rgb(255, 255, 255)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "span",
+      "className": "sp-kicker",
+      "text": "THE SPOUZY CLINICAL CHARTER",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.76",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    }
+  ],
+  "payment-policy.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    }
+  ],
+  "post-marriage.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    }
+  ],
+  "pre-marriage.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    }
+  ],
+  "privacy-policy.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    }
+  ],
+  "reconnecting-after-time-apart.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    }
+  ],
+  "refund-policy.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    }
+  ],
+  "register.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    },
+    {
+      "tag": "a",
+      "className": "sp-auth-tab is-active",
+      "text": "Patient Portal Login",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.99",
+      "minRequired": 4.5,
+      "bg": "rgb(255,255,255)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Terms of Use",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.99",
+      "minRequired": 4.5,
+      "bg": "rgb(255,255,255)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Privacy Policy",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.99",
+      "minRequired": 4.5,
+      "bg": "rgb(255,255,255)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "View Account Registration Notice →",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.99",
+      "minRequired": 4.5,
+      "bg": "rgb(255,255,255)"
+    }
+  ],
+  "relationships.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    }
+  ],
+  "solution-guarantee.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    }
+  ],
+  "students.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    }
+  ],
+  "team.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    }
+  ],
+  "teleconsultation-policy.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    }
+  ],
+  "terms.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    }
+  ],
+  "testimonials-policy.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    }
+  ],
+  "training.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    }
+  ],
+  "treatment.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Medical & Legal Disclaimer",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.65",
+      "minRequired": 4.5,
+      "bg": "rgb(250,244,239)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Teleconsultation Policy",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.65",
+      "minRequired": 4.5,
+      "bg": "rgb(250,244,239)"
+    }
+  ],
+  "under-construction.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    },
+    {
+      "tag": "div",
+      "className": "sp-breadcrumbs",
+      "text": "Home\nInnovation • Launching Soon",
+      "color": "rgba(255, 255, 255, 0.65)",
+      "webkitTextFillColor": "rgba(255, 255, 255, 0.65)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Home",
+      "color": "rgb(255, 255, 255)",
+      "webkitTextFillColor": "rgb(255, 255, 255)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "span",
+      "className": "",
+      "text": "Innovation • Launching Soon",
+      "color": "rgba(255, 255, 255, 0.65)",
+      "webkitTextFillColor": "rgba(255, 255, 255, 0.65)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "h1",
+      "className": "sp-subpage-title",
+      "text": "Service in Active Clinical Development",
+      "color": "rgb(255, 255, 255)",
+      "webkitTextFillColor": "rgb(255, 255, 255)",
+      "ratio": "1.06",
+      "minRequired": 3,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "p",
+      "className": "sp-subpage-subtitle",
+      "text": "This specialized service or digital literatur",
+      "color": "rgba(255, 255, 255, 0.85)",
+      "webkitTextFillColor": "rgba(255, 255, 255, 0.85)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    }
+  ],
+  "vision.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    },
+    {
+      "tag": "div",
+      "className": "sp-breadcrumbs",
+      "text": "Home\nAbout PSG\nVision & Ethics",
+      "color": "rgba(255, 255, 255, 0.65)",
+      "webkitTextFillColor": "rgba(255, 255, 255, 0.65)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Home",
+      "color": "rgb(255, 255, 255)",
+      "webkitTextFillColor": "rgb(255, 255, 255)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "About PSG",
+      "color": "rgb(255, 255, 255)",
+      "webkitTextFillColor": "rgb(255, 255, 255)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "span",
+      "className": "",
+      "text": "Vision & Ethics",
+      "color": "rgba(255, 255, 255, 0.65)",
+      "webkitTextFillColor": "rgba(255, 255, 255, 0.65)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "h1",
+      "className": "sp-subpage-title",
+      "text": "Destigmatizing Health • Preserving Human Dign",
+      "color": "rgb(255, 255, 255)",
+      "webkitTextFillColor": "rgb(255, 255, 255)",
+      "ratio": "1.06",
+      "minRequired": 3,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "p",
+      "className": "sp-subpage-subtitle",
+      "text": "We envision a society where relationship harm",
+      "color": "rgba(255, 255, 255, 0.85)",
+      "webkitTextFillColor": "rgba(255, 255, 255, 0.85)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "span",
+      "className": "sp-hero-pill-badge",
+      "text": "Ethical North Star",
+      "color": "rgb(255, 255, 255)",
+      "webkitTextFillColor": "rgb(255, 255, 255)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "span",
+      "className": "sp-hero-pill-badge",
+      "text": "Breaking Taboos",
+      "color": "rgb(255, 255, 255)",
+      "webkitTextFillColor": "rgb(255, 255, 255)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "span",
+      "className": "sp-hero-pill-badge",
+      "text": "De-escalating Conflict",
+      "color": "rgb(255, 255, 255)",
+      "webkitTextFillColor": "rgb(255, 255, 255)",
+      "ratio": "1.06",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    },
+    {
+      "tag": "span",
+      "className": "sp-kicker",
+      "text": "OUR ETHICAL CHARTER",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.76",
+      "minRequired": 4.5,
+      "bg": "rgb(255,250,205)"
+    }
+  ],
+  "webinar-ebook.htm": [
+    {
+      "tag": "a",
+      "className": "sp-brand-wrapper",
+      "text": "Pre- & Post-Marriage\nIntimate Healthcare\nDivo",
+      "color": "rgb(51, 122, 183)",
+      "webkitTextFillColor": "rgb(51, 122, 183)",
+      "ratio": "4.46",
+      "minRequired": 4.5,
+      "bg": "rgb(255,252,248)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Digital Products Delivery Policy",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.65",
+      "minRequired": 4.5,
+      "bg": "rgb(250,244,239)"
+    },
+    {
+      "tag": "a",
+      "className": "",
+      "text": "Refund & Cancellation Policy",
+      "color": "rgb(191, 103, 79)",
+      "webkitTextFillColor": "rgb(191, 103, 79)",
+      "ratio": "3.65",
+      "minRequired": 4.5,
+      "bg": "rgb(250,244,239)"
+    }
+  ]
+}

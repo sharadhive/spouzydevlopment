@@ -473,7 +473,7 @@
     raf=0;
     const now=performance.now(),delta=scrollY-y;
     progress.style.transform='scaleX('+clamp(scrollY/Math.max(1,document.documentElement.scrollHeight-innerHeight))+')';
-    if(header&&Math.abs(delta)>2)header.classList.toggle('motion-hidden',delta>0&&scrollY>220&&!header.contains(document.activeElement)&&!document.querySelector('.is-open'));
+    // Sticky header: auto-hide disabled so header remains visible at all scroll positions
     if(hero){const r=hero.getBoundingClientRect();if(r.bottom>0)hero.style.setProperty('--shift',Math.min(24,Math.max(0,-r.top)*.07)+'px')}
     if(ticker&&delta){ticker.style.setProperty('--lean',Math.max(-5,Math.min(5,delta/Math.max(16,now-last)*4))+'deg');clearTimeout(settle);settle=setTimeout(()=>ticker.style.setProperty('--lean','0deg'),120)}
     for(const h of heads){const r=h.getBoundingClientRect();h.style.setProperty('--reveal',clamp((innerHeight*.96-r.top)/(innerHeight*.27)))}
@@ -497,20 +497,4 @@
   }
   function schedule(){if(!raf)raf=requestAnimationFrame(redraw)}
   addEventListener('scroll',schedule,{passive:true});addEventListener('resize',schedule);redraw();
-  function curtain(enter){
-    const overlay=el('div','page-curtain '+(enter?'unveil':'veil'));overlay.setAttribute('aria-hidden','true');
-    for(const delay of [0,35,70,70,35,0]){const strip=el('i','');strip.style.animationDelay=delay+'ms';overlay.append(strip)}
-    document.body.append(overlay);return overlay;
-  }
-  try{if(sessionStorage.getItem('sp-arrival')){sessionStorage.removeItem('sp-arrival');const o=curtain(true);setTimeout(()=>o.remove(),500)}}catch{}
-  document.addEventListener('click',e=>{
-    const a=e.target.closest('a[href]');if(!a||e.defaultPrevented||e.button||e.ctrlKey||e.shiftKey||e.altKey||e.metaKey||a.target||a.hasAttribute('download'))return;
-    const u=new URL(a.href,location.href);
-    if(u.origin!==location.origin||(!/\.html?$/i.test(u.pathname)&&!u.searchParams.has('page'))||(u.pathname===location.pathname&&u.search===location.search&&u.hash))return;
-    if(!['file:','http:','https:'].includes(u.protocol))return;
-    e.preventDefault();if(one('.page-curtain.veil'))return;
-    try{sessionStorage.setItem('sp-arrival','1')}catch{}
-    curtain(false);setTimeout(()=>location.assign(u.href),350);
-  });
-  addEventListener('pageshow',e=>{if(e.persisted)all('.page-curtain').forEach(n=>n.remove())});
 })();

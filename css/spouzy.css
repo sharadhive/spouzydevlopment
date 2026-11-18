@@ -1,5 +1,5 @@
 @import url("spouzy-modern.css");
-:root{--ink:#34231f;--wine:#542e36;--copper:#a65b43;--sand:#f6ede5;--paper:#fffaf6;--edge:#e1cfc2;--serif:'Playfair Display',Georgia,"Times New Roman",serif}
+:root{--ink:#34231f;--wine:#542e36;--copper:#a65b43;--sand:#f6ede5;--paper:var(--sp-page-bg, #FFFACD);--edge:#e1cfc2;--serif:'Playfair Display',Georgia,"Times New Roman",serif}
 body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.6 "Inter",Arial,sans-serif}
 a:focus-visible,summary:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #ae643d;outline-offset:3px}
 .sp-header,.sp-hero,.sp-guidance,.sp-profile,.sp-story{box-sizing:border-box}

@@ -1,0 +1,2969 @@
+/**
+ * SPOUZY 2026 — Modern UI/UX Interactive Controller
+ * Problem Solver Group (PSG) Specialist Wing
+ */
+
+// ---------------------------------------------------------------------------
+// 0. UNIFIED SPOUZY TEDDY HUG ANIMATED LOADER & PAGE TRANSITION CONTROLLER
+// ---------------------------------------------------------------------------
+(function initSpouzyPageTransition() {
+  'use strict';
+
+  const LOADER_ID = 'sp-page-loader';
+  const NAV_PENDING_KEY = 'sp_transition_pending';
+  const SESSION_ACTIVE_KEY = 'spouzy_session_active';
+  const HUG_VIDEO_SRC = 'image/gif/SPOUZY_Teddy_Hug_Loader_1s.webm';
+  const HUG_STATIC_SRC = 'image/gif/spouzy-teddy-hug-static.png';
+
+  const FADE_DURATION = 150; // 150ms smooth fade out
+  const DEPARTURE_DELAY = 40; // 40ms prompt departure feedback
+  const HARD_TIMEOUT = 2500; // 2500ms safety timeout
+
+  let isNavigating = false;
+  let activeDismissTimer = null;
+  let activeHardTimeout = null;
+
+  function prefersReducedMotion() {
+    try {
+      return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function getStorageItem(key) {
+    try {
+      return sessionStorage.getItem(key);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function setStorageItem(key, val) {
+    try {
+      sessionStorage.setItem(key, val);
+    } catch (e) {}
+  }
+
+  function removeStorageItem(key) {
+    try {
+      sessionStorage.removeItem(key);
+    } catch (e) {}
+  }
+
+  // Preload video early into browser cache
+  try {
+    if (!prefersReducedMotion()) {
+      const preloadLink = document.createElement('link');
+      preloadLink.rel = 'preload';
+      preloadLink.as = 'video';
+      preloadLink.href = HUG_VIDEO_SRC;
+      preloadLink.type = 'video/webm';
+      if (document.head) {
+        document.head.appendChild(preloadLink);
+      }
+    }
+  } catch (e) {}
+
+  function mountLoaderOverlay(mode) {
+    let overlay = document.getElementById(LOADER_ID);
+    if (overlay) {
+      overlay.classList.remove('sp-loader-fade-out');
+      return overlay;
+    }
+
+    const container = document.body || document.documentElement;
+    if (!container) return null;
+
+    overlay = document.createElement('div');
+    overlay.id = LOADER_ID;
+    overlay.className = 'sp-page-loader-overlay';
+    overlay.setAttribute('role', 'status');
+    overlay.setAttribute('aria-live', 'polite');
+    overlay.setAttribute('aria-atomic', 'true');
+
+    // Subtle blurred background depth shapes
+    const glow = document.createElement('div');
+    glow.className = 'sp-hug-bg-glow';
+    glow.setAttribute('aria-hidden', 'true');
+    overlay.appendChild(glow);
+
+    const orb1 = document.createElement('div');
+    orb1.className = 'sp-hug-orb sp-hug-orb-1';
+    orb1.setAttribute('aria-hidden', 'true');
+    overlay.appendChild(orb1);
+
+    const orb2 = document.createElement('div');
+    orb2.className = 'sp-hug-orb sp-hug-orb-2';
+    orb2.setAttribute('aria-hidden', 'true');
+    overlay.appendChild(orb2);
+
+    // Stage
+    const stage = document.createElement('div');
+    stage.className = 'sp-hug-stage';
+
+    // Transparent video
+    const video = document.createElement('video');
+    video.className = 'sp-hug-video';
+    video.setAttribute('muted', '');
+    video.setAttribute('playsinline', '');
+    video.setAttribute('aria-hidden', 'true');
+    video.muted = true;
+    video.defaultMuted = true;
+    video.volume = 0;
+    video.loop = false;
+    video.preload = 'auto';
+
+    const source = document.createElement('source');
+    source.src = HUG_VIDEO_SRC;
+    source.type = 'video/webm';
+    video.appendChild(source);
+    video.src = HUG_VIDEO_SRC;
+
+    // Static fallback image
+    const staticImg = document.createElement('img');
+    staticImg.className = 'sp-hug-static';
+    staticImg.src = HUG_STATIC_SRC;
+    staticImg.alt = '';
+    staticImg.setAttribute('aria-hidden', 'true');
+    staticImg.width = 480;
+    staticImg.height = 270;
+
+    // Soft elliptical shadow
+    const shadow = document.createElement('div');
+    shadow.className = 'sp-hug-shadow';
+    shadow.setAttribute('aria-hidden', 'true');
+
+    stage.appendChild(video);
+    stage.appendChild(staticImg);
+    stage.appendChild(shadow);
+
+    if (mode === 'departure' || prefersReducedMotion()) {
+      video.style.display = 'none';
+      staticImg.style.display = 'block';
+    } else {
+      video.style.display = 'block';
+      staticImg.style.display = 'none';
+    }
+
+    overlay.appendChild(stage);
+
+    // Screen reader announcement
+    const sr = document.createElement('span');
+    sr.className = 'sp-loader-sr-only';
+    sr.textContent = 'Loading SPOUZY...';
+    overlay.appendChild(sr);
+
+    container.appendChild(overlay);
+
+    return overlay;
+  }
+
+  function dismissLoaderOverlay(immediate) {
+    if (activeDismissTimer) {
+      clearTimeout(activeDismissTimer);
+      activeDismissTimer = null;
+    }
+    if (activeHardTimeout) {
+      clearTimeout(activeHardTimeout);
+      activeHardTimeout = null;
+    }
+
+    const overlay = document.getElementById(LOADER_ID);
+    if (!overlay) return;
+
+    if (immediate || prefersReducedMotion()) {
+      if (overlay.parentNode) {
+        overlay.parentNode.removeChild(overlay);
+      }
+    } else {
+      overlay.classList.add('sp-loader-fade-out');
+      activeDismissTimer = setTimeout(function () {
+        if (overlay && overlay.parentNode) {
+          overlay.parentNode.removeChild(overlay);
+        }
+        activeDismissTimer = null;
+      }, FADE_DURATION);
+    }
+  }
+
+  // --- ARRIVAL & FIRST-VISIT LIFECYCLE ---
+  function handleArrival() {
+    const isNavArrival = !!getStorageItem(NAV_PENDING_KEY);
+    const sessionStarted = getStorageItem(SESSION_ACTIVE_KEY);
+    const isFirstVisit = !sessionStarted && !isNavArrival;
+
+    if (!isNavArrival && !isFirstVisit) {
+      return;
+    }
+
+    if (isNavArrival) {
+      removeStorageItem(NAV_PENDING_KEY);
+    }
+    if (isFirstVisit) {
+      setStorageItem(SESSION_ACTIVE_KEY, '1');
+    }
+
+    const overlay = mountLoaderOverlay('arrival');
+    if (!overlay) return;
+
+    // Hard safety timeout: guaranteed dismissal within 2.5s from overlay initialization
+    activeHardTimeout = setTimeout(function () {
+      dismissLoaderOverlay(true);
+    }, HARD_TIMEOUT);
+
+    // Reduced motion: show static fallback and dismiss promptly when DOM is ready (no artificial 1s wait)
+    if (prefersReducedMotion()) {
+      overlay.classList.add('is-fallback');
+      function dismissReduced() {
+        requestAnimationFrame(function () {
+          setTimeout(function () {
+            dismissLoaderOverlay(true);
+          }, 80);
+        });
+      }
+      if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        dismissReduced();
+      } else {
+        document.addEventListener('DOMContentLoaded', dismissReduced, { once: true });
+      }
+      return;
+    }
+
+    const video = overlay.querySelector('.sp-hug-video');
+    let videoDone = false;
+    let domReady = (document.readyState === 'complete' || document.readyState === 'interactive');
+
+    function checkDismiss() {
+      if (videoDone && domReady) {
+        dismissLoaderOverlay(false);
+      }
+    }
+
+    function onVideoComplete() {
+      if (videoDone) return;
+      videoDone = true;
+      checkDismiss();
+    }
+
+    function onVideoError() {
+      overlay.classList.add('is-fallback');
+      onVideoComplete();
+    }
+
+    if (video) {
+      video.addEventListener('ended', onVideoComplete, { once: true });
+      video.addEventListener('error', onVideoError, { once: true });
+
+      // Start playback when ready
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(function () {
+          // Play was prevented or interrupted; fallback gracefully
+          onVideoError();
+        });
+      }
+    } else {
+      onVideoComplete();
+    }
+
+    if (domReady) {
+      checkDismiss();
+    } else {
+      document.addEventListener('DOMContentLoaded', function () {
+        domReady = true;
+        checkDismiss();
+      }, { once: true });
+      window.addEventListener('load', function () {
+        domReady = true;
+        checkDismiss();
+      }, { once: true });
+    }
+  }
+
+  // Early arrival initialization
+  if (document.body || document.documentElement) {
+    handleArrival();
+  } else {
+    document.addEventListener('DOMContentLoaded', handleArrival, { once: true });
+  }
+
+  // --- NAVIGATION LINK ELIGIBILITY CHECK ---
+  function isEligibleLink(anchor, event) {
+    if (event.defaultPrevented) return false;
+    if (event.button !== 0) return false;
+    if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return false;
+    if (anchor.target && anchor.target !== '_self') return false;
+    if (anchor.hasAttribute('download')) return false;
+
+    const rawHref = anchor.getAttribute('href');
+    if (!rawHref) return false;
+
+    const trimmedHref = rawHref.trim();
+    if (!trimmedHref || trimmedHref === '#' || trimmedHref.startsWith('javascript:')) return false;
+    if (/^(tel:|mailto:|javascript:|sms:|whatsapp:)/i.test(trimmedHref)) return false;
+
+    let targetUrl;
+    try {
+      targetUrl = new URL(anchor.href, window.location.href);
+    } catch (e) {
+      return false;
+    }
+
+    if (!['http:', 'https:', 'file:'].includes(targetUrl.protocol)) return false;
+    if (targetUrl.origin !== window.location.origin) return false;
+    if (/wa\.me|api\.whatsapp\.com/i.test(targetUrl.href)) return false;
+
+    const currentPath = window.location.pathname.replace(/\/+$/, '') || '/index.htm';
+    const targetPath = targetUrl.pathname.replace(/\/+$/, '') || '/index.htm';
+    const currentSearch = window.location.search || '';
+    const targetSearch = targetUrl.search || '';
+
+    // Same-page anchor click
+    if (currentPath === targetPath && currentSearch === targetSearch && targetUrl.hash) {
+      return false;
+    }
+
+    // Current page reload without hash
+    if (currentPath === targetPath && currentSearch === targetSearch && !targetUrl.hash) {
+      return false;
+    }
+
+    // Internal page navigation (.htm, .html, or extensionless path)
+    const parts = targetPath.split('.');
+    if (parts.length > 1) {
+      const ext = parts[parts.length - 1].toLowerCase();
+      if (!['htm', 'html'].includes(ext)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  // --- INTERCEPT INTERNAL PAGE NAVIGATION ---
+  document.addEventListener('click', function (e) {
+    const anchor = e.target.closest('a[href]');
+    if (!anchor) return;
+
+    if (!isEligibleLink(anchor, e)) return;
+
+    if (isNavigating) {
+      e.preventDefault();
+      return;
+    }
+
+    e.preventDefault();
+    isNavigating = true;
+
+    const targetHref = anchor.href;
+    setStorageItem(NAV_PENDING_KEY, '1');
+
+    // Prompt departure feedback
+    mountLoaderOverlay('departure');
+
+    const delay = prefersReducedMotion() ? 10 : DEPARTURE_DELAY;
+    setTimeout(function () {
+      window.location.assign(targetHref);
+    }, delay);
+  });
+
+  // --- CLEAN UP ON BFCACHE RESTORATION / PAGESHOW ---
+  window.addEventListener('pageshow', function (event) {
+    isNavigating = false;
+    const isBackForward = event.persisted || (
+      window.performance &&
+      window.performance.getEntriesByType &&
+      window.performance.getEntriesByType('navigation')[0] &&
+      window.performance.getEntriesByType('navigation')[0].type === 'back_forward'
+    );
+    if (isBackForward) {
+      removeStorageItem(NAV_PENDING_KEY);
+      dismissLoaderOverlay(true);
+    }
+  });
+
+  window.addEventListener('pagehide', function () {
+    isNavigating = false;
+  });
+})();
+
+document.addEventListener('DOMContentLoaded', function () {
+  'use strict';
+
+  // -------------------------------------------------------------------------
+  // 1. STICKY HEADER & SCROLL BEHAVIOR
+  // -------------------------------------------------------------------------
+  const headerWrapper = document.querySelector('.sp-header-sticky-wrapper');
+  const header = document.querySelector('.sp-header-modern');
+  if (headerWrapper || header) {
+    window.addEventListener('scroll', function () {
+      const isScrolled = window.scrollY > 20;
+      if (headerWrapper) headerWrapper.classList.toggle('is-scrolled', isScrolled);
+      if (header) header.classList.toggle('sp-header-scrolled', isScrolled);
+    }, { passive: true });
+  }
+
+  // -------------------------------------------------------------------------
+  // 1B. NAVIGATION DROPDOWNS (MEGA-MENU & SIMPLE DROPDOWNS)
+  // -------------------------------------------------------------------------
+  const menus = Array.from(document.querySelectorAll('.guide-menu'));
+  function toggleMenu(active) {
+    menus.forEach(menu => {
+      const open = menu === active;
+      menu.querySelector('button').setAttribute('aria-expanded', String(open));
+      menu.querySelector('.guide-links').hidden = !open;
+      menu.classList.toggle('is-open', open);
+      if (open) {
+        const panel = menu.querySelector('.guide-links');
+        panel.style.translate = '';
+        const box = panel.getBoundingClientRect();
+        const shift = Math.max(8 - box.left, Math.min(0, document.documentElement.clientWidth - 8 - box.right));
+        panel.style.translate = shift + 'px 0';
+      }
+    });
+  }
+  menus.forEach(menu => {
+    const button = menu.querySelector('button');
+    const visuals = [...menu.querySelectorAll('.nav-visual')];
+    const options = [...menu.querySelectorAll(".nav-options a, .nav-options .sp-submenu-trigger")];
+    const policyTrigger = menu.querySelector('#sp-policy-trigger');
+    const policySubmenu = menu.querySelector('#sp-policy-submenu');
+
+    function closePolicySubmenu() {
+      if (!policySubmenu) return;
+      policySubmenu.hidden = true;
+      policySubmenu.classList.remove('is-active');
+      if (policyTrigger) {
+        policyTrigger.setAttribute('aria-expanded', 'false');
+        policyTrigger.removeAttribute('data-preview-active');
+      }
+    }
+
+    function openPolicySubmenu() {
+      if (!policySubmenu || !policyTrigger) return;
+      options.forEach(item => item.removeAttribute('data-preview-active'));
+      visuals.forEach(visual => visual.classList.remove('selected'));
+      policyTrigger.setAttribute('aria-expanded', 'true');
+      policyTrigger.setAttribute('data-preview-active', '');
+      policySubmenu.hidden = false;
+      policySubmenu.classList.add('is-active');
+    }
+
+    function showOption(index) {
+      if (options[index] === policyTrigger) {
+        openPolicySubmenu();
+        return;
+      }
+      closePolicySubmenu();
+      options.forEach((item, i) => item.toggleAttribute("data-preview-active", i === index));
+      visuals.forEach((visual, i) => visual.classList.toggle('selected', i === index));
+    }
+
+    options.forEach((item, index) => {
+      item.addEventListener('pointerenter', () => showOption(index));
+      item.addEventListener('focus', () => showOption(index));
+    });
+
+    if (policyTrigger) {
+      policyTrigger.addEventListener('click', event => {
+        event.preventDefault();
+        event.stopPropagation();
+        if (policySubmenu && !policySubmenu.hidden && policySubmenu.classList.contains('is-active')) {
+          closePolicySubmenu();
+          showOption(0);
+        } else {
+          openPolicySubmenu();
+        }
+      });
+      policyTrigger.addEventListener('keydown', event => {
+        if (event.key === 'ArrowRight' || event.key === ' ' || event.key === 'Enter') {
+          event.preventDefault();
+          openPolicySubmenu();
+          const firstSublink = policySubmenu ? policySubmenu.querySelector('a') : null;
+          if (firstSublink) firstSublink.focus();
+        }
+      });
+    }
+
+    if (policySubmenu) {
+      policySubmenu.addEventListener('pointerenter', () => {
+        openPolicySubmenu();
+      });
+      policySubmenu.addEventListener('keydown', event => {
+        if (event.key === 'Escape' || event.key === 'ArrowLeft') {
+          event.preventDefault();
+          event.stopPropagation();
+          closePolicySubmenu();
+          if (policyTrigger) policyTrigger.focus();
+        }
+      });
+    }
+
+    button.addEventListener('pointerenter', () => showOption(0));
+    button.addEventListener('focus', () => showOption(0));
+    button.addEventListener('click', event => {
+      const closing = event.detail === 0 && button.getAttribute('aria-expanded') === 'true';
+      toggleMenu(closing ? null : menu);
+      if (!closing) showOption(0);
+    });
+    menu.addEventListener('pointerenter', event => {
+      if (event.pointerType === 'mouse' && !menu.matches(':focus-within')) {
+        toggleMenu(menu);
+      }
+    });
+    menu.addEventListener('pointerleave', () => {
+      if (!menu.matches(':focus-within')) {
+        closePolicySubmenu();
+        toggleMenu(null);
+      }
+    });
+    menu.addEventListener('keydown', event => {
+      if (event.key === 'Escape') {
+        if (policySubmenu && !policySubmenu.hidden && policySubmenu.contains(document.activeElement)) {
+          event.preventDefault();
+          closePolicySubmenu();
+          if (policyTrigger) policyTrigger.focus();
+          return;
+        }
+        closePolicySubmenu();
+        button.focus();
+        toggleMenu(null);
+      }
+      if (event.key === 'ArrowDown' && event.target === button) {
+        event.preventDefault();
+        toggleMenu(menu);
+        const firstOpt = menu.querySelector('.nav-options a, .nav-options button');
+        if (firstOpt) firstOpt.focus();
+      }
+    });
+    menu.addEventListener('focusout', event => {
+      if (!menu.contains(event.relatedTarget)) {
+        closePolicySubmenu();
+        toggleMenu(null);
+      }
+    });
+  });
+  document.addEventListener('click', event => {
+    if (!event.target.closest('.guide-menu')) toggleMenu(null);
+  });
+  // 2. GRAND HERO LARGE-BANNER SLIDER WITH SYNCHRONIZED AUTO-TEXT
+  // -------------------------------------------------------------------------
+  const bannerSlides = document.querySelectorAll('.sp-hero-banner-slide');
+  const bannerTabs = document.querySelectorAll('.sp-banner-tab-item');
+  const bannerTimerFill = document.querySelector('.sp-banner-timer-fill');
+  const bannerPrev = document.querySelector('.sp-banner-prev');
+  const bannerNext = document.querySelector('.sp-banner-next');
+  const bannerFrame = document.querySelector('.sp-hero-banner-frame');
+
+  let currentBannerIdx = 0;
+  const totalBanners = bannerSlides.length;
+  const BANNER_DURATION = 5500; // 5.5 seconds per slide
+  let bannerTimer = null;
+  let bannerProgressInterval = null;
+  let bannerProgressStart = 0;
+  let isBannerHovered = false;
+
+  function switchBanner(index) {
+    if (!bannerSlides.length) return;
+    currentBannerIdx = (index + totalBanners) % totalBanners;
+
+    // Update Banner Slides (both background image and text on top transition together)
+    bannerSlides.forEach((slide, i) => {
+      if (i === currentBannerIdx) {
+        slide.classList.add('is-active');
+      } else {
+        slide.classList.remove('is-active');
+      }
+    });
+
+    // Update Bottom Tabs
+    bannerTabs.forEach((tab, i) => {
+      if (i === currentBannerIdx) {
+        tab.classList.add('is-active');
+        tab.setAttribute('aria-selected', 'true');
+      } else {
+        tab.classList.remove('is-active');
+        tab.setAttribute('aria-selected', 'false');
+      }
+    });
+
+    restartBannerTimer();
+  }
+
+  function restartBannerTimer() {
+    clearInterval(bannerProgressInterval);
+    clearTimeout(bannerTimer);
+
+    if (bannerTimerFill) {
+      bannerTimerFill.style.width = '0%';
+    }
+
+    if (isBannerHovered || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    bannerProgressStart = Date.now();
+    bannerProgressInterval = setInterval(() => {
+      if (isBannerHovered || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const elapsed = Date.now() - bannerProgressStart;
+      const pct = Math.min((elapsed / BANNER_DURATION) * 100, 100);
+      if (bannerTimerFill) bannerTimerFill.style.width = pct + '%';
+    }, 40);
+
+    bannerTimer = setTimeout(() => {
+      if (!isBannerHovered) {
+        switchBanner(currentBannerIdx + 1);
+      }
+    }, BANNER_DURATION);
+  }
+
+  if (bannerSlides.length) {
+    bannerTabs.forEach((tab, idx) => {
+      tab.addEventListener('click', function () {
+        switchBanner(idx);
+      });
+    });
+
+    if (bannerPrev) {
+      bannerPrev.addEventListener('click', function () {
+        switchBanner(currentBannerIdx - 1);
+      });
+    }
+
+    if (bannerNext) {
+      bannerNext.addEventListener('click', function () {
+        switchBanner(currentBannerIdx + 1);
+      });
+    }
+
+    if (bannerFrame) {
+      bannerFrame.addEventListener('mouseenter', function () {
+        isBannerHovered = true;
+      });
+      bannerFrame.addEventListener('mouseleave', function () {
+        isBannerHovered = false;
+        restartBannerTimer();
+      });
+    }
+
+    // Start with slide 0
+    switchBanner(0);
+  }
+
+  // -------------------------------------------------------------------------
+  // 3. HERO CARE MATCHER WIDGET INTERACTION
+  // -------------------------------------------------------------------------
+  const matcherBtn = document.querySelector('.sp-matcher-btn');
+  const careSelect = document.querySelector('#sp-care-select');
+  const formatSelect = document.querySelector('#sp-format-select');
+
+  if (matcherBtn && careSelect) {
+    matcherBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      const careVal = careSelect.value;
+      const formatVal = formatSelect ? formatSelect.value : 'video';
+      
+      // Store in sessionStorage to pre-fill appointment page
+      try {
+        sessionStorage.setItem('spouzy_care_choice', careVal);
+        sessionStorage.setItem('spouzy_format_choice', formatVal);
+      } catch (err) {}
+
+      // Smoothly navigate to book-appoinment.htm with parameters
+      window.location.href = 'book-appoinment.htm?service=' + encodeURIComponent(careVal) + '&mode=' + encodeURIComponent(formatVal);
+    });
+  }
+
+  // -------------------------------------------------------------------------
+  // 4. INTERACTIVE 60-SEC RELATIONSHIP & CARE FINDER QUIZ
+  // -------------------------------------------------------------------------
+  const quizOptions = document.querySelectorAll('.sp-quiz-opt-btn');
+  const quizResultBox = document.querySelector('.sp-quiz-result-box');
+  const quizResultTitle = document.querySelector('#sp-quiz-res-title');
+  const quizResultDesc = document.querySelector('#sp-quiz-res-desc');
+  const quizResultLink = document.querySelector('#sp-quiz-res-link');
+
+  const quizRecommendations = {
+    'communication': {
+      title: 'Recommended: Couples Communication & Conflict Resolution Therapy',
+      desc: 'Our senior marital counsellors guide couples through structured exercises to de-escalate tension, restore emotional security, and build enduring understanding.',
+      link: 'book-appoinment.htm?service=couples-therapy'
+    },
+    'premarital': {
+      title: 'Recommended: Pre-Marital Alignment & Readiness Program',
+      desc: 'Explore expectations, lifestyle habits, family integration, and financial harmony in a constructive, non-judgmental environment before making lifelong commitments.',
+      link: 'book-appoinment.htm?service=premarital'
+    },
+    'intimacy': {
+      title: 'Recommended: Confidential Intimacy & Medical Specialist Consultation',
+      desc: 'Private, 1-on-1 or couples consultation with certified doctors and intimacy specialists adhering to strict clinical discretion and zero judgment.',
+      link: 'book-appoinment.htm?service=intimacy-clinic'
+    },
+    'separation': {
+      title: 'Recommended: Amicable Divorce & Dispute Mediation (PSG)',
+      desc: 'Leverage Problem Solver Group’s 40-year multi-disciplinary dispute resolution expertise for respectful, amicable settlements prioritizing dignity and emotional wellbeing.',
+      link: 'book-appoinment.htm?service=mediation'
+    }
+  };
+
+  if (quizOptions.length && quizResultBox) {
+    quizOptions.forEach(opt => {
+      opt.addEventListener('click', function () {
+        quizOptions.forEach(o => o.classList.remove('selected'));
+        this.classList.add('selected');
+
+        const key = this.getAttribute('data-concern');
+        if (quizRecommendations[key]) {
+          const rec = quizRecommendations[key];
+          if (quizResultTitle) quizResultTitle.textContent = rec.title;
+          if (quizResultDesc) quizResultDesc.textContent = rec.desc;
+          if (quizResultLink) quizResultLink.href = rec.link;
+
+          quizResultBox.style.display = 'flex';
+          quizResultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      });
+    });
+  }
+
+  // -------------------------------------------------------------------------
+  // 5. SPOTLIGHT LIVE SEARCH MODAL (SHARED MAINTAINABLE SEARCH INDEX)
+  // -------------------------------------------------------------------------
+  const SPOUZY_SEARCH_INDEX = [
+    // 1. Company & Heritage
+    {
+      title: 'About Us',
+      url: 'about-us.htm',
+      desc: 'Overview of SPOUZY, multidisciplinary relationship & intimate care wing of PSG.',
+      keywords: ['about us', 'who we are', 'about spouzy', 'psg', 'overview', 'counselling practice', 'practice'],
+      aliases: ['about', 'who we are']
+    },
+    {
+      title: 'Background',
+      url: 'about-profile.htm',
+      desc: 'Heritage of Problem Solver Group (PSG), established in 2004 by Neilesh Jethmal.',
+      keywords: ['background', 'heritage', 'history', 'founder', 'neilesh jethmal', 'psg', 'story', 'credentials'],
+      aliases: ['history', 'heritage', 'founder']
+    },
+    {
+      title: 'Mission & Vision',
+      url: 'mission-vision.htm',
+      desc: 'Practical empathy, clinical ethics, patient dignity & sustainable conflict resolution.',
+      keywords: ['mission & vision', 'mission', 'vision', 'values', 'ethics', 'commitments', 'principles'],
+      aliases: ['mission', 'vision', 'values']
+    },
+    {
+      title: 'Team',
+      url: 'team.htm',
+      desc: 'Multidisciplinary team of physicians, clinical psychologists & accredited mediators.',
+      keywords: ['team', 'doctors', 'counsellors', 'specialists', 'practitioners', 'psychologists', 'mediators'],
+      aliases: ['staff', 'specialists', 'faculty']
+    },
+
+    // 2. Services ("What We Do")
+    {
+      title: 'Pre-Marriage Guidance',
+      url: 'pre-marriage.htm',
+      desc: 'Premarital alignment, expectations, communication clarity & PSG charter before marriage.',
+      keywords: ['pre-marriage', 'premarriage', 'premarital', 'pre-marital', 'before marriage', 'engagement', 'alignment', 'couples preparation'],
+      aliases: ['premarital', 'pre marriage', 'premarital counselling']
+    },
+    {
+      title: 'Post-Marriage Counselling',
+      url: 'post-marriage.htm',
+      desc: 'De-escalating recurring conflict, rebuilding trust, intimacy renewal & long-term marital therapy.',
+      keywords: ['post-marriage', 'postmarriage', 'couples counselling', 'marriage counselling', 'marital therapy', 'couples', 'marriage', 'trust repair'],
+      aliases: ['marriage counselling', 'couples therapy', 'couples counselling']
+    },
+    {
+      title: 'Relationship Guidance',
+      url: 'relationships.htm',
+      desc: 'Constructive communication, emotional boundaries, life transitions & relational growth.',
+      keywords: ['relationship guidance', 'relationships', 'relationship', 'partnership', 'communication', 'boundaries', 'guidance', 'emotional intimacy'],
+      aliases: ['relationship', 'relationships', 'partnership']
+    },
+    {
+      title: 'Intimate Health Care',
+      url: 'intimate-health.htm',
+      desc: 'Confidential clinical care for sexual health, discomfort, physical intimacy & well-being.',
+      keywords: ['intimate health care', 'intimacy', 'sexual health', 'intimate wellness', 'andrology', 'endocrinology', 'physical intimacy'],
+      aliases: ['intimacy', 'sexual health', 'intimate health']
+    },
+    {
+      title: 'Intimate Aesthetics Treatment',
+      url: 'intimate-aesthetics-treatment.htm',
+      desc: 'Breast & genital specialized clinical practice: physical wellness examinations, symptom evaluation & discreet corrective care.',
+      keywords: ['intimate aesthetics', 'intimate aesthetics treatment', 'breast and genital clinic', 'breast & genital clinic', 'breast clinic', 'genital clinic', 'corrective clinical care', 'intimate clinical practice'],
+      aliases: ['breast and genital clinic', 'breast clinic', 'genital clinic', 'intimate aesthetics']
+    },
+    {
+      title: 'Divorce Mediation',
+      url: 'divorce-mediation.htm',
+      desc: 'Dignified, confidential dispute mediation and amicable separation without court bitterness.',
+      keywords: ['divorce mediation', 'divorce', 'mediation', 'amicable separation', 'dispute resolution', 'family dispute', 'separation', 'psg mediation'],
+      aliases: ['divorce', 'mediation', 'separation']
+    },
+    {
+      title: 'Prevent Sexual Violence',
+      url: 'harassment-support.htm',
+      desc: 'Workplace PoSH advisory, survivor support, harassment response & corporate sensitization.',
+      keywords: ['prevent sexual violence', 'sexual harassment', 'posh', 'workplace harassment', 'harassment support', 'harassment', 'posh training', 'safety'],
+      aliases: ['sexual harassment', 'posh', 'harassment']
+    },
+
+    // 3. No Cost Resources
+    {
+      title: 'For Students',
+      url: 'students.htm',
+      desc: 'Self-guided relationship check-ins, study pressure management & setting healthy boundaries.',
+      keywords: ['for students', 'students', 'student', 'campus', 'youth', 'study pressure', 'three line check in', 'free exercises', 'free resources'],
+      aliases: ['students', 'student']
+    },
+    {
+      title: 'For Ex-Servicemen Families',
+      url: 'military-families.htm',
+      desc: 'Guidance for armed forces veterans and families navigating postings, transition & reunion.',
+      keywords: ['for ex-servicemen families', 'military families', 'ex servicemen', 'veterans', 'defence families', 'armed forces', 'reconnecting', 'military'],
+      aliases: ['military families', 'ex servicemen', 'veterans']
+    },
+    {
+      title: 'Do’s and Don’ts',
+      url: 'faq.htm',
+      desc: 'Common questions, session guidelines, constructive communication principles & FAQ.',
+      keywords: ['dos and donts', "do's and don'ts", 'faq', 'frequently asked questions', 'questions', 'preparation', 'answers', 'guidelines'],
+      aliases: ['faq', 'dos and donts', "do's and don'ts", 'frequently asked questions']
+    },
+    {
+      title: 'Blog',
+      url: 'blog.htm',
+      desc: 'Evidence-based relationship essays, clinical insights, communication frameworks & articles.',
+      keywords: ['blog', 'articles', 'essays', 'guides', 'insights', 'reading', 'relationship advice', 'publications'],
+      aliases: ['blog', 'articles']
+    },
+    {
+      title: 'Gen Z Kama Sutra',
+      url: 'gen-z-kama-sutra.htm',
+      desc: 'Modern perspectives on consent, emotional safety, intimacy & respectful communication.',
+      keywords: ['gen z kama sutra', 'gen z', 'kama sutra', 'modern intimacy', 'consent', 'emotional safety', 'communication', 'youth intimacy'],
+      aliases: ['gen z', 'kama sutra', 'gen z intimacy']
+    },
+    {
+      title: 'Corporate Kamasutra',
+      url: 'corporate-kamasutra.htm',
+      desc: 'Guidance for working professionals on balancing career demands, communication under stress & personal relationships.',
+      keywords: ['corporate kamasutra', 'corporate kama sutra', 'working professionals', 'work-life balance', 'relationships', 'workplace boundaries', 'corporate intimacy', 'stress communication'],
+      aliases: ['corporate kamasutra', 'corporate kama sutra', 'work-life intimacy']
+    },
+
+    // 4. Recruitment
+    {
+      title: 'Join as a Doctor',
+      url: 'join-doctor.htm',
+      desc: 'Opportunities for MD specialists, andrologists & intimacy clinicians in the SPOUZY network.',
+      keywords: ['join as a doctor', 'doctor', 'careers', 'medical recruitment', 'clinical careers', 'md', 'physician', 'specialist'],
+      aliases: ['doctor', 'join doctor']
+    },
+    {
+      title: 'Join as a Counsellor',
+      url: 'join-counsellor.htm',
+      desc: 'Openings for licensed psychologists, marriage counsellors & dispute resolution mediators.',
+      keywords: ['join as a counsellor', 'counsellor', 'therapist', 'psychologist', 'counselling careers', 'mediator', 'join team'],
+      aliases: ['counsellor', 'join counsellor', 'therapist']
+    },
+
+    // 5. Appointments & Contact
+    {
+      title: 'Practitioner Directory',
+      url: 'appointment.htm',
+      desc: 'Verified directory of medical doctors, psychologists & dispute mediators across pan-India centers.',
+      keywords: ['practitioner directory', 'directory', 'doctors', 'specialists directory', 'practitioners', 'clinicians', 'consultation desk'],
+      aliases: ['practitioner directory', 'doctor directory', 'directory']
+    },
+    {
+      title: 'Request an Appointment',
+      url: 'book-appoinment.htm',
+      desc: 'Schedule a private consultation with custom duration, date, mode & specialist selection.',
+      keywords: ['request an appointment', 'book appointment', 'booking', 'schedule consultation', 'scheduler', 'book session', 'consultation'],
+      aliases: ['appointment', 'book appointment', 'booking']
+    },
+    {
+      title: 'Contact & Clinics',
+      url: 'contactus.htm',
+      desc: 'Pan-India clinic addresses (Mumbai, Pune, Delhi, Bengaluru), helpline & contact desk.',
+      keywords: ['contact & clinics', 'contact us', 'contact', 'clinics', 'mulund', 'mumbai', 'pune', 'delhi', 'bengaluru', 'helpline', 'directions'],
+      aliases: ['contact', 'clinics', 'directions', 'phone']
+    },
+
+    // 6. Policies & Legal
+    {
+      title: 'Privacy Policy',
+      url: 'privacy-policy.htm',
+      desc: 'Patient confidentiality standards, data encryption & non-disclosure compliance.',
+      keywords: ['privacy policy', 'privacy', 'confidentiality', 'data protection', 'gdpr', 'dpdp', 'security'],
+      aliases: ['privacy', 'privacy policy']
+    },
+    {
+      title: 'Terms of Use',
+      url: 'terms.htm',
+      desc: 'Terms and conditions governing clinical consultations, dispute mediation & digital services.',
+      keywords: ['terms of use', 'terms', 'terms and conditions', 'legal', 'agreement', 'user terms'],
+      aliases: ['terms', 'terms of use']
+    },
+    {
+      title: 'Confidentiality Pledge',
+      url: 'confidentiality.htm',
+      desc: 'Absolute clinical discretion, doctor-patient privilege & strict privacy protocols.',
+      keywords: ['confidentiality pledge', 'confidentiality', 'discretion', 'doctor-patient privilege', 'privacy pledge'],
+      aliases: ['confidentiality', 'pledge']
+    },
+    {
+      title: 'Refund & Cancellation Policy',
+      url: 'refund-policy.htm',
+      desc: 'Transparent guidelines for session rescheduling, cancellations & refunds.',
+      keywords: ['refund & cancellation policy', 'refund policy', 'cancellation', 'refund', 'rescheduling', 'fees'],
+      aliases: ['refund', 'cancellation']
+    },
+    {
+      title: 'Teleconsultation Policy',
+      url: 'teleconsultation-policy.htm',
+      desc: 'Telemedicine Practice Guidelines compliance for online audio & video consultations.',
+      keywords: ['teleconsultation policy', 'teleconsultation', 'telehealth', 'online consultation', 'telemedicine'],
+      aliases: ['telehealth', 'teleconsultation']
+    },
+    {
+      title: 'Solution Guarantee Terms',
+      url: 'solution-guarantee.htm',
+      desc: 'Care commitment and professional resolution standards under the SPOUZY guarantee.',
+      keywords: ['solution guarantee terms', 'solution guarantee', 'guarantee', 'resolution guarantee', 'commitment'],
+      aliases: ['guarantee', 'solution guarantee']
+    },
+    {
+      title: 'Informed Consent',
+      url: 'informed-consent.htm',
+      desc: 'Informed consent standards for counselling, intimate health examinations & mediation.',
+      keywords: ['informed consent', 'consent', 'clinical consent', 'patient consent', 'agreement'],
+      aliases: ['consent', 'informed consent']
+    },
+    {
+      title: 'Medical & Legal Disclaimer',
+      url: 'disclaimer.htm',
+      desc: 'Boundaries between clinical health guidance, legal dispute mediation & medical care.',
+      keywords: ['medical & legal disclaimer', 'disclaimer', 'medical disclaimer', 'legal disclaimer', 'advice limits'],
+      aliases: ['disclaimer']
+    },
+    {
+      title: 'Payment & Billing Policy',
+      url: 'payment-policy.htm',
+      desc: 'Fee schedules, accepted payment methods, invoicing & transparent billing rules.',
+      keywords: ['payment & billing policy', 'payment policy', 'billing', 'fees', 'pricing', 'invoicing'],
+      aliases: ['payment', 'billing', 'fees']
+    },
+    {
+      title: 'Digital Products Delivery Policy',
+      url: 'delivery-policy.htm',
+      desc: 'Instant delivery terms for webinars, downloadable guides & digital materials.',
+      keywords: ['digital products delivery policy', 'delivery policy', 'digital products', 'ebook delivery', 'downloads'],
+      aliases: ['delivery', 'digital delivery']
+    },
+    {
+      title: 'Cookie Policy',
+      url: 'cookie-policy.htm',
+      desc: 'Essential website cookies and privacy-preserving analytics disclosure.',
+      keywords: ['cookie policy', 'cookies', 'cookie', 'tracking', 'browser storage'],
+      aliases: ['cookies', 'cookie policy']
+    },
+    {
+      title: 'Grievance Redressal Policy',
+      url: 'grievance-redressal.htm',
+      desc: 'Dedicated officer, procedure and timeline for resolving client grievances.',
+      keywords: ['grievance redressal policy', 'grievance redressal', 'grievance', 'complaints', 'ombudsman', 'redressal'],
+      aliases: ['grievance', 'complaints']
+    },
+    {
+      title: 'Reviews & Testimonials Policy',
+      url: 'testimonials-policy.htm',
+      desc: 'Ethical testimonial standards without compromising patient privacy or doctor privilege.',
+      keywords: ['reviews & testimonials policy', 'testimonials policy', 'reviews', 'testimonials', 'patient feedback'],
+      aliases: ['reviews', 'testimonials']
+    },
+
+    // 7. Additional Guides & Resources
+    {
+      title: 'Reconnecting After Time Apart',
+      url: 'reconnecting-after-time-apart.htm',
+      desc: 'Practical guide to rebuilding intimacy and trust after long-distance, deployment or time apart.',
+      keywords: ['reconnecting after time apart', 'reconnecting', 'time apart', 'long distance', 'reunion', 'rebuilding trust'],
+      aliases: ['reconnecting', 'time apart']
+    },
+    {
+      title: 'Before a Shared Decision',
+      url: 'before-a-shared-decision.htm',
+      desc: 'Structured reflection for couples facing major life, career or relationship crossroads.',
+      keywords: ['before a shared decision', 'shared decision', 'decisions', 'crossroads', 'couples planning'],
+      aliases: ['decision', 'shared decision']
+    },
+    {
+      title: 'Counselling Overview',
+      url: 'counselling.htm',
+      desc: 'Comprehensive approach to SPOUZY relationship counselling, methodology & care plans.',
+      keywords: ['counselling overview', 'counselling', 'therapy', 'counseling', 'sessions', 'approach'],
+      aliases: ['counselling', 'therapy']
+    },
+    {
+      title: 'Coaching & Personal Guidance',
+      url: 'coaching.htm',
+      desc: 'Individual coaching for emotional resilience, communication agility & personal clarity.',
+      keywords: ['coaching & personal guidance', 'coaching', 'personal guidance', 'clarity', 'coaching sessions'],
+      aliases: ['coaching']
+    },
+    {
+      title: 'Treatment & Clinical Overview',
+      url: 'treatment.htm',
+      desc: 'Clinical questions and guidelines when medical concerns overlap with relationship dynamics.',
+      keywords: ['treatment & clinical overview', 'treatment', 'clinical', 'medical concerns', 'clinical care'],
+      aliases: ['treatment', 'clinical']
+    },
+    {
+      title: 'Corporate Training & PoSH',
+      url: 'training.htm',
+      desc: 'Executive wellness workshops, anti-harassment training & corporate PoSH compliance.',
+      keywords: ['corporate training & posh', 'training', 'posh training', 'corporate workshops', 'sensitization'],
+      aliases: ['training', 'corporate training']
+    },
+    {
+      title: 'Webinars & E-books',
+      url: 'webinar-ebook.htm',
+      desc: 'Digital educational resources, relationship webinars & downloadable guides.',
+      keywords: ['webinars & e-books', 'webinar', 'ebook', 'e-books', 'guides', 'downloads'],
+      aliases: ['webinar', 'ebook']
+    },
+
+    // 8. Account Destinations (Honest navigation)
+    {
+      title: 'Patient Portal Login',
+      url: 'register.htm',
+      desc: 'Patient portal access desk (online self-service in development; direct booking available).',
+      keywords: ['patient portal login', 'login', 'sign in', 'portal', 'account', 'patient access'],
+      aliases: ['login', 'sign in', 'portal']
+    },
+    {
+      title: 'Create Patient Account',
+      url: 'create-account.htm',
+      desc: 'Patient record creation status (online registration in testing; appointments booked directly).',
+      keywords: ['create patient account', 'create account', 'register', 'sign up', 'new patient', 'account registration'],
+      aliases: ['register', 'create account', 'sign up']
+    }
+  ];
+
+  function normalizeSearchText(str) {
+    if (!str) return '';
+    return str
+      .toLowerCase()
+      .replace(/[\u2018\u2019']/g, '') // remove straight & smart apostrophes
+      .replace(/[\u2013\u2014-]/g, ' ') // convert hyphens & dashes to spaces
+      .replace(/[^\w\s]/g, ' ') // remove other punctuation
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function scoreSearchItem(item, queryNorm, queryTokens) {
+    const titleNorm = normalizeSearchText(item.title);
+    if (!queryNorm) return 1;
+
+    // Exact title match gets highest priority
+    if (titleNorm === queryNorm) return 1000;
+
+    // Separation of Pre-Marriage and Post-Marriage:
+    if (queryNorm.startsWith('pre') && titleNorm.startsWith('post')) return 0;
+    if (queryNorm.startsWith('post') && titleNorm.startsWith('pre')) return 0;
+
+    let score = 0;
+
+    // Title starts with query
+    if (titleNorm.startsWith(queryNorm)) {
+      score += 500;
+    } else if (titleNorm.includes(queryNorm)) {
+      const wordRegex = new RegExp('\\b' + queryNorm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b');
+      if (wordRegex.test(titleNorm)) {
+        score += 350;
+      } else {
+        score += 200;
+      }
+    }
+
+    // Aliases match
+    if (item.aliases && item.aliases.length) {
+      for (const alias of item.aliases) {
+        const aliasNorm = normalizeSearchText(alias);
+        if (aliasNorm === queryNorm) {
+          score += 400;
+          break;
+        } else if (aliasNorm.startsWith(queryNorm)) {
+          score += 250;
+          break;
+        } else if (aliasNorm.includes(queryNorm)) {
+          score += 150;
+          break;
+        }
+      }
+    }
+
+    // Keywords match
+    if (item.keywords && item.keywords.length) {
+      for (const kw of item.keywords) {
+        const kwNorm = normalizeSearchText(kw);
+        if (kwNorm === queryNorm) {
+          score += 300;
+          break;
+        } else if (kwNorm.startsWith(queryNorm)) {
+          score += 180;
+          break;
+        } else if (kwNorm.includes(queryNorm)) {
+          score += 120;
+          break;
+        }
+      }
+    }
+
+    // Description match
+    const descNorm = normalizeSearchText(item.desc);
+    if (descNorm.includes(queryNorm)) {
+      score += 60;
+    }
+
+    // Multi-token match across all fields
+    if (queryTokens.length > 1) {
+      const combined = titleNorm + ' ' + descNorm + ' ' + (item.keywords || []).map(normalizeSearchText).join(' ');
+      const allTokensMatch = queryTokens.every(tok => combined.includes(tok));
+      if (allTokensMatch) {
+        score += 100;
+      }
+    }
+
+    return score;
+  }
+
+  const searchTriggers = document.querySelectorAll('.sp-search-trigger, .sp-search-btn');
+  const searchModal = document.querySelector('.sp-search-modal');
+  const searchField = document.querySelector('.sp-search-field');
+  const searchClose = document.querySelector('.sp-search-close');
+  const drawerSearchInput = document.querySelector('.sp-drawer-search-input');
+  const activeMobileDrawer = document.querySelector('.sp-mobile-drawer');
+
+  let lastActiveElement = null;
+  let restoreFocusToTrigger = true;
+
+  function renderSearchResults(query = '') {
+    if (!searchModal) return;
+    const resultsList = searchModal.querySelector('.sp-search-results-list, .sp-search-results');
+    if (!resultsList) return;
+
+    resultsList.innerHTML = '';
+
+    const queryNorm = normalizeSearchText(query);
+    const queryTokens = queryNorm ? queryNorm.split(' ').filter(Boolean) : [];
+
+    let matched = [];
+    if (!queryNorm) {
+      // Default: top 21 primary pages in order
+      matched = SPOUZY_SEARCH_INDEX.slice(0, 21);
+    } else {
+      const scored = [];
+      for (const item of SPOUZY_SEARCH_INDEX) {
+        const score = scoreSearchItem(item, queryNorm, queryTokens);
+        if (score > 0) {
+          scored.push({ item, score });
+        }
+      }
+      scored.sort((a, b) => b.score - a.score);
+      matched = scored.map(s => s.item);
+    }
+
+    if (!matched.length) {
+      const emptyLi = document.createElement('li');
+      emptyLi.className = 'sp-search-no-results';
+      emptyLi.style.padding = '24px 16px';
+      emptyLi.style.textAlign = 'center';
+      emptyLi.style.color = '#8a737a';
+      emptyLi.style.fontSize = '14px';
+      emptyLi.textContent = 'No matching pages or resources found for "' + query + '".';
+      resultsList.appendChild(emptyLi);
+      return;
+    }
+
+    matched.forEach(item => {
+      const li = document.createElement('li');
+      li.className = 'sp-search-result-item';
+
+      const a = document.createElement('a');
+      a.setAttribute('href', item.url);
+
+      const contentWrap = document.createElement('div');
+      contentWrap.style.display = 'flex';
+      contentWrap.style.flexDirection = 'column';
+      contentWrap.style.gap = '2px';
+      contentWrap.style.textAlign = 'left';
+
+      const titleSpan = document.createElement('span');
+      titleSpan.style.fontWeight = '650';
+      titleSpan.style.color = 'var(--sp-wine, #5b1a29)';
+      titleSpan.style.fontSize = '14px';
+      titleSpan.textContent = item.title;
+
+      const descSpan = document.createElement('span');
+      descSpan.style.fontSize = '12px';
+      descSpan.style.color = 'var(--sp-text-muted, #735960)';
+      descSpan.style.fontWeight = '400';
+      descSpan.style.lineHeight = '1.3';
+      descSpan.textContent = item.desc;
+
+      contentWrap.appendChild(titleSpan);
+      contentWrap.appendChild(descSpan);
+
+      const arrowSpan = document.createElement('span');
+      arrowSpan.setAttribute('aria-hidden', 'true');
+      arrowSpan.style.color = 'var(--sp-copper, #bf674f)';
+      arrowSpan.style.fontWeight = '700';
+      arrowSpan.style.marginLeft = '12px';
+      arrowSpan.textContent = '↗';
+
+      a.appendChild(contentWrap);
+      a.appendChild(arrowSpan);
+
+      a.addEventListener('click', function (e) {
+        handleSearchResultActivation(e, item.url, a);
+      });
+
+      li.appendChild(a);
+      resultsList.appendChild(li);
+    });
+  }
+
+  function handleSearchResultActivation(e, href, anchorEl) {
+    restoreFocusToTrigger = false;
+    closeSearch();
+
+    const currentPath = window.location.pathname.split('/').pop() || 'index.htm';
+    const targetUrl = new URL(href, window.location.href);
+    const targetPath = targetUrl.pathname.split('/').pop() || 'index.htm';
+    const targetHash = targetUrl.hash;
+
+    if (targetPath === currentPath && targetHash) {
+      e.preventDefault();
+      const targetElement = document.querySelector(targetHash);
+      if (targetElement) {
+        const stickyHeader = document.querySelector('.sp-header-sticky-wrapper, .sp-header-modern');
+        const headerHeight = stickyHeader ? stickyHeader.getBoundingClientRect().height : 90;
+        const targetRect = targetElement.getBoundingClientRect();
+        const offsetPosition = window.pageYOffset + targetRect.top - headerHeight - 16;
+
+        window.scrollTo({
+          top: Math.max(0, offsetPosition),
+          behavior: 'smooth'
+        });
+        targetElement.focus({ preventScroll: true });
+        window.history.pushState(null, '', targetHash);
+      }
+    }
+  }
+
+  function openSearch() {
+    if (!searchModal) return;
+    lastActiveElement = document.activeElement;
+    restoreFocusToTrigger = true;
+
+    if (activeMobileDrawer && activeMobileDrawer.classList.contains('is-open')) {
+      activeMobileDrawer.classList.remove('is-open');
+      document.body.style.overflow = '';
+    }
+
+    searchModal.classList.add('is-open');
+    renderSearchResults(searchField ? searchField.value : '');
+
+    setTimeout(() => {
+      if (searchField) searchField.focus();
+    }, 100);
+  }
+
+  function closeSearch() {
+    if (!searchModal) return;
+    searchModal.classList.remove('is-open');
+    if (searchField) searchField.value = '';
+
+    if (restoreFocusToTrigger && lastActiveElement && typeof lastActiveElement.focus === 'function') {
+      lastActiveElement.focus();
+    }
+    restoreFocusToTrigger = true;
+  }
+
+  searchTriggers.forEach(trigger => {
+    trigger.addEventListener('click', function (e) {
+      e.preventDefault();
+      openSearch();
+    });
+  });
+
+  if (drawerSearchInput) {
+    drawerSearchInput.addEventListener('click', function (e) {
+      e.preventDefault();
+      openSearch();
+    });
+    drawerSearchInput.addEventListener('focus', function (e) {
+      e.preventDefault();
+      openSearch();
+    });
+  }
+
+  if (searchClose) {
+    searchClose.addEventListener('click', closeSearch);
+  }
+
+  if (searchModal) {
+    searchModal.addEventListener('click', function (e) {
+      if (e.target === searchModal) {
+        closeSearch();
+      }
+    });
+  }
+
+  // Keyboard shortcut Ctrl+K or / to open search
+  document.addEventListener('keydown', function (e) {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      if (searchModal && searchModal.classList.contains('is-open')) {
+        closeSearch();
+      } else {
+        openSearch();
+      }
+    } else if (e.key === 'Escape' && searchModal && searchModal.classList.contains('is-open')) {
+      closeSearch();
+    }
+  });
+
+  if (searchField) {
+    searchField.addEventListener('input', function () {
+      renderSearchResults(this.value);
+    });
+  }
+
+  // 6. MOBILE DRAWER NAVIGATION
+  // -------------------------------------------------------------------------
+  const mobileToggle = document.querySelector('.sp-mobile-toggle');
+  const mobileDrawer = document.querySelector('.sp-mobile-drawer');
+  const mobileClose = document.querySelector('.sp-mobile-drawer-close');
+
+  if (mobileToggle && mobileDrawer) {
+    mobileToggle.addEventListener('click', function () {
+      mobileDrawer.classList.toggle('is-open');
+      document.body.style.overflow = mobileDrawer.classList.contains('is-open') ? 'hidden' : '';
+    });
+
+    if (mobileClose) {
+      mobileClose.addEventListener('click', function () {
+        mobileDrawer.classList.remove('is-open');
+        document.body.style.overflow = '';
+      });
+    }
+
+    mobileDrawer.addEventListener('click', function (e) {
+      if (e.target === mobileDrawer) {
+        mobileDrawer.classList.remove('is-open');
+        document.body.style.overflow = '';
+      }
+    });
+  }
+
+  // -------------------------------------------------------------------------
+  // 7. SMOOTH IN-PAGE ANCHOR JUMPS
+  // -------------------------------------------------------------------------
+  document.querySelectorAll('a[href^="#"]:not([href="#"])').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  // 8. SCROLL-TRIGGERED REVEAL ANIMATION ENGINE
+  // -------------------------------------------------------------------------
+  const revealElements = document.querySelectorAll('.sp-reveal, .sp-reveal-left, .sp-reveal-right, .sp-reveal-scale');
+  if ('IntersectionObserver' in window && revealElements.length) {
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('sp-in-view');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      root: null,
+      threshold: 0.12,
+      rootMargin: '0px 0px -40px 0px'
+    });
+
+    revealElements.forEach(el => revealObserver.observe(el));
+  } else {
+    // Fallback if IntersectionObserver not supported
+    revealElements.forEach(el => el.classList.add('sp-in-view'));
+  }
+
+  // -------------------------------------------------------------------------
+  // 9. DYNAMIC NUMBER COUNT-UP ANIMATION
+  // -------------------------------------------------------------------------
+  const counters = document.querySelectorAll('.sp-count-up');
+  if ('IntersectionObserver' in window && counters.length) {
+    const counterObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          const targetNum = parseInt(el.getAttribute('data-target'), 10) || 0;
+          const suffix = el.getAttribute('data-suffix') || '';
+          const prefix = el.getAttribute('data-prefix') || '';
+          const duration = 2000; // 2 seconds
+          const startTime = performance.now();
+
+          function updateCounter(currentTime) {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            // Ease-out cubic
+            const easeOut = 1 - Math.pow(1 - progress, 3);
+            const currentVal = Math.floor(easeOut * targetNum);
+
+            el.textContent = prefix + currentVal.toLocaleString() + suffix;
+
+            if (progress < 1) {
+              requestAnimationFrame(updateCounter);
+            } else {
+              el.textContent = prefix + targetNum.toLocaleString() + suffix;
+              el.classList.add('is-counted');
+            }
+          }
+
+          requestAnimationFrame(updateCounter);
+          observer.unobserve(el);
+        }
+      });
+    }, {
+      threshold: 0.3
+    });
+
+    counters.forEach(c => counterObserver.observe(c));
+  }
+
+  // -------------------------------------------------------------------------
+  // 10. ROTATING KINETIC WORD ANIMATION
+  // -------------------------------------------------------------------------
+  const rotatingWords = document.querySelectorAll('.sp-rotating-word');
+  if (rotatingWords.length > 1) {
+    let activeWordIdx = 0;
+    setInterval(() => {
+      rotatingWords[activeWordIdx].classList.remove('is-active');
+      rotatingWords[activeWordIdx].classList.add('is-exit');
+
+      const prevIdx = activeWordIdx;
+      setTimeout(() => {
+        rotatingWords[prevIdx].classList.remove('is-exit');
+      }, 600);
+
+      activeWordIdx = (activeWordIdx + 1) % rotatingWords.length;
+      rotatingWords[activeWordIdx].classList.add('is-active');
+    }, 2800);
+  }
+
+  // -------------------------------------------------------------------------
+  // 11. SUBPAGE INTERACTIVE CONTROLLERS (BOOKING, SLOTS, FILTERS, FEEDBACK)
+  // -------------------------------------------------------------------------
+
+  // A. Time Slot Selector
+  document.querySelectorAll('.sp-slot-pill').forEach(pill => {
+    pill.addEventListener('click', function () {
+      const parent = this.closest('.sp-slots-grid');
+      if (parent) {
+        parent.querySelectorAll('.sp-slot-pill').forEach(p => p.classList.remove('is-selected'));
+      }
+      this.classList.add('is-selected');
+      const hiddenInput = document.getElementById('selectedTimeSlot');
+      if (hiddenInput) {
+        hiddenInput.value = this.textContent.trim();
+      }
+    });
+  });
+
+  // B. Doctor "Quick Book" click: Auto-select doctor in form & scroll smoothly
+  document.querySelectorAll('[data-book-doctor]').forEach(btn => {
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      const doctorName = this.getAttribute('data-book-doctor');
+      const doctorSelect = document.getElementById('spDoctorSelect');
+      if (doctorSelect) {
+        for (let i = 0; i < doctorSelect.options.length; i++) {
+          if (doctorSelect.options[i].text.includes(doctorName) || doctorSelect.options[i].value.includes(doctorName)) {
+            doctorSelect.selectedIndex = i;
+            break;
+          }
+        }
+      }
+      const bookingCard = document.querySelector('.sp-booking-card-modern');
+      if (bookingCard) {
+        bookingCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        bookingCard.style.boxShadow = '0 0 0 4px rgba(191, 103, 79, 0.4)';
+        setTimeout(() => {
+          bookingCard.style.boxShadow = '';
+        }, 1200);
+      }
+    });
+  });
+
+  // C. Specialty Filter in Doctor Directory
+  document.querySelectorAll('.sp-filter-pill').forEach(pill => {
+    pill.addEventListener('click', function () {
+      const parent = this.closest('.sp-filter-bar');
+      if (parent) {
+        parent.querySelectorAll('.sp-filter-pill').forEach(p => p.classList.remove('is-active'));
+      }
+      this.classList.add('is-active');
+      const filter = this.getAttribute('data-filter');
+      const doctorCards = document.querySelectorAll('.sp-doctor-card-modern');
+      doctorCards.forEach(card => {
+        if (!filter || filter === 'all') {
+          card.style.display = 'grid';
+        } else {
+          const category = card.getAttribute('data-category') || '';
+          if (category.toLowerCase().includes(filter.toLowerCase())) {
+            card.style.display = 'grid';
+          } else {
+            card.style.display = 'none';
+          }
+        }
+      });
+    });
+  });
+
+  // D. Mode Tabs (All Modes, Virtual, Clinic)
+  document.querySelectorAll('.sp-mode-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
+      const parent = this.closest('.sp-booking-modes');
+      if (parent) {
+        parent.querySelectorAll('.sp-mode-btn').forEach(b => b.classList.remove('is-active'));
+      }
+      this.classList.add('is-active');
+      const mode = this.getAttribute('data-mode');
+      const doctorCards = document.querySelectorAll('.sp-doctor-card-modern');
+      doctorCards.forEach(card => {
+        if (!mode || mode === 'all') {
+          card.style.display = 'grid';
+        } else {
+          const cardModes = card.getAttribute('data-modes') || '';
+          if (cardModes.toLowerCase().includes(mode.toLowerCase())) {
+            card.style.display = 'grid';
+          } else {
+            card.style.display = 'none';
+          }
+        }
+      });
+    });
+  });
+
+  // =========================================================================
+  // 16. SHARED SPOUZY CONTACT & WHATSAPP CONFIGURATION
+  // =========================================================================
+  const SPOUZY_CONTACT_CONFIG = {
+    phoneDisplay: '+91 85919 45055',
+    phoneTel: 'tel:+918591945055',
+    whatsappNumber: '918591945055',
+    whatsappBaseUrl: 'https://wa.me/918591945055'
+  };
+
+  // Safe WhatsApp Navigation & Fallback Handoff Function
+  function openWhatsAppHandoff(phone, messageText, feedbackContainer) {
+    const encodedMsg = encodeURIComponent(messageText);
+    const waUrl = 'https://wa.me/' + phone + '?text=' + encodedMsg;
+
+    // Direct navigation without delayed timers to prevent browser popup blocking
+    try {
+      window.open(waUrl, '_blank', 'noopener,noreferrer');
+    } catch (err) {}
+
+    // Safe DOM construction for feedback and fallback
+    if (feedbackContainer) {
+      feedbackContainer.innerHTML = '';
+      feedbackContainer.style.display = 'block';
+
+      const titleDiv = document.createElement('div');
+      titleDiv.className = 'sp-form-handoff-title';
+      titleDiv.innerHTML = '<i class="fa fa-whatsapp" style="color: #25D366; font-size: 20px;" aria-hidden="true"></i> Continue in WhatsApp and press Send to complete your enquiry.';
+
+      const textP = document.createElement('p');
+      textP.className = 'sp-form-handoff-text';
+      textP.textContent = 'Your form details have been prepared for SPOUZY at +91 85919 45055. Please review the prefilled message in WhatsApp and tap Send to dispatch.';
+
+      const btnWrap = document.createElement('div');
+      btnWrap.style.display = 'flex';
+      btnWrap.style.flexWrap = 'wrap';
+      btnWrap.style.gap = '10px';
+      btnWrap.style.marginTop = '12px';
+
+      const fallbackLink = document.createElement('a');
+      fallbackLink.href = waUrl;
+      fallbackLink.target = '_blank';
+      fallbackLink.rel = 'noopener noreferrer';
+      fallbackLink.className = 'sp-form-handoff-btn';
+      fallbackLink.innerHTML = '<i class="fa fa-whatsapp" aria-hidden="true"></i> Open WhatsApp with my enquiry ↗';
+      btnWrap.appendChild(fallbackLink);
+
+      if (messageText.length > 1800) {
+        const copyBtn = document.createElement('button');
+        copyBtn.type = 'button';
+        copyBtn.className = 'sp-form-copy-btn';
+        copyBtn.innerHTML = '<i class="fa fa-clone" aria-hidden="true"></i> Copy Enquiry Text';
+        copyBtn.addEventListener('click', function () {
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(messageText).then(() => {
+              copyBtn.innerHTML = '<i class="fa fa-check" aria-hidden="true"></i> Copied to Clipboard';
+              setTimeout(() => { copyBtn.innerHTML = '<i class="fa fa-clone" aria-hidden="true"></i> Copy Enquiry Text'; }, 2000);
+            });
+          }
+        });
+        btnWrap.appendChild(copyBtn);
+      }
+
+      feedbackContainer.appendChild(titleDiv);
+      feedbackContainer.appendChild(textP);
+      feedbackContainer.appendChild(btnWrap);
+      feedbackContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }
+
+  // =========================================================================
+  // 16A. FLOATING CONTACT WIDGET (PULSING LAUNCHER, 5S/3S/2S AUTOMATIC TOOLTIP & PANEL)
+  // =========================================================================
+  function initSpouzyFloatingWidget() {
+    if (window.__spouzyFloatingWidgetInitialized) return;
+    window.__spouzyFloatingWidgetInitialized = true;
+
+    let widget = document.getElementById('spFloatingWidget');
+    if (!widget) {
+      widget = document.createElement('div');
+      widget.className = 'sp-floating-widget';
+      widget.id = 'spFloatingWidget';
+      widget.setAttribute('aria-label', 'Instant Chat & Talk - Contact SPOUZY');
+      widget.innerHTML = 
+        '<div class="sp-floating-panel" id="spFloatingPanel" role="dialog" aria-modal="false" aria-labelledby="spPanelHeading" hidden>' +
+          '<div class="sp-floating-panel-header">' +
+            '<div class="sp-floating-panel-title-wrap">' +
+              '<span class="sp-floating-wa-badge"><i class="fa fa-whatsapp" aria-hidden="true"></i></span>' +
+              '<div>' +
+                '<h3 class="sp-floating-panel-title" id="spPanelHeading">Talk to SPOUZY</h3>' +
+                '<p class="sp-floating-panel-sub"><i class="fa fa-bolt" aria-hidden="true" style="color: var(--sp-copper-light); margin-right: 3px;"></i>Instant Chat &amp; Talk</p>' +
+              '</div>' +
+            '</div>' +
+            '<button type="button" class="sp-floating-close-btn" id="spCloseWidgetBtn" aria-label="Close contact options">&times;</button>' +
+          '</div>' +
+          '<div class="sp-floating-panel-body">' +
+            '<p class="sp-floating-panel-text">Instant chat and talk support with our team on WhatsApp or direct call.</p>' +
+            '<div class="sp-floating-number-pill">' +
+              '<i class="fa fa-phone" aria-hidden="true"></i> +91 85919 45055' +
+            '</div>' +
+            '<div class="sp-floating-actions">' +
+              '<a href="https://wa.me/918591945055?text=Hello%20SPOUZY%2C%20I%20would%20like%20to%20know%20more%20about%20your%20services.%20Please%20help%20me%20with%20my%20enquiry." ' +
+                 'class="sp-floating-btn sp-floating-btn-wa" target="_blank" rel="noopener noreferrer">' +
+                '<i class="fa fa-whatsapp" aria-hidden="true"></i> Chat on WhatsApp' +
+              '</a>' +
+              '<a href="tel:+918591945055" class="sp-floating-btn sp-floating-btn-call">' +
+                '<i class="fa fa-phone" aria-hidden="true"></i> Call Now' +
+              '</a>' +
+            '</div>' +
+            '<div class="sp-floating-anim-toggle-wrap">' +
+              '<button type="button" class="sp-floating-anim-toggle-btn" id="spPauseAnimBtn" aria-pressed="false">' +
+                '<i class="fa fa-pause-circle" aria-hidden="true"></i> <span>Pause animations</span>' +
+              '</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '<button type="button" class="sp-floating-launcher" id="spWidgetLauncher" aria-expanded="false" aria-controls="spFloatingPanel" aria-label="Instant Chat &amp; Talk - Open SPOUZY contact options">' +
+          '<span class="sp-floating-launcher-inner">' +
+            '<i class="fa fa-whatsapp sp-floating-launcher-icon" aria-hidden="true"></i>' +
+          '</span>' +
+        '</button>' +
+        '<div class="sp-floating-hover-label" id="spFloatingHoverLabel" aria-hidden="true">Instant Chat &amp; Talk</div>';
+      document.body.appendChild(widget);
+    }
+
+    const launcher = widget.querySelector('#spWidgetLauncher');
+    const panel = widget.querySelector('#spFloatingPanel');
+    const closeBtn = widget.querySelector('#spCloseWidgetBtn');
+    const tooltip = widget.querySelector('#spFloatingHoverLabel');
+    const pauseBtn = widget.querySelector('#spPauseAnimBtn');
+
+    let showTimeout = null;
+    let hideTimeout = null;
+    let isPanelOpen = false;
+    let isHoveredOrFocused = false;
+    let isPausedByUser = false;
+
+    try {
+      isPausedByUser = localStorage.getItem('spouzy_pause_widget_anim') === 'true';
+    } catch (e) {
+      isPausedByUser = false;
+    }
+
+    const prefersReducedMotion = () => {
+      try {
+        return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      } catch (e) {
+        return false;
+      }
+    };
+
+    function updatePauseButtonUI() {
+      if (!pauseBtn) return;
+      pauseBtn.setAttribute('aria-pressed', isPausedByUser ? 'true' : 'false');
+      const span = pauseBtn.querySelector('span');
+      const icon = pauseBtn.querySelector('i');
+      if (span) {
+        span.textContent = isPausedByUser ? 'Resume animations' : 'Pause animations';
+      }
+      if (icon) {
+        icon.className = isPausedByUser ? 'fa fa-play-circle' : 'fa fa-pause-circle';
+      }
+      if (isPausedByUser) {
+        widget.classList.add('is-anim-paused');
+      } else {
+        widget.classList.remove('is-anim-paused');
+      }
+    }
+    updatePauseButtonUI();
+
+    function clearTimers() {
+      if (showTimeout) {
+        clearTimeout(showTimeout);
+        showTimeout = null;
+      }
+      if (hideTimeout) {
+        clearTimeout(hideTimeout);
+        hideTimeout = null;
+      }
+    }
+
+    function hideTooltipAuto() {
+      if (hideTimeout) {
+        clearTimeout(hideTimeout);
+        hideTimeout = null;
+      }
+      // While hovered or focused, keep tooltip visible instead of letting automatic timer hide it
+      if (isHoveredOrFocused) {
+        return;
+      }
+      if (tooltip) {
+        tooltip.classList.remove('is-visible');
+      }
+
+      // Schedule next show after 2 seconds (3s visible + 2s hidden = 5s start-to-start)
+      if (!isPanelOpen && !isPausedByUser && !prefersReducedMotion() && !document.hidden) {
+        showTimeout = setTimeout(showTooltipAuto, 2000);
+      }
+    }
+
+    function showTooltipAuto() {
+      if (showTimeout) {
+        clearTimeout(showTimeout);
+        showTimeout = null;
+      }
+      if (isPanelOpen || isPausedByUser || prefersReducedMotion() || document.hidden) {
+        return;
+      }
+
+      if (tooltip) {
+        tooltip.classList.add('is-visible');
+      }
+
+      // Tooltip remains visible for exactly 3 seconds
+      hideTimeout = setTimeout(hideTooltipAuto, 3000);
+    }
+
+    function startAutoCycle(initialDelay = 5000) {
+      clearTimers();
+      if (isPanelOpen || isPausedByUser || prefersReducedMotion() || document.hidden) {
+        return;
+      }
+      showTimeout = setTimeout(showTooltipAuto, initialDelay);
+    }
+
+    function stopAutoCycle() {
+      clearTimers();
+      if (tooltip && !isHoveredOrFocused) {
+        tooltip.classList.remove('is-visible');
+      }
+    }
+
+    // Start 5-second initial countdown on page load
+    startAutoCycle(5000);
+
+    function openPanel() {
+      if (!panel || !launcher) return;
+      isPanelOpen = true;
+      stopAutoCycle();
+      if (tooltip) {
+        tooltip.classList.remove('is-visible');
+      }
+      widget.classList.add('panel-open');
+      panel.hidden = false;
+      panel.classList.add('is-open');
+      launcher.setAttribute('aria-expanded', 'true');
+      launcher.setAttribute('aria-label', 'Close SPOUZY contact options');
+      const firstAction = panel.querySelector('.sp-floating-btn-wa, button');
+      if (firstAction) firstAction.focus();
+    }
+
+    function closePanel(returnFocus = true) {
+      if (!panel || !launcher) return;
+      isPanelOpen = false;
+      panel.classList.remove('is-open');
+      widget.classList.remove('panel-open');
+      launcher.setAttribute('aria-expanded', 'false');
+      launcher.setAttribute('aria-label', 'Instant Chat & Talk - Open SPOUZY contact options');
+      setTimeout(() => {
+        if (!panel.classList.contains('is-open')) {
+          panel.hidden = true;
+        }
+      }, 240);
+      if (returnFocus) launcher.focus();
+
+      // When panel closes, start a fresh 5-second wait before next automatic appearance
+      startAutoCycle(5000);
+    }
+
+    if (launcher) {
+      launcher.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (panel && panel.classList.contains('is-open')) {
+          closePanel();
+        } else {
+          openPanel();
+        }
+      });
+
+      launcher.addEventListener('pointerenter', function () {
+        isHoveredOrFocused = true;
+        widget.classList.add('is-launcher-hovered');
+        if (tooltip && !isPanelOpen) {
+          tooltip.classList.add('is-visible');
+        }
+      });
+
+      launcher.addEventListener('pointerleave', function () {
+        isHoveredOrFocused = false;
+        widget.classList.remove('is-launcher-hovered');
+        // Return to automatic behavior without flicker
+        if (!isPanelOpen && !isPausedByUser && !prefersReducedMotion() && !document.hidden) {
+          if (tooltip) {
+            tooltip.classList.remove('is-visible');
+          }
+          // Resume automatic cycle: 2 seconds hidden before next appearance
+          clearTimers();
+          showTimeout = setTimeout(showTooltipAuto, 2000);
+        } else {
+          if (tooltip) tooltip.classList.remove('is-visible');
+        }
+      });
+
+      launcher.addEventListener('focus', function () {
+        isHoveredOrFocused = true;
+        widget.classList.add('is-launcher-hovered');
+        if (tooltip && !isPanelOpen) {
+          tooltip.classList.add('is-visible');
+        }
+      });
+
+      launcher.addEventListener('blur', function () {
+        isHoveredOrFocused = false;
+        widget.classList.remove('is-launcher-hovered');
+        if (!isPanelOpen && !isPausedByUser && !prefersReducedMotion() && !document.hidden) {
+          if (tooltip) {
+            tooltip.classList.remove('is-visible');
+          }
+          clearTimers();
+          showTimeout = setTimeout(showTooltipAuto, 2000);
+        } else {
+          if (tooltip) tooltip.classList.remove('is-visible');
+        }
+      });
+    }
+
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        closePanel();
+      });
+    }
+
+    if (pauseBtn) {
+      pauseBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        isPausedByUser = !isPausedByUser;
+        try {
+          localStorage.setItem('spouzy_pause_widget_anim', isPausedByUser ? 'true' : 'false');
+        } catch (err) {}
+        updatePauseButtonUI();
+        if (isPausedByUser) {
+          stopAutoCycle();
+        } else {
+          startAutoCycle(5000);
+        }
+      });
+    }
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && panel && panel.classList.contains('is-open')) {
+        closePanel();
+      }
+    });
+
+    document.addEventListener('click', function (e) {
+      if (panel && panel.classList.contains('is-open') && !widget.contains(e.target)) {
+        closePanel(false);
+      }
+    });
+
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) {
+        stopAutoCycle();
+      } else {
+        if (!isPanelOpen && !isPausedByUser) {
+          // When visible again, start a fresh 5-second wait. Do not replay missed cycles.
+          startAutoCycle(5000);
+        }
+      }
+    });
+
+    try {
+      const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+      if (motionQuery.addEventListener) {
+        motionQuery.addEventListener('change', function (e) {
+          if (e.matches) {
+            stopAutoCycle();
+          } else {
+            if (!isPanelOpen && !isPausedByUser) {
+              startAutoCycle(5000);
+            }
+          }
+        });
+      }
+    } catch (err) {}
+  }
+
+  // =========================================================================
+  // 16B. CONTACT FORM HANDLER (contactus.htm)
+  // =========================================================================
+  function initSpouzyContactForm() {
+    const form = document.getElementById('spContactForm');
+    if (!form) return;
+
+    const validationError = document.getElementById('spContactValidationError');
+    const feedbackContainer = document.getElementById('spContactFeedback');
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      if (validationError) validationError.style.display = 'none';
+
+      const firstNameInput = document.getElementById('cfFirstName');
+      const lastNameInput = document.getElementById('cfLastName');
+      const phoneInput = document.getElementById('cfPhone');
+      const emailInput = document.getElementById('cfEmail');
+      const serviceSelect = document.getElementById('cfService');
+      const contactMethodSelect = document.getElementById('cfPreferredContact');
+      const messageInput = document.getElementById('cfMessage');
+
+      const firstName = firstNameInput ? firstNameInput.value.trim() : '';
+      const lastName = lastNameInput ? lastNameInput.value.trim() : '';
+      const phone = phoneInput ? phoneInput.value.trim() : '';
+      const email = emailInput ? emailInput.value.trim() : '';
+      const service = serviceSelect && serviceSelect.selectedIndex > 0 ? serviceSelect.options[serviceSelect.selectedIndex].text.trim() : '';
+      const preferredContact = contactMethodSelect && contactMethodSelect.selectedIndex >= 0 ? contactMethodSelect.options[contactMethodSelect.selectedIndex].text.trim() : '';
+      const message = messageInput ? messageInput.value.trim() : '';
+
+      if (!firstName) {
+        showContactError('Please provide your first name or alias.');
+        if (firstNameInput) firstNameInput.focus();
+        return;
+      }
+
+      if (!phone) {
+        showContactError('Please provide your contact phone or WhatsApp number.');
+        if (phoneInput) phoneInput.focus();
+        return;
+      }
+
+      if (!email || !email.includes('@')) {
+        showContactError('Please provide a valid email address.');
+        if (emailInput) emailInput.focus();
+        return;
+      }
+
+      if (!service) {
+        showContactError('Please select your area of concern / service.');
+        if (serviceSelect) serviceSelect.focus();
+        return;
+      }
+
+      const fullName = (firstName + (lastName ? ' ' + lastName : '')).trim();
+
+      const lines = [
+        'Hello SPOUZY, I have an enquiry.',
+        '',
+        'Name / Alias: ' + fullName,
+        'Phone: ' + phone,
+        'Email: ' + email,
+        'Subject / Service: ' + service,
+      ];
+
+      if (preferredContact) {
+        lines.push('Preferred Contact Method: ' + preferredContact);
+      }
+
+      lines.push('Message: ' + (message || 'Not provided'));
+      lines.push('');
+      lines.push('Please let me know the next steps.');
+
+      const fullMessage = lines.join('\n');
+      openWhatsAppHandoff('918591945055', fullMessage, feedbackContainer);
+    });
+
+    function showContactError(msg) {
+      if (validationError) {
+        validationError.innerHTML = '<i class="fa fa-exclamation-circle" aria-hidden="true"></i> ' + msg;
+        validationError.style.display = 'block';
+        validationError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else {
+        alert(msg);
+      }
+    }
+  }
+
+  // =========================================================================
+  // 16C. QUICK BOOKING FORM HANDLER (appointment.htm)
+  // =========================================================================
+  function initSpouzyQuickBookingForm() {
+    const form = document.getElementById('spBookingForm');
+    // Only target appointment.htm (which has spConsultDate and does not have spTimePickerTrigger)
+    if (!form || !document.getElementById('spConsultDate') || document.getElementById('spTimePickerTrigger')) return;
+
+    const validationError = document.getElementById('spQuickBookingValidationError');
+    const feedbackContainer = document.getElementById('spQuickBookingFeedback');
+
+    // Preselect mode or doctor from URL query parameters if present
+    try {
+      const qParams = new URLSearchParams(window.location.search);
+      const qMode = qParams.get('mode');
+      const qModeSelect = document.getElementById('spConsultMode');
+      if (qMode && qModeSelect) {
+        const normQMode = qMode.trim().toLowerCase();
+        const quickModeMap = {
+          'virtual': 'virtual', 'online': 'virtual', 'video': 'virtual', 'telehealth': 'virtual',
+          'mumbai': 'mumbai', 'mulund': 'mumbai', 'pune': 'pune', 'delhi': 'delhi', 'bengaluru': 'bengaluru'
+        };
+        if (Object.prototype.hasOwnProperty.call(quickModeMap, normQMode)) {
+          const matched = quickModeMap[normQMode];
+          for (let i = 0; i < qModeSelect.options.length; i++) {
+            if (qModeSelect.options[i].value === matched) {
+              qModeSelect.selectedIndex = i;
+              break;
+            }
+          }
+        }
+      }
+    } catch (e) {}
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      if (validationError) validationError.style.display = 'none';
+
+      const consultTypeSelect = document.getElementById('spConsultType');
+      const consultModeSelect = document.getElementById('spConsultMode');
+      const doctorSelect = document.getElementById('spDoctorSelect');
+      const patientNameInput = document.getElementById('spPatientName');
+      const patientPhoneInput = document.getElementById('spPatientPhone');
+      const patientEmailInput = document.getElementById('spPatientEmail');
+      const consultDateInput = document.getElementById('spConsultDate');
+      const selectedSlotEl = form.querySelector('.sp-slot-pill.is-selected');
+
+      const patientName = patientNameInput ? patientNameInput.value.trim() : '';
+      const patientPhone = patientPhoneInput ? patientPhoneInput.value.trim() : '';
+      const patientEmail = patientEmailInput ? patientEmailInput.value.trim() : '';
+      const dateVal = consultDateInput ? consultDateInput.value.trim() : '';
+      const slotVal = selectedSlotEl ? selectedSlotEl.textContent.trim() : '';
+
+      const service = consultTypeSelect && consultTypeSelect.selectedIndex >= 0 ? consultTypeSelect.options[consultTypeSelect.selectedIndex].text.trim() : '';
+      const mode = consultModeSelect && consultModeSelect.selectedIndex >= 0 ? consultModeSelect.options[consultModeSelect.selectedIndex].text.trim() : '';
+      const doctor = doctorSelect && doctorSelect.selectedIndex >= 0 ? doctorSelect.options[doctorSelect.selectedIndex].text.trim() : '';
+
+      if (!patientName) {
+        showQuickError('Please provide your name or alias.');
+        if (patientNameInput) patientNameInput.focus();
+        return;
+      }
+
+      if (!patientPhone) {
+        showQuickError('Please provide your mobile / WhatsApp number.');
+        if (patientPhoneInput) patientPhoneInput.focus();
+        return;
+      }
+
+      if (!patientEmail || !patientEmail.includes('@')) {
+        showQuickError('Please provide a valid email address.');
+        if (patientEmailInput) patientEmailInput.focus();
+        return;
+      }
+
+      if (!dateVal) {
+        showQuickError('Please select a preferred date.');
+        if (consultDateInput) consultDateInput.focus();
+        return;
+      }
+
+      const todayStr = new Date().toISOString().split('T')[0];
+      if (dateVal < todayStr) {
+        showQuickError('Past dates cannot be selected. Please choose today or a future date.');
+        if (consultDateInput) consultDateInput.focus();
+        return;
+      }
+
+      if (!slotVal) {
+        showQuickError('Please select a time slot.');
+        return;
+      }
+
+      let readableDate = dateVal;
+      try {
+        const [y, m, d] = dateVal.split('-').map(Number);
+        const dt = new Date(y, m - 1, d);
+        const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        readableDate = weekdays[dt.getDay()] + ', ' + d + ' ' + months[m - 1] + ' ' + y;
+      } catch (e) {}
+
+      const lines = [
+        'Hello SPOUZY, I would like to request an appointment.',
+        '',
+        'Name / Alias: ' + patientName,
+        'Phone: ' + patientPhone,
+        'Email: ' + patientEmail,
+        'Service: ' + (service || 'Relationship Guidance'),
+      ];
+
+      if (doctor && !doctor.toLowerCase().includes('first available')) {
+        lines.push('Practitioner: ' + doctor);
+      }
+
+      lines.push('Consultation Mode: ' + (mode || 'Encrypted Video'));
+      lines.push('Requested Date: ' + readableDate);
+      lines.push('Requested Time: ' + slotVal + ' (IST)');
+      lines.push('Duration: Standard Consultation');
+      lines.push('');
+      lines.push('Please confirm availability and the next steps.');
+
+      const fullMessage = lines.join('\n');
+      openWhatsAppHandoff('918591945055', fullMessage, feedbackContainer);
+    });
+
+    function showQuickError(msg) {
+      if (validationError) {
+        validationError.innerHTML = '<i class="fa fa-exclamation-circle" aria-hidden="true"></i> ' + msg;
+        validationError.style.display = 'block';
+        validationError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else {
+        alert(msg);
+      }
+    }
+  }
+
+  // =========================================================================
+  // 16D. ADVANCED SCHEDULER & BOOKING HANDLER (book-appoinment.htm)
+  // =========================================================================
+  function initSpouzyScheduler() {
+    const form = document.getElementById('spBookingForm');
+    // Only target book-appoinment.htm (which has spTimePickerTrigger or spBookingDate)
+    if (!form || !document.getElementById('spTimePickerTrigger')) return;
+
+    const SPOUZY_SCHEDULE_CONFIG = {
+      timezone: 'Asia/Kolkata',
+      weeklyHours: {
+        0: { open: '10:00', close: '14:00', mode: 'virtual' },
+        1: { open: '10:00', close: '19:00' },
+        2: { open: '10:00', close: '19:00' },
+        3: { open: '10:00', close: '19:00' },
+        4: { open: '10:00', close: '19:00' },
+        5: { open: '10:00', close: '19:00' },
+        6: { open: '10:00', close: '18:00' }
+      },
+      breakHours: [
+        { start: '13:00', end: '14:00', reason: 'Intermission' }
+      ],
+      sampleBookedSlotsByDay: {
+        1: ['10:30-11:00', '15:00-15:30', '15:30-16:00'],
+        2: ['11:30-12:00', '16:00-16:30'],
+        3: ['10:30-11:00', '14:30-15:00'],
+        4: ['12:00-12:30', '16:30-17:00'],
+        5: ['10:30-11:00', '17:00-17:30'],
+        6: ['11:00-11:30', '15:30-16:00'],
+        0: ['11:30-12:00']
+      }
+    };
+
+    const dateInput = document.getElementById('spBookingDate');
+    const formattedDateText = document.getElementById('spFormattedDateText');
+    const durationInput = document.getElementById('spBookingDuration');
+    const durationBtns = document.querySelectorAll('.sp-duration-btn');
+    const timePickerTrigger = document.getElementById('spTimePickerTrigger');
+    const timeDisplayVal = document.getElementById('spTimeDisplayVal');
+    const timePickerPopover = document.getElementById('spTimePickerPopover');
+    const popoverDateText = document.getElementById('spPopoverDateText');
+    const popoverDurationBadge = document.getElementById('spPopoverDurationBadge');
+    const closePopoverBtn = document.getElementById('spClosePopoverBtn');
+    const pickerBackdrop = document.getElementById('spPickerBackdrop');
+    const slotsContainer = document.getElementById('spSlotsContainer');
+    const slotNotice = document.getElementById('spSlotNotice');
+    const selectedSlotInput = document.getElementById('spSelectedTimeSlot');
+    const serviceSelect = document.getElementById('spServiceSelect');
+    const consultModeSelect = document.getElementById('spConsultMode');
+    const summaryBox = document.getElementById('spAppointmentSummaryBox');
+    const summaryContent = document.getElementById('spSummaryContent');
+    const summarySubContent = document.getElementById('spSummarySubContent');
+    const validationError = document.getElementById('spBookingValidationError');
+    const feedbackContainer = document.getElementById('spBookingFeedback');
+
+    function getNowIST() {
+      const now = new Date();
+      const istString = now.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' });
+      return new Date(istString);
+    }
+
+    function getISTDateString(d = getNowIST()) {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return y + '-' + m + '-' + day;
+    }
+
+    function formatFullDateIST(dateStr) {
+      if (!dateStr) return '';
+      const parts = dateStr.split('-');
+      if (parts.length !== 3) return '';
+      const y = parseInt(parts[0], 10);
+      const m = parseInt(parts[1], 10);
+      const d = parseInt(parts[2], 10);
+      const dt = new Date(y, m - 1, d);
+      const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      return weekdays[dt.getDay()] + ', ' + d + ' ' + months[m - 1] + ' ' + y;
+    }
+
+    function parseTimeToMinutes(t) {
+      const [h, m] = t.split(':').map(Number);
+      return h * 60 + m;
+    }
+
+    function formatMinutesTo12h(mins) {
+      let h = Math.floor(mins / 60);
+      const m = mins % 60;
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      h = h % 12;
+      if (h === 0) h = 12;
+      return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ' ' + ampm;
+    }
+
+    const todayISTString = getISTDateString();
+    if (dateInput) {
+      dateInput.min = todayISTString;
+      if (!dateInput.value) {
+        dateInput.value = todayISTString;
+      }
+      if (formattedDateText) {
+        formattedDateText.textContent = formatFullDateIST(dateInput.value);
+      }
+    }
+
+    function calculateSlots(dateStr, durationMinutes, mode) {
+      const parts = dateStr.split('-');
+      if (parts.length !== 3) return { error: 'Invalid date format', slots: [] };
+      const y = parseInt(parts[0], 10);
+      const m = parseInt(parts[1], 10);
+      const d = parseInt(parts[2], 10);
+      const dateObj = new Date(y, m - 1, d);
+      const dayOfWeek = dateObj.getDay();
+
+      const hoursConfig = SPOUZY_SCHEDULE_CONFIG.weeklyHours[dayOfWeek];
+      if (!hoursConfig) {
+        return { notice: 'Center is closed on this day. Please select another date.', slots: [] };
+      }
+
+      if (hoursConfig.mode === 'virtual' && mode && mode !== 'virtual') {
+        return { notice: 'Sunday consultations operate exclusively via Encrypted Video/Audio Telehealth.', slots: [] };
+      }
+
+      const openMinutes = parseTimeToMinutes(hoursConfig.open);
+      const closeMinutes = parseTimeToMinutes(hoursConfig.close);
+      const bookedRanges = (SPOUZY_SCHEDULE_CONFIG.sampleBookedSlotsByDay[dayOfWeek] || []).map(r => {
+        const [st, et] = r.split('-');
+        return { start: parseTimeToMinutes(st), end: parseTimeToMinutes(et) };
+      });
+
+      const breakRanges = (SPOUZY_SCHEDULE_CONFIG.breakHours || []).map(b => ({
+        start: parseTimeToMinutes(b.start),
+        end: parseTimeToMinutes(b.end),
+        reason: b.reason
+      }));
+
+      const isToday = dateStr === todayISTString;
+      const nowIST = getNowIST();
+      const currentMinutes = nowIST.getHours() * 60 + nowIST.getMinutes();
+
+      const slots = [];
+      const interval = 30;
+
+      for (let time = openMinutes; time + durationMinutes <= closeMinutes; time += interval) {
+        const slotStart = time;
+        const slotEnd = time + durationMinutes;
+        const label = formatMinutesTo12h(slotStart) + ' – ' + formatMinutesTo12h(slotEnd);
+
+        let status = 'available';
+        let reason = '';
+
+        if (isToday && slotStart <= currentMinutes + 30) {
+          status = 'disabled';
+          reason = 'Passed';
+        }
+
+        if (status === 'available') {
+          for (const brk of breakRanges) {
+            if (slotStart < brk.end && slotEnd > brk.start) {
+              status = 'disabled';
+              reason = brk.reason || 'Intermission';
+              break;
+            }
+          }
+        }
+
+        if (status === 'available') {
+          for (const booked of bookedRanges) {
+            if (slotStart < booked.end && slotEnd > booked.start) {
+              status = 'disabled';
+              reason = 'Booked';
+              break;
+            }
+          }
+        }
+
+        slots.push({ start: slotStart, end: slotEnd, label, status, reason });
+      }
+
+      return { slots };
+    }
+
+    function openTimePicker() {
+      if (!timePickerPopover || !timePickerTrigger) return;
+      if (timePickerTrigger.disabled) return;
+      timePickerPopover.hidden = false;
+      timePickerPopover.classList.add('is-open');
+      timePickerTrigger.setAttribute('aria-expanded', 'true');
+      if (pickerBackdrop) pickerBackdrop.classList.add('is-active');
+      updatePopoverHeader();
+      renderSlots();
+    }
+
+    function closeTimePicker() {
+      if (!timePickerPopover || !timePickerTrigger) return;
+      timePickerPopover.classList.remove('is-open');
+      timePickerTrigger.setAttribute('aria-expanded', 'false');
+      if (pickerBackdrop) pickerBackdrop.classList.remove('is-active');
+      setTimeout(() => {
+        if (!timePickerPopover.classList.contains('is-open')) {
+          timePickerPopover.hidden = true;
+        }
+      }, 200);
+    }
+
+    function updatePopoverHeader() {
+      if (popoverDateText && dateInput) {
+        popoverDateText.textContent = formatFullDateIST(dateInput.value) || 'No date chosen';
+      }
+      if (popoverDurationBadge && durationInput) {
+        const dur = durationInput.value === '60' ? '1 hour session' : '30 min session';
+        popoverDurationBadge.textContent = dur;
+      }
+    }
+
+    function updateTimeFieldState() {
+      if (!timePickerTrigger || !timeDisplayVal) return;
+      const dateVal = dateInput ? dateInput.value : '';
+      if (!dateVal) {
+        timePickerTrigger.disabled = true;
+        timePickerTrigger.classList.add('is-disabled');
+        timePickerTrigger.classList.remove('has-value');
+        timeDisplayVal.textContent = 'Choose an appointment date first';
+      } else {
+        timePickerTrigger.disabled = false;
+        timePickerTrigger.classList.remove('is-disabled');
+        if (selectedSlotInput && selectedSlotInput.value) {
+          timeDisplayVal.textContent = selectedSlotInput.value;
+          timePickerTrigger.classList.add('has-value');
+        } else {
+          timeDisplayVal.textContent = 'Select appointment time';
+          timePickerTrigger.classList.remove('has-value');
+        }
+      }
+    }
+
+    function renderSlots() {
+      if (!slotsContainer || !dateInput) return;
+      const dateVal = dateInput.value;
+      const durationVal = parseInt(durationInput ? durationInput.value : '30', 10) || 30;
+      const modeVal = consultModeSelect ? consultModeSelect.value : 'virtual';
+
+      if (!dateVal) {
+        slotsContainer.innerHTML = '';
+        if (slotNotice) {
+          slotNotice.innerHTML = '<i class="fa fa-info-circle"></i> Please choose an appointment date first.';
+          slotNotice.style.display = 'block';
+        }
+        return;
+      }
+
+      if (dateVal < todayISTString) {
+        slotsContainer.innerHTML = '';
+        if (slotNotice) {
+          slotNotice.innerHTML = '<i class="fa fa-exclamation-triangle"></i> Past dates cannot be selected. Please choose today or a future date.';
+          slotNotice.style.display = 'block';
+        }
+        return;
+      }
+
+      const result = calculateSlots(dateVal, durationVal, modeVal);
+      if (result.notice) {
+        slotsContainer.innerHTML = '';
+        if (slotNotice) {
+          slotNotice.innerHTML = '<i class="fa fa-info-circle"></i> ' + result.notice;
+          slotNotice.style.display = 'block';
+        }
+        updateSummary();
+        return;
+      }
+
+      const slots = result.slots || [];
+      slotsContainer.innerHTML = '';
+
+      slots.forEach(slot => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'sp-slot-range-btn';
+        btn.setAttribute('data-slot', slot.label);
+
+        if (slot.status === 'disabled') {
+          btn.classList.add('is-disabled');
+          btn.disabled = true;
+          btn.setAttribute('aria-disabled', 'true');
+          btn.innerHTML = '<span class="sp-slot-time">' + slot.label + '</span>' +
+                          '<span class="sp-slot-badge">' + (slot.reason || 'Unavailable') + '</span>';
+        } else {
+          btn.innerHTML = '<span class="sp-slot-time">' + slot.label + '</span>';
+          if (selectedSlotInput && selectedSlotInput.value === slot.label) {
+            btn.classList.add('is-selected');
+          }
+
+          btn.addEventListener('click', function () {
+            const chosenSlot = slot.label;
+            if (selectedSlotInput) selectedSlotInput.value = chosenSlot;
+            if (timeDisplayVal) timeDisplayVal.textContent = chosenSlot;
+            if (timePickerTrigger) {
+              timePickerTrigger.classList.add('has-value');
+              closeTimePicker();
+              timePickerTrigger.focus();
+            }
+            if (validationError) validationError.style.display = 'none';
+            updateSummary();
+          });
+        }
+        slotsContainer.appendChild(btn);
+      });
+
+      if (slotNotice) slotNotice.style.display = 'none';
+      updateSummary();
+    }
+
+    function updateSummary() {
+      if (!summaryContent) return;
+      const dateVal = dateInput ? dateInput.value : '';
+      const durationVal = durationInput ? durationInput.value : '30';
+      const slotVal = selectedSlotInput ? selectedSlotInput.value : '';
+      const durationText = durationVal === '60' ? '1 hour' : '30 minutes';
+
+      const serviceText = serviceSelect && serviceSelect.selectedIndex >= 0 ? 
+        serviceSelect.options[serviceSelect.selectedIndex].text.split('(')[0].trim() : 'Guidance Consultation';
+      const modeText = consultModeSelect && consultModeSelect.selectedIndex >= 0 ? 
+        consultModeSelect.options[consultModeSelect.selectedIndex].text.split('(')[0].trim() : 'Encrypted Telehealth';
+
+      if (dateVal && slotVal) {
+        const fullDate = formatFullDateIST(dateVal);
+        summaryContent.className = 'sp-summary-text is-ready';
+        summaryContent.innerHTML = 
+          '<span class="sp-summary-highlight"><i class="fa fa-calendar-check-o"></i> ' + fullDate + '</span>' +
+          '<span class="sp-summary-dot">·</span>' +
+          '<span class="sp-summary-highlight"><i class="fa fa-clock-o"></i> ' + slotVal + ' IST</span>' +
+          '<span class="sp-summary-dot">·</span>' +
+          '<span class="sp-summary-highlight"><i class="fa fa-hourglass-half"></i> ' + durationText + '</span>';
+        
+        if (summarySubContent) {
+          summarySubContent.style.display = 'block';
+          summarySubContent.innerHTML = '<strong>' + serviceText + '</strong> · ' + modeText;
+        }
+      } else {
+        summaryContent.className = 'sp-summary-text is-placeholder';
+        if (dateVal) {
+          summaryContent.textContent = 'Date: ' + formatFullDateIST(dateVal) + ' (' + durationText + '). Please choose an available appointment time above.';
+        } else {
+          summaryContent.textContent = 'Please choose an appointment date, duration, and appointment time above.';
+        }
+        if (summarySubContent) {
+          summarySubContent.style.display = 'none';
+        }
+      }
+    }
+
+    function showBookingError(msg) {
+      if (validationError) {
+        validationError.innerHTML = '<i class="fa fa-exclamation-circle" aria-hidden="true"></i> ' + msg;
+        validationError.style.display = 'block';
+        validationError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else {
+        alert(msg);
+      }
+    }
+
+    if (timePickerTrigger) {
+      timePickerTrigger.addEventListener('click', function (e) {
+        e.preventDefault();
+        if (timePickerPopover && timePickerPopover.classList.contains('is-open')) {
+          closeTimePicker();
+        } else {
+          openTimePicker();
+        }
+      });
+    }
+
+    if (closePopoverBtn) {
+      closePopoverBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        closeTimePicker();
+      });
+    }
+
+    if (pickerBackdrop) {
+      pickerBackdrop.addEventListener('click', function () {
+        closeTimePicker();
+      });
+    }
+
+    if (dateInput) {
+      dateInput.addEventListener('change', function () {
+        if (formattedDateText) {
+          formattedDateText.textContent = formatFullDateIST(this.value) || 'Select date';
+        }
+        if (selectedSlotInput) selectedSlotInput.value = '';
+        closeTimePicker();
+        updateTimeFieldState();
+        updatePopoverHeader();
+        renderSlots();
+        updateSummary();
+      });
+    }
+
+    if (durationBtns.length) {
+      durationBtns.forEach(btn => {
+        btn.addEventListener('click', function () {
+          durationBtns.forEach(b => {
+            b.classList.remove('is-active');
+            b.setAttribute('aria-checked', 'false');
+          });
+          this.classList.add('is-active');
+          this.setAttribute('aria-checked', 'true');
+
+          const chosenDuration = this.getAttribute('data-duration') || '30';
+          if (durationInput) durationInput.value = chosenDuration;
+          if (selectedSlotInput) selectedSlotInput.value = '';
+          closeTimePicker();
+          updateTimeFieldState();
+          updatePopoverHeader();
+          renderSlots();
+          updateSummary();
+        });
+      });
+    }
+
+    if (serviceSelect) {
+      serviceSelect.addEventListener('change', function () {
+        if (selectedSlotInput) selectedSlotInput.value = '';
+        closeTimePicker();
+        updateTimeFieldState();
+        renderSlots();
+        updateSummary();
+      });
+    }
+
+    if (consultModeSelect) {
+      consultModeSelect.addEventListener('change', function () {
+        if (selectedSlotInput) selectedSlotInput.value = '';
+        closeTimePicker();
+        updateTimeFieldState();
+        renderSlots();
+        updateSummary();
+      });
+    }
+
+    // Form Submission: Hand off to WhatsApp
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      if (validationError) validationError.style.display = 'none';
+
+      const dateVal = dateInput ? dateInput.value : '';
+      const slotVal = selectedSlotInput ? selectedSlotInput.value : '';
+      const durationVal = durationInput ? durationInput.value : '30';
+      const durationText = durationVal === '60' ? '1 hour' : '30 minutes';
+
+      const patientNameInput = document.getElementById('spPatientName');
+      const patientPhoneInput = document.getElementById('spPatientPhone');
+      const patientEmailInput = document.getElementById('spPatientEmail');
+      const patientNotesInput = document.getElementById('spPatientNotes');
+
+      const patientName = patientNameInput ? patientNameInput.value.trim() : '';
+      const patientPhone = patientPhoneInput ? patientPhoneInput.value.trim() : '';
+      const patientEmail = patientEmailInput ? patientEmailInput.value.trim() : '';
+      const patientNotes = patientNotesInput ? patientNotesInput.value.trim() : '';
+
+      if (!dateVal) {
+        showBookingError('Please choose an appointment date.');
+        if (dateInput) dateInput.focus();
+        return;
+      }
+
+      if (dateVal < todayISTString) {
+        showBookingError('Past dates cannot be selected. Please choose today or a future date.');
+        if (dateInput) dateInput.focus();
+        return;
+      }
+
+      if (!slotVal) {
+        showBookingError('Please select an appointment time.');
+        if (timePickerTrigger) {
+          timePickerTrigger.focus();
+          openTimePicker();
+        }
+        return;
+      }
+
+      if (!patientName) {
+        showBookingError('Please provide your name or discreet alias.');
+        if (patientNameInput) patientNameInput.focus();
+        return;
+      }
+
+      if (!patientPhone) {
+        showBookingError('Please provide your mobile / WhatsApp number.');
+        if (patientPhoneInput) patientPhoneInput.focus();
+        return;
+      }
+
+      if (!patientEmail || !patientEmail.includes('@')) {
+        showBookingError('Please provide a valid confidential email ID.');
+        if (patientEmailInput) patientEmailInput.focus();
+        return;
+      }
+
+      const fullDate = formatFullDateIST(dateVal);
+      const serviceText = serviceSelect && serviceSelect.selectedIndex >= 0 ? serviceSelect.options[serviceSelect.selectedIndex].text.trim() : 'Guidance Consultation';
+      const modeText = consultModeSelect && consultModeSelect.selectedIndex >= 0 ? consultModeSelect.options[consultModeSelect.selectedIndex].text.trim() : 'Encrypted Video';
+
+      const lines = [
+        'Hello SPOUZY, I would like to request an appointment.',
+        '',
+        'Name / Alias: ' + patientName,
+        'Phone: ' + patientPhone,
+        'Email: ' + patientEmail,
+        'Service: ' + serviceText,
+        'Consultation Mode: ' + modeText,
+        'Requested Date: ' + fullDate,
+        'Requested Time: ' + slotVal + ' (IST)',
+        'Duration: ' + durationText,
+        'Additional Information: ' + (patientNotes || 'Not provided'),
+        '',
+        'Please confirm availability and the next steps.'
+      ];
+
+      const fullMessage = lines.join('\n');
+      openWhatsAppHandoff('918591945055', fullMessage, feedbackContainer);
+    });
+
+    // -------------------------------------------------------------------------
+    // URL Query Parameter Pre-selection (service & mode)
+    // -------------------------------------------------------------------------
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const rawService = urlParams.get('service');
+      const rawMode = urlParams.get('mode');
+
+      if (rawService && serviceSelect) {
+        const normService = rawService.trim().toLowerCase();
+        const serviceAllowlist = {
+          'couples-therapy': 'couples-therapy',
+          'couples': 'couples-therapy',
+          'marriage': 'couples-therapy',
+          'post-marriage': 'couples-therapy',
+          'couples-counselling': 'couples-therapy',
+          'marriage-counselling': 'couples-therapy',
+
+          'premarital': 'premarital',
+          'pre-marital': 'premarital',
+          'pre-marriage': 'premarital',
+          'premarital-counselling': 'premarital',
+
+          'intimacy-clinic': 'intimacy-clinic',
+          'intimacy': 'intimacy-clinic',
+          'intimate-health': 'intimacy-clinic',
+          'sexual-health': 'intimacy-clinic',
+          'doctor': 'intimacy-clinic',
+          'doctor-consultation': 'intimacy-clinic',
+
+          'mediation': 'mediation',
+          'divorce': 'mediation',
+          'divorce-mediation': 'mediation',
+          'dispute-mediation': 'mediation',
+
+          'general': 'general',
+          'relationship': 'general',
+          'relationships': 'general',
+          'guidance': 'general'
+        };
+
+        if (Object.prototype.hasOwnProperty.call(serviceAllowlist, normService)) {
+          const targetVal = serviceAllowlist[normService];
+          for (let i = 0; i < serviceSelect.options.length; i++) {
+            if (serviceSelect.options[i].value === targetVal) {
+              serviceSelect.selectedIndex = i;
+              break;
+            }
+          }
+        }
+      }
+
+      if (rawMode && consultModeSelect) {
+        const normMode = rawMode.trim().toLowerCase();
+        const modeAllowlist = {
+          'virtual': 'virtual',
+          'online': 'virtual',
+          'video': 'virtual',
+          'telehealth': 'virtual',
+          'encrypted-video': 'virtual',
+
+          'mumbai': 'mumbai',
+          'mulund': 'mumbai',
+          'mumbai-clinic': 'mumbai',
+
+          'pune': 'pune',
+          'koregaon-park': 'pune',
+
+          'delhi': 'delhi',
+          'south-extension': 'delhi',
+          'new-delhi': 'delhi',
+
+          'bengaluru': 'bengaluru',
+          'bangalore': 'bengaluru',
+          'indiranagar': 'bengaluru'
+        };
+
+        if (Object.prototype.hasOwnProperty.call(modeAllowlist, normMode)) {
+          const targetMode = modeAllowlist[normMode];
+          for (let i = 0; i < consultModeSelect.options.length; i++) {
+            if (consultModeSelect.options[i].value === targetMode) {
+              consultModeSelect.selectedIndex = i;
+              break;
+            }
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('Could not parse booking URL query params', e);
+    }
+
+    updateTimeFieldState();
+    updatePopoverHeader();
+    renderSlots();
+    updateSummary();
+  }
+
+  // Initialize form and widget handlers
+  initSpouzyFloatingWidget();
+  initSpouzyContactForm();
+  initSpouzyQuickBookingForm();
+  initSpouzyScheduler();
+
+  // -------------------------------------------------------------------------
+  // 17. INFINITE TICKER PAUSE/RESUME TOGGLE
+  // -------------------------------------------------------------------------
+  const tickerSections = document.querySelectorAll('.sp-ticker-section');
+  tickerSections.forEach(section => {
+    const toggleBtn = section.querySelector('.sp-ticker-toggle');
+    if (!toggleBtn) return;
+    const pauseIcon = toggleBtn.querySelector('.sp-ticker-icon-pause');
+    const playIcon = toggleBtn.querySelector('.sp-ticker-icon-play');
+
+    toggleBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      const isPaused = section.classList.toggle('is-paused');
+      section.setAttribute('data-paused', isPaused ? 'true' : 'false');
+      toggleBtn.setAttribute('aria-pressed', isPaused ? 'true' : 'false');
+      toggleBtn.setAttribute('aria-label', isPaused ? 'Resume ticker' : 'Pause ticker');
+      toggleBtn.setAttribute('title', isPaused ? 'Resume ticker' : 'Pause ticker');
+      if (pauseIcon && playIcon) {
+        pauseIcon.style.display = isPaused ? 'none' : 'block';
+        playIcon.style.display = isPaused ? 'block' : 'none';
+      }
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  // 18. FOOTER TEDDY DANCE ANIMATION CONTROLLER (AUTOPLAY LOOP, GROUNDED)
+  // -------------------------------------------------------------------------
+  function initSpouzyFooterTeddy() {
+    const teddyContainers = document.querySelectorAll('.sp-footer-teddy');
+    if (!teddyContainers.length) return;
+
+    const motionQuery = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+
+    teddyContainers.forEach(container => {
+      const video = container.querySelector('.sp-footer-teddy-video');
+      const staticFallback = container.querySelector('.sp-footer-teddy-static');
+
+      if (!video) return;
+
+      // Strict audio muting & infinite loop guarantee
+      video.muted = true;
+      video.defaultMuted = true;
+      video.volume = 0;
+      video.loop = true;
+
+      let isIntersecting = false;
+
+      function checkReducedMotion() {
+        if (motionQuery && motionQuery.matches) {
+          container.classList.add('is-fallback');
+          try { video.pause(); } catch (e) {}
+          return true;
+        } else {
+          container.classList.remove('is-fallback');
+          return false;
+        }
+      }
+
+      if (checkReducedMotion()) return;
+
+      if (motionQuery && motionQuery.addEventListener) {
+        motionQuery.addEventListener('change', () => {
+          if (checkReducedMotion()) {
+            try { video.pause(); } catch (e) {}
+          } else if (isIntersecting && !document.hidden) {
+            safePlay();
+          }
+        });
+      }
+
+      function safePlay() {
+        if (!isIntersecting || document.hidden) return;
+        if (container.classList.contains('is-fallback')) return;
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            // Autoplay prevented or aborted; handled gracefully
+          });
+        }
+      }
+
+      function safePause() {
+        try {
+          video.pause();
+        } catch (e) {}
+      }
+
+      // Fallback on video error
+      video.addEventListener('error', function () {
+        container.classList.add('is-fallback');
+        if (staticFallback) staticFallback.style.display = 'block';
+        video.style.display = 'none';
+      });
+
+      // Tab visibility change: pause when hidden, resume when visible
+      document.addEventListener('visibilitychange', function () {
+        if (document.hidden) {
+          safePause();
+        } else {
+          if (isIntersecting) {
+            safePlay();
+          }
+        }
+      });
+
+      // IntersectionObserver for preloading on approach and playing when visible
+      if ('IntersectionObserver' in window) {
+        const approachObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              if (video.preload !== 'auto') {
+                video.preload = 'auto';
+              }
+            }
+          });
+        }, { rootMargin: '200px 0px', threshold: 0.01 });
+        approachObserver.observe(container);
+
+        const playbackObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              isIntersecting = true;
+              if (!document.hidden) {
+                safePlay();
+              }
+            } else {
+              isIntersecting = false;
+              safePause();
+            }
+          });
+        }, { threshold: 0.05 });
+        playbackObserver.observe(container);
+      } else {
+        video.preload = 'auto';
+        isIntersecting = true;
+        safePlay();
+      }
+    });
+  }
+
+  initSpouzyFooterTeddy();
+});
+
+// Follow direct links into the resource directory and open the selected topic.
+function showResourceTopic() {
+  const panel = document.getElementById(location.hash.slice(1));
+  if (panel && panel.matches('.ed-directory details')) panel.open = true;
+}
+window.addEventListener('hashchange', showResourceTopic);
+showResourceTopic();
+const enquiry = document.querySelector('#cfMessage');
+const topic = new URLSearchParams(location.search).get('topic');
+if (enquiry && topic && !enquiry.value) enquiry.value = 'I would like to ask about ' + topic + '.';
