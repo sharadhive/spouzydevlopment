@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Environment configurations
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+
+# Upload storage & local attachments
+backend/storage/uploads/private/*
+!backend/storage/uploads/private/.gitkeep
+backend/storage/uploads/public/*
+!backend/storage/uploads/public/.gitkeep
+backend/storage/logs/*
+!backend/storage/logs/.gitkeep
+
+# System & Editor files
+.DS_Store
+Thumbs.db
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Archive & temporary files
+*.zip
+scratch/

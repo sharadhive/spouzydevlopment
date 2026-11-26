@@ -1,0 +1,31 @@
+{
+  "name": "spouzynew25",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SPOUZY Management System, Backend APIs, and Admin Panel",
+  "workspaces": [
+    "backend",
+    "admin"
+  ],
+  "scripts": {
+    "install:all": "npm install",
+    "db:create": "npm --workspace=backend run db:create",
+    "db:migrate": "npm --workspace=backend run db:migrate",
+    "db:seed": "npm --workspace=backend run db:seed",
+    "db:setup": "npm --workspace=backend run db:setup",
+    "admin:create": "npm --workspace=backend run admin:create",
+    "seed:dev-users": "npm --workspace=backend run seed:dev-users",
+    "dev-users:reset": "npm --workspace=backend run dev-users:reset",
+    "dev": "npm --workspace=backend run dev",
+    "dev:admin": "npm --workspace=admin run dev",
+    "build": "npm --workspace=admin run build",
+    "build:admin": "npm --workspace=admin run build",
+    "start": "npm --workspace=backend run start",
+    "content:check": "npm --workspace=backend run content:check",
+    "content:clean-test-data": "npm --workspace=backend run content:clean-test-data",
+    "test": "npm --workspace=backend run test"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

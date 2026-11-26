@@ -1,0 +1,780 @@
+{
+  "roles": [
+    {
+      "slug": "admin",
+      "name": "Administrator",
+      "description": "Full system access, including users, roles and payment gateway.",
+      "permissions": [
+        "all"
+      ]
+    },
+    {
+      "slug": "operations_staff",
+      "name": "Operations Staff",
+      "description": "Front desk: enquiries, appointments, scheduling, careers and application status.",
+      "permissions": [
+        "enquiries:view",
+        "enquiries:edit",
+        "enquiries:export",
+        "clinical_apps:view",
+        "clinical_apps:edit",
+        "careers:view",
+        "careers:edit",
+        "careers:download",
+        "appointments:view",
+        "appointments:edit",
+        "appointments:reschedule",
+        "scheduling:view",
+        "scheduling:edit",
+        "practitioners:view"
+      ]
+    },
+    {
+      "slug": "clinical_director",
+      "name": "Clinical Director",
+      "description": "Clinical governance, practitioner scheduling, application approvals and medical content.",
+      "permissions": [
+        "clinical_apps:view",
+        "clinical_apps:edit",
+        "clinical_apps:export",
+        "clinical_apps:download_docs",
+        "practitioners:view",
+        "practitioners:edit",
+        "scheduling:view",
+        "scheduling:edit",
+        "appointments:view",
+        "appointments:edit",
+        "appointments:reschedule",
+        "blogs:view",
+        "blogs:edit",
+        "moderation:view",
+        "moderation:edit"
+      ]
+    },
+    {
+      "slug": "content_editor",
+      "name": "Content Editor",
+      "description": "Website content: banners, tips, homepage, blogs, FAQs, stories, media and public settings.",
+      "permissions": [
+        "content:view",
+        "content:edit",
+        "content:delete",
+        "blogs:view",
+        "blogs:edit",
+        "blogs:delete",
+        "moderation:view",
+        "moderation:edit",
+        "media:view",
+        "media:edit",
+        "settings:content"
+      ]
+    },
+    {
+      "slug": "customer",
+      "name": "Customer",
+      "description": "Public client portal account.",
+      "permissions": [
+        "customer:self"
+      ]
+    }
+  ],
+  "heroBanners": [
+    {
+      "admin_title": "Marriage & Couples Therapy",
+      "tag_eyebrow": "PSG CLINICAL WING",
+      "category_sub": "Marriage & Couples Therapy",
+      "headline": "Space to Talk.",
+      "headline_emphasis": "Room to Reconnect.",
+      "description": "Make space for the conversation you keep postponing. Explore communication, trust and everyday life together.",
+      "pills": [
+        "Communication Pattern Reset",
+        "Trust & Emotional Safety",
+        "Pre- & Post-Marital Guidance"
+      ],
+      "cta_label": "Book Marriage Session ↗",
+      "cta_url": "book-appoinment.htm?service=couples-therapy",
+      "secondary_cta_label": "Explore Care Options →",
+      "secondary_cta_url": "#services",
+      "image_path": "image/hero-marriage.webp",
+      "alt_text": "A couple talking together at home",
+      "sort_order": 1,
+      "is_active": true,
+      "status": "published"
+    },
+    {
+      "admin_title": "Doctor Consultation & Wellness",
+      "tag_eyebrow": "CONFIDENTIAL CLINICAL CARE",
+      "category_sub": "Doctor Consultation & Wellness",
+      "headline": "Sensitive Questions.",
+      "headline_emphasis": "Thoughtful Medical Care.",
+      "description": "Bring your questions about intimacy and physical health to an individual consultation.",
+      "pills": [
+        "Certified Medical Doctors",
+        "Breast & Genital Specialized Clinic",
+        "100% Private Consultations"
+      ],
+      "cta_label": "Consult a Doctor Online ↗",
+      "cta_url": "book-appoinment.htm?service=intimacy-clinic",
+      "secondary_cta_label": "Explore Clinical Services →",
+      "secondary_cta_url": "#services",
+      "image_path": "image/hero-clinical.webp",
+      "alt_text": "A patient talking privately with a doctor",
+      "sort_order": 2,
+      "is_active": true,
+      "status": "published"
+    },
+    {
+      "admin_title": "Amicable Separation Mediation",
+      "tag_eyebrow": "PSG DISPUTE ADVISORY",
+      "category_sub": "Amicable Separation Mediation",
+      "headline": "A Difficult Decision.",
+      "headline_emphasis": "A Dignified, Respectful Process.",
+      "description": "Explore separation at your own pace, with room to discuss responsibilities and the decisions ahead.",
+      "pills": [
+        "Amicable Dispute Resolution",
+        "Child-First Custody Mediation",
+        "Asset & Financial Settlement"
+      ],
+      "cta_label": "Schedule Private Mediation ↗",
+      "cta_url": "contactus.htm",
+      "secondary_cta_label": "Learn About PSG →",
+      "secondary_cta_url": "about-profile.htm",
+      "image_path": "image/hero-mediation.webp",
+      "alt_text": "Two partners discussing documents with a mediator",
+      "sort_order": 3,
+      "is_active": true,
+      "status": "published"
+    },
+    {
+      "admin_title": "Life Foundations & Harmony",
+      "tag_eyebrow": "PRE-MARITAL READINESS",
+      "category_sub": "Life Foundations & Harmony",
+      "headline": "Strong Foundations.",
+      "headline_emphasis": "Clear Expectations for Life.",
+      "description": "Before marriage, talk through expectations about money, family and the life you want to build together.",
+      "pills": [
+        "Pre-Marital Alignment Framework",
+        "Partner Compatibility Analysis",
+        "Joint Values & Life Planning"
+      ],
+      "cta_label": "Book Pre-Marital Guidance ↗",
+      "cta_url": "book-appoinment.htm?service=premarital",
+      "secondary_cta_label": "Explore Care Options →",
+      "secondary_cta_url": "#services",
+      "image_path": "image/hero-premarital.webp",
+      "alt_text": "An engaged couple planning their future together",
+      "sort_order": 4,
+      "is_active": true,
+      "status": "published"
+    }
+  ],
+  "tips": [
+    {
+      "text": "Ask what felt good about today.",
+      "photo_url": "image/menu/pre-marriage.webp",
+      "sort_order": 1
+    },
+    {
+      "text": "Name one small thing you appreciated.",
+      "photo_url": "image/menu/military-families.webp",
+      "sort_order": 2
+    },
+    {
+      "text": "Let your partner finish their thought.",
+      "photo_url": "image/menu/counselling.webp",
+      "sort_order": 3
+    },
+    {
+      "text": "Ask before offering advice.",
+      "photo_url": "image/menu/faq.webp",
+      "sort_order": 4
+    },
+    {
+      "text": "Make time for a phone-free meal.",
+      "photo_url": "image/menu/post-marriage.webp",
+      "sort_order": 5
+    },
+    {
+      "text": "Share one thing you need this week.",
+      "photo_url": "image/menu/blog.webp",
+      "sort_order": 6
+    },
+    {
+      "text": "Choose a calm moment for a hard conversation.",
+      "photo_url": "image/menu/about-us.webp",
+      "sort_order": 7
+    },
+    {
+      "text": "Check what you heard before you reply.",
+      "photo_url": "image/menu/divorce-mediation.webp",
+      "sort_order": 8
+    },
+    {
+      "text": "Take a short walk and talk together.",
+      "photo_url": "image/menu/relationships.webp",
+      "sort_order": 9
+    },
+    {
+      "text": "Leave room for a different point of view.",
+      "photo_url": "image/menu/team.webp",
+      "sort_order": 10
+    }
+  ],
+  "blogCategories": [
+    {
+      "name": "Relationships & Dynamics",
+      "slug": "relationships",
+      "description": "Navigating modern interpersonal and marital dynamics"
+    },
+    {
+      "name": "Communication & Clarity",
+      "slug": "communication",
+      "description": "Constructive dialogue and active listening principles"
+    },
+    {
+      "name": "Intimacy Guides",
+      "slug": "intimacy-guides",
+      "description": "Educational literature and perspectives on intimacy"
+    },
+    {
+      "name": "Corporate & Workplace",
+      "slug": "workplace",
+      "description": "PoSH, executive equilibrium and corporate wellness"
+    }
+  ],
+  "blogArticles": [
+    {
+      "title": "Before a shared decision",
+      "slug": "before-a-shared-decision",
+      "excerpt": "A conversation about a move, wedding or change in work can go in circles when each person is answering a different question.",
+      "body_html": "<p>A conversation about a move, wedding or change in work can go in circles when each person is answering a different question. Taking time to define what matters most to each person creates clarity rather than competition.</p><p>Explore mutual goals, uncover underlying anxieties, and agree on a steady pace before finalizing significant crossroads.</p>",
+      "category_slug": "relationships",
+      "cover_image": "image/menu/about-profile.webp",
+      "author_name": "Problem Solver Group (PSG)"
+    },
+    {
+      "title": "Reconnecting after time apart",
+      "slug": "reconnecting-after-time-apart",
+      "excerpt": "Returning to everyday life together takes some adjustment, even when everyone has looked forward to it.",
+      "body_html": "<p>Returning to everyday life together takes some adjustment, even when everyone has looked forward to it. Re-establishing intimacy and domestic rhythm requires patience and mutual grace.</p><p>Give yourselves permission to ease into daily shared habits without expecting instant seamlessness.</p>",
+      "category_slug": "communication",
+      "cover_image": "image/menu/post-marriage.webp",
+      "author_name": "SPOUZY Clinical Advisory"
+    },
+    {
+      "title": "Gen Z Kama Sutra",
+      "slug": "gen-z-kama-sutra",
+      "excerpt": "A contemporary, consent-first interpretation of traditional intimacy literature for modern young adults.",
+      "body_html": "<p>A modern, educational perspective focusing on mutual respect, healthy emotional boundaries, and open communication around personal intimacy.</p>",
+      "category_slug": "intimacy-guides",
+      "cover_image": "image/menu/gen-z-kama-sutra.webp",
+      "author_name": "SPOUZY Editorial"
+    },
+    {
+      "title": "Corporate Kamasutra",
+      "slug": "corporate-kamasutra",
+      "excerpt": "Harmonizing demanding executive careers with personal relationship well-being and stress resilience.",
+      "body_html": "<p>Strategies for high-performing professionals to protect personal emotional investments while leading complex professional portfolios.</p>",
+      "category_slug": "workplace",
+      "cover_image": "image/menu/corporate-kamasutra.webp",
+      "author_name": "Neilesh Jethmal"
+    }
+  ],
+  "faqs": [
+    {
+      "category": "General",
+      "question": "How are SPOUZY and PSG connected?",
+      "answer_html": "SPOUZY is the relationship and intimate health wing of Problem Solver Group (PSG), founded by Neilesh Jethmal in 2004 to provide specialized confidential care under one roof.",
+      "sort_order": 1
+    },
+    {
+      "category": "Services",
+      "question": "Which resources are free to use?",
+      "answer_html": "The student guide, ex-servicemen family guide, Do’s and Don’ts, blog, Gen Z Kama Sutra and homepage self-assessment are available to read or use without booking.",
+      "sort_order": 2
+    },
+    {
+      "category": "Careers & Team",
+      "question": "How can I join the team?",
+      "answer_html": "Open Join Our Team, select Doctor, Counsellor, or Careers, and submit your application through our verified registration form for review.",
+      "sort_order": 3
+    },
+    {
+      "category": "Confidentiality",
+      "question": "Is our session strictly confidential?",
+      "answer_html": "Yes, absolutely. All sessions adhere to strict clinical confidentiality and legal privilege under our Confidentiality Pledge and Privacy Policy. Records are never disclosed to third parties.",
+      "sort_order": 4
+    },
+    {
+      "category": "Appointments",
+      "question": "Can I attend a relationship consultation alone if my partner isn't ready?",
+      "answer_html": "Yes. Over 40% of our clients begin with individual sessions to gain emotional clarity, process their own feelings, and learn practical strategies before introducing their partner when the time is right.",
+      "sort_order": 5
+    },
+    {
+      "category": "Appointments",
+      "question": "How do online video sessions work?",
+      "answer_html": "Upon booking, you receive a secure, encrypted one-click video room link. No special software download is required. Both partners can join from separate locations if living apart or traveling.",
+      "sort_order": 6
+    },
+    {
+      "category": "Practitioners",
+      "question": "What qualifications do your doctors and counsellors hold?",
+      "answer_html": "Every specialist in the SPOUZY network is a certified medical practitioner (MD/MBBS), licensed clinical psychologist, or accredited family dispute mediator vetted under Problem Solver Group’s credentialing committee.",
+      "sort_order": 7
+    }
+  ],
+  "services": [
+    {
+      "name": "Couples & Marital Therapy",
+      "slug": "couples-therapy",
+      "description": "De-escalation, conflict resolution, rebuilding trust, and communication alignment for married or committed couples.",
+      "duration_options": [
+        30,
+        60
+      ],
+      "price_30_minor": 200000,
+      "price_60_minor": 350000,
+      "modes": [
+        "in-person",
+        "video",
+        "phone"
+      ],
+      "sort_order": 1
+    },
+    {
+      "name": "Pre-Marital Harmony & Alignment",
+      "slug": "premarital",
+      "description": "Evidence-based framework covering lifestyle expectations, financial harmony, family boundaries, and intimacy before marriage.",
+      "duration_options": [
+        30,
+        60
+      ],
+      "price_30_minor": 150000,
+      "price_60_minor": 280000,
+      "modes": [
+        "in-person",
+        "video",
+        "phone"
+      ],
+      "sort_order": 2
+    },
+    {
+      "name": "Intimacy & Sexual Health MD Consultation",
+      "slug": "intimacy-clinic",
+      "description": "Confidential clinical evaluation by licensed medical specialists in andrology, endocrinology, and sexual wellness.",
+      "duration_options": [
+        30,
+        60
+      ],
+      "price_30_minor": 250000,
+      "price_60_minor": 400000,
+      "modes": [
+        "in-person",
+        "video"
+      ],
+      "sort_order": 3
+    },
+    {
+      "name": "Amicable Divorce & Dispute Mediation",
+      "slug": "mediation",
+      "description": "Problem Solver Group’s 40-year non-adversarial resolution model protecting dignity, assets, and child welfare.",
+      "duration_options": [
+        30,
+        60
+      ],
+      "price_30_minor": 300000,
+      "price_60_minor": 500000,
+      "modes": [
+        "in-person",
+        "video"
+      ],
+      "sort_order": 4
+    },
+    {
+      "name": "General Confidential Guidance",
+      "slug": "general",
+      "description": "One-on-one personal guidance for emotional clarity, stress management, and relationship decision-making.",
+      "duration_options": [
+        30,
+        60
+      ],
+      "price_30_minor": 150000,
+      "price_60_minor": 250000,
+      "modes": [
+        "in-person",
+        "video",
+        "phone"
+      ],
+      "sort_order": 5
+    }
+  ],
+  "practitioners": [
+    {
+      "name": "Dr Anbezhil Subbarayan",
+      "title": "Pediatric & Adult Endocrinologist • Intimate Hormonal Health",
+      "role_type": "doctor",
+      "qualifications": "MBBS, MD (Endocrinology) • 13+ Years Experience",
+      "bio": "Specializing in hormonal balance, adult metabolic health, and intimate vitality consultations.",
+      "photo_url": "image/d1.png",
+      "email": "dr.anbezhil@spouzy.com",
+      "phone": "+918591945055"
+    },
+    {
+      "name": "Dr Radhika Sen",
+      "title": "Senior Clinical Psychologist • Couples & Marriage Therapy",
+      "role_type": "counsellor",
+      "qualifications": "M.Phil Clinical Psychology, Ph.D • 16+ Years Experience",
+      "bio": "Leading couples therapy specialist helping couples break repetitive conflict cycles and re-establish deep mutual trust.",
+      "photo_url": "image/doctors.png",
+      "email": "dr.radhika@spouzy.com",
+      "phone": "+918591945055"
+    },
+    {
+      "name": "Adv. Neilesh Jethmal",
+      "title": "Chief Family Dispute Mediator • Founder Problem Solver Group",
+      "role_type": "mediator",
+      "qualifications": "LL.B, Senior ADR Fellow • Founder (Est. 2004)",
+      "bio": "Pioneer of non-adversarial marital dispute mediation in India with over two decades of successful confidential resolutions.",
+      "photo_url": "image/about.jpg",
+      "email": "neilesh@spouzy.com",
+      "phone": "+918591945055"
+    },
+    {
+      "name": "Dr Vikramaditya Kulkarni",
+      "title": "Consultant Andrologist & Intimacy Health Specialist",
+      "role_type": "doctor",
+      "qualifications": "MBBS, MS, M.Ch (Urology/Andrology) • 11+ Years Experience",
+      "bio": "Dedicated clinical care for male intimate health, hormonal wellness, and relational physical comfort.",
+      "photo_url": "image/hero1.jpg",
+      "email": "dr.vikramaditya@spouzy.com",
+      "phone": "+918591945055"
+    }
+  ],
+  "careerOpenings": [
+    {
+      "title": "Sales Coordinator",
+      "department": "Sales & Client Coordination",
+      "slug": "sales-coordinator",
+      "summary": "Coordinate incoming enquiries, organise follow-ups, and ensure every client receives timely, clear, and reassuring guidance.",
+      "responsibilities": [
+        "Handle phone, email, and WhatsApp enquiries with discretion and professional warmth.",
+        "Schedule consultations, follow-ups, and appointments across our care network.",
+        "Maintain accurate client interaction records and CRM notes.",
+        "Liaise between clients, counsellors, and senior staff to ensure smooth service delivery.",
+        "Follow up with prospective clients who requested information or missed scheduled slots.",
+        "Prepare weekly summary reports on enquiry volumes, conversion, and common client queries."
+      ],
+      "required_skills": [
+        "Excellent spoken and written English and Hindi communication.",
+        "Empathetic telephone manner and strong active-listening ability.",
+        "Good organisational skills with attention to detail and confidential record handling.",
+        "Familiarity with basic CRM tools, spreadsheets, and email suites.",
+        "High emotional intelligence when interacting with clients facing sensitive relationship challenges."
+      ],
+      "preferred_background": [
+        "Prior experience in client coordination, front-desk, hospitality, or healthcare customer care.",
+        "Comfort with multi-channel communication (voice, chat, email)."
+      ],
+      "sort_order": 1
+    },
+    {
+      "title": "Digital Marketing Executive",
+      "department": "Marketing",
+      "slug": "digital-marketing",
+      "summary": "Plan, create, and publish educational content across digital channels, maintaining SPOUZY’s discreet, authoritative, and compassionate voice.",
+      "responsibilities": [
+        "Draft and schedule social media posts, blog snippets, and newsletter content aligned with SPOUZY’s values.",
+        "Coordinate graphic design and short-form video assets with external or internal creatives.",
+        "Monitor audience engagement, comments, and messages with professional boundaries and prompt escalation where needed.",
+        "Assist with on-page SEO updates, meta tags, and content refreshes across the SPOUZY website.",
+        "Track basic organic traffic and engagement metrics to report on campaign performance.",
+        "Ensure all marketing communications comply with healthcare discretion and confidentiality standards."
+      ],
+      "required_skills": [
+        "Strong written communication with a sensitive, refined, and non-sensational tone.",
+        "Familiarity with major social media platforms (Instagram, LinkedIn, YouTube, Facebook).",
+        "Working knowledge of Canva, basic photo/video editing tools, and content scheduling platforms.",
+        "Understanding of fundamental SEO principles and content management systems.",
+        "Respect for confidential healthcare and relationship wellness topics."
+      ],
+      "preferred_background": [
+        "Experience in content marketing, social media management, or copywriting for wellness, healthcare, or professional services.",
+        "Basic understanding of Google Analytics and Search Console."
+      ],
+      "sort_order": 2
+    },
+    {
+      "title": "Performance Marketing Specialist",
+      "department": "Growth & Paid Media",
+      "slug": "performance-marketing",
+      "summary": "Manage paid search and social campaigns to connect individuals and couples with the guidance and clinical care they need.",
+      "responsibilities": [
+        "Build, monitor, and optimise paid advertising campaigns on Google Ads (Search, Display) and Meta (Facebook & Instagram).",
+        "Conduct keyword research, competitive analysis, and ad copy testing focused on high-intent healthcare and relationship queries.",
+        "Manage campaign budgets responsibly, tracking cost-per-lead (CPL) and return on ad spend (ROAS).",
+        "Collaborate on landing page conversion rate optimisation (CRO) and user journey improvements.",
+        "Set up and audit conversion tracking, tags, and analytics events via Google Tag Manager and GA4.",
+        "Deliver transparent weekly and monthly performance reports with actionable optimisation insights."
+      ],
+      "required_skills": [
+        "Demonstrated hands-on experience managing Google Ads and Meta Ads campaigns.",
+        "Strong analytical mindset with proficiency in spreadsheets and data visualisation.",
+        "In-depth understanding of ad policies regarding health, medical, and sensitive personal topics.",
+        "Knowledge of conversion tracking, UTM tagging, and attribution models.",
+        "Disciplined budget management and continuous A/B testing methodology."
+      ],
+      "preferred_background": [
+        "Prior experience driving qualified leads for healthcare clinics, mental wellness platforms, or professional consultancies.",
+        "Google Ads or Meta Blueprint certifications are an advantage."
+      ],
+      "sort_order": 3
+    }
+  ],
+  "siteSettings": [
+    {
+      "setting_key": "announcement_text",
+      "setting_value": "Fully Confidential and all under one roof care by India’s first and only specialist lab of its kind since 2004.",
+      "category": "branding",
+      "description": "Top marquee announcement text on public pages",
+      "is_public": true
+    },
+    {
+      "setting_key": "whatsapp_number",
+      "setting_value": "+918591945055",
+      "category": "contact",
+      "description": "Primary official WhatsApp contact desk",
+      "is_public": true
+    },
+    {
+      "setting_key": "contact_phone",
+      "setting_value": "+918591945055",
+      "category": "contact",
+      "description": "Official contact and consultation phone line",
+      "is_public": true
+    },
+    {
+      "setting_key": "support_email",
+      "setting_value": "care@spouzy.com",
+      "category": "contact",
+      "description": "Clinical and patient care support email",
+      "is_public": true
+    },
+    {
+      "setting_key": "cursor_normal_path",
+      "setting_value": "image/cursors/spouzy-arrow.svg",
+      "category": "cursor",
+      "description": "Normal cursor PNG asset relative path",
+      "is_public": true
+    },
+    {
+      "setting_key": "cursor_normal_hotspot_x",
+      "setting_value": "2",
+      "category": "cursor",
+      "description": "Click hotspot X coordinate for normal cursor",
+      "is_public": true
+    },
+    {
+      "setting_key": "cursor_normal_hotspot_y",
+      "setting_value": "2",
+      "category": "cursor",
+      "description": "Click hotspot Y coordinate for normal cursor",
+      "is_public": true
+    },
+    {
+      "setting_key": "cursor_pointer_path",
+      "setting_value": "image/cursors/spouzy-pointer.svg",
+      "category": "cursor",
+      "description": "Clickable hover pointer asset relative path",
+      "is_public": true
+    },
+    {
+      "setting_key": "cursor_pointer_hotspot_x",
+      "setting_value": "18",
+      "category": "cursor",
+      "description": "Hotspot X coordinate for pointer cursor",
+      "is_public": true
+    },
+    {
+      "setting_key": "cursor_pointer_hotspot_y",
+      "setting_value": "2",
+      "category": "cursor",
+      "description": "Hotspot Y coordinate for pointer cursor",
+      "is_public": true
+    },
+    {
+      "setting_key": "cursor_enabled",
+      "setting_value": "true",
+      "category": "cursor",
+      "description": "Global custom teddy cursor enabled toggle",
+      "is_public": true
+    },
+    {
+      "setting_key": "booking_requires_account",
+      "setting_value": "true",
+      "category": "booking",
+      "description": "Customers must log in or create an account to book appointments",
+      "is_public": true
+    },
+    {
+      "setting_key": "chat_enabled",
+      "setting_value": "true",
+      "category": "chat",
+      "description": "Show the chat assistant on the website",
+      "is_public": true
+    },
+    {
+      "setting_key": "chat_idle_seconds",
+      "setting_value": "30",
+      "category": "chat",
+      "description": "End a chat after this many seconds without a reply",
+      "is_public": true
+    }
+  ],
+  "homepageSections": [
+    {
+      "section_key": "services",
+      "section_name": "Our Range of Services",
+      "headline": "Specialized Care for",
+      "subheadline": "From emotional bonding to physical intimacy and dispute resolution, our accredited multidisciplinary experts provide private, empathetic solutions.",
+      "body_text": null,
+      "content_json": {
+        "kicker": "Clinical Spectrum • Problem Solver Group",
+        "emphasis": "Life’s Most Sensitive Decisions"
+      },
+      "is_visible": true,
+      "sort_order": 1
+    },
+    {
+      "section_key": "testimonials",
+      "section_name": "Client Testimonials",
+      "headline": "Words from Those Who Found",
+      "subheadline": "Read how our confidential counselling and clinical guidance helped couples and individuals navigate their most critical moments.",
+      "body_text": null,
+      "content_json": {
+        "kicker": "Real Transformations",
+        "emphasis": "Their Way Back"
+      },
+      "is_visible": true,
+      "sort_order": 2
+    },
+    {
+      "section_key": "questions",
+      "section_name": "Common Questions Before Booking",
+      "headline": "Common Questions Before Booking",
+      "subheadline": "Everything you need to know about our privacy standards, formats, and consultation approach.",
+      "body_text": null,
+      "content_json": {
+        "kicker": "Transparent & Reassuring",
+        "emphasis": ""
+      },
+      "is_visible": true,
+      "sort_order": 3
+    }
+  ],
+  "packages": [
+    {
+      "name": "Free First Consultation",
+      "slug": "free-first-consultation",
+      "tagline": "Start with a no-cost conversation",
+      "description": "A short introductory consultation to understand what you are going through and which kind of care fits you best.",
+      "price_minor": 0,
+      "compare_at_minor": null,
+      "sessions_included": 1,
+      "session_minutes": 30,
+      "validity_days": 90,
+      "features": [
+        "One 30-minute introductory consultation",
+        "Video or phone, fully confidential",
+        "Guidance on the right specialist and care plan",
+        "Free consultation dates open two months ahead"
+      ],
+      "service_slugs": [
+        "couples-therapy",
+        "premarital",
+        "intimacy-clinic",
+        "mediation",
+        "general"
+      ],
+      "badge": "Free",
+      "is_active": true,
+      "sort_order": 1
+    },
+    {
+      "name": "Single Session",
+      "slug": "single-session",
+      "tagline": "One focused session with a specialist",
+      "description": "A full session with a counsellor to work on one concern, with a short written summary afterwards.",
+      "price_minor": 199900,
+      "compare_at_minor": null,
+      "sessions_included": 1,
+      "session_minutes": 60,
+      "validity_days": 60,
+      "features": [
+        "One 60-minute session with a counsellor",
+        "Video, phone or in-clinic",
+        "Written session summary with next steps",
+        "WhatsApp follow-up within 7 days"
+      ],
+      "service_slugs": [
+        "couples-therapy",
+        "premarital",
+        "general"
+      ],
+      "badge": null,
+      "is_active": true,
+      "sort_order": 2
+    },
+    {
+      "name": "Couple Care Plan",
+      "slug": "couple-care-plan",
+      "tagline": "Three sessions to rebuild communication",
+      "description": "A structured plan for couples: an assessment session followed by two guided sessions on communication and trust.",
+      "price_minor": 549900,
+      "compare_at_minor": 599700,
+      "sessions_included": 3,
+      "session_minutes": 60,
+      "validity_days": 90,
+      "features": [
+        "Three 60-minute couple sessions",
+        "Relationship assessment in the first session",
+        "Personal communication exercises between sessions",
+        "Priority scheduling",
+        "Valid for 90 days"
+      ],
+      "service_slugs": [
+        "couples-therapy",
+        "premarital"
+      ],
+      "badge": "Most popular",
+      "is_active": true,
+      "sort_order": 3
+    },
+    {
+      "name": "Complete Care Program",
+      "slug": "complete-care-program",
+      "tagline": "Counselling and medical care together",
+      "description": "Our most complete program: six counselling sessions plus a confidential doctor consultation for intimacy and physical health concerns.",
+      "price_minor": 999900,
+      "compare_at_minor": 1299900,
+      "sessions_included": 7,
+      "session_minutes": 60,
+      "validity_days": 180,
+      "features": [
+        "Six 60-minute counselling sessions",
+        "One confidential doctor consultation",
+        "Personal care coordinator",
+        "Priority scheduling and WhatsApp support",
+        "Valid for 180 days"
+      ],
+      "service_slugs": [
+        "couples-therapy",
+        "premarital",
+        "intimacy-clinic"
+      ],
+      "badge": "Best value",
+      "is_active": true,
+      "sort_order": 4
+    }
+  ]
+}

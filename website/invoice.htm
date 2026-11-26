@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Your bill | SPOUZY</title>
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="description" content="Your SPOUZY bill.">
+    <link rel="icon" href="image/spouzy.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/spouzy-invoice.css">
+</head>
+<body class="sp-inv-page">
+    <div class="sp-inv-toolbar" data-no-print>
+        <a href="account.htm#bills" class="sp-inv-back" id="spInvBack">← Back to My Account</a>
+        <div class="sp-inv-tools">
+            <button type="button" class="sp-inv-btn" id="spInvPrint" hidden>Print / Save as PDF</button>
+        </div>
+    </div>
+    <main id="spInvoice" class="sp-inv-stage" aria-live="polite">
+        <div class="sp-inv-loading">Loading your bill…</div>
+    </main>
+    <script src="js/spouzy-invoice.js"></script>
+</body>
+</html>

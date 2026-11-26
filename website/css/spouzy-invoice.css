@@ -1,0 +1,190 @@
+/* SPOUZY bill page (invoice.htm) — screen and A4 print */
+:root {
+  --inv-wine: #481e28;
+  --inv-wine-2: #6b2c3c;
+  --inv-copper: #8a402f;
+  --inv-rose: #c78c77;
+  --inv-ink: #1f1417;
+  --inv-muted: #6b5a56;
+  --inv-line: #eadbd2;
+  --inv-paper: #fffdfb;
+  --inv-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --inv-sans: 'Plus Jakarta Sans', 'Segoe UI', Arial, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body.sp-inv-page {
+  min-height: 100vh;
+  background: radial-gradient(circle at 15% 0%, #fdf1e6 0%, #f4e6dc 45%, #efe0d6 100%);
+  color: var(--inv-ink);
+  font-family: var(--inv-sans);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* Toolbar */
+.sp-inv-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  background: rgba(255, 250, 245, 0.9);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--inv-line);
+}
+.sp-inv-back { color: var(--inv-wine); font-weight: 700; font-size: 14px; text-decoration: none; }
+.sp-inv-back:hover { text-decoration: underline; }
+.sp-inv-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--inv-copper), var(--inv-wine));
+  color: #fff;
+  font: 700 14px/1.2 var(--inv-sans);
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 10px 22px rgba(72, 30, 40, 0.25);
+}
+.sp-inv-btn[hidden] { display: none; }
+.sp-inv-btn:hover { filter: brightness(1.08); }
+
+.sp-inv-stage { padding: 28px 16px 60px; }
+.sp-inv-loading, .sp-inv-message { max-width: 520px; margin: 60px auto; text-align: center; color: var(--inv-muted); }
+.sp-inv-message { background: #fff; border-radius: 20px; padding: 36px 28px; box-shadow: 0 20px 50px rgba(72, 30, 40, 0.1); }
+.sp-inv-message h1 { font-family: var(--inv-serif); color: var(--inv-wine); margin: 14px 0 8px; }
+.sp-inv-message a { color: var(--inv-copper); font-weight: 700; }
+.sp-inv-message .sp-inv-btn { color: #fff; margin-top: 10px; }
+.sp-inv-message-logo { height: 46px; }
+.sp-inv-preview { max-width: 860px; margin: 0 auto 14px; padding: 10px 16px; border-radius: 12px; background: #fff4e0; border: 1px solid #f2d39b; color: #8a5a0b; font-size: 13.5px; font-weight: 600; text-align: center; }
+
+/* The bill */
+.sp-inv {
+  position: relative;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 44px 48px 36px;
+  background: var(--inv-paper);
+  border-radius: 22px;
+  box-shadow: 0 30px 80px rgba(72, 30, 40, 0.16);
+  overflow: hidden;
+  isolation: isolate;
+}
+.sp-inv::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 8px;
+  background: linear-gradient(90deg, var(--inv-rose), var(--inv-copper), var(--inv-wine));
+}
+.sp-inv-watermark {
+  position: absolute;
+  inset: 34% 12% auto;
+  height: 200px;
+  background: url('../image/spouzy-logo-bill.webp') center / contain no-repeat;
+  opacity: 0.045;
+  z-index: -1;
+  pointer-events: none;
+}
+.sp-inv-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--inv-line); }
+.sp-inv-logo { display: block; height: 64px; width: auto; }
+.sp-inv-logo-text { font-family: var(--inv-serif); font-size: 40px; font-weight: 700; color: var(--inv-copper); }
+.sp-inv-brand p { margin: 10px 0 0; font-size: 11.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--inv-copper); }
+.sp-inv-brand p span { color: var(--inv-rose); }
+.sp-inv-title { text-align: right; }
+.sp-inv-title h1 { margin: 0 0 12px; font-family: var(--inv-serif); font-size: 38px; font-weight: 600; letter-spacing: .04em; color: var(--inv-wine); text-transform: uppercase; }
+.sp-inv-title dl { margin: 0; display: grid; gap: 4px; }
+.sp-inv-title dl div { display: flex; justify-content: flex-end; gap: 12px; font-size: 13px; }
+.sp-inv-title dt { color: var(--inv-muted); }
+.sp-inv-title dd { margin: 0; font-weight: 700; color: var(--inv-ink); min-width: 140px; }
+
+.sp-inv-parties { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding: 26px 0; }
+.sp-inv-party { background: #fff; border: 1px solid var(--inv-line); border-radius: 16px; padding: 18px 20px; }
+.sp-inv-party h2, .sp-inv-pay h2 { margin: 0 0 8px; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--inv-copper); }
+.sp-inv-party strong { display: block; font-family: var(--inv-serif); font-size: 18px; color: var(--inv-ink); margin-bottom: 4px; }
+.sp-inv-party p { margin: 2px 0; font-size: 13px; line-height: 1.55; color: var(--inv-muted); }
+.sp-inv-missing { font-style: italic; }
+.sp-inv-stamp {
+  position: absolute;
+  right: 18px;
+  top: -18px;
+  transform: rotate(-9deg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 16px;
+  border: 3px solid #2f7a3e;
+  border-radius: 12px;
+  color: #2f7a3e;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 6px 16px rgba(47, 122, 62, 0.15);
+}
+.sp-inv-stamp span { font-size: 24px; font-weight: 800; letter-spacing: .2em; line-height: 1.1; }
+.sp-inv-stamp small { font-size: 10px; font-weight: 700; }
+
+.sp-inv-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13.5px; border: 1px solid var(--inv-line); border-radius: 14px; overflow: hidden; }
+.sp-inv-table thead th { background: linear-gradient(135deg, var(--inv-wine-2), var(--inv-wine)); color: #fff; text-align: left; font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; padding: 12px 14px; font-weight: 700; }
+.sp-inv-table tbody td { padding: 14px; border-top: 1px solid var(--inv-line); vertical-align: top; background: #fff; }
+.sp-inv-table tbody tr:nth-child(even) td { background: #fdf8f5; }
+.sp-inv-table td strong { color: var(--inv-ink); }
+.sp-inv-table td small { display: block; margin-top: 3px; color: var(--inv-muted); font-size: 12px; line-height: 1.45; }
+.sp-inv-table small.sp-inv-saving { color: #2f7a3e; font-weight: 600; }
+.sp-inv-num { width: 40px; color: var(--inv-muted); }
+.sp-inv-c { text-align: center !important; white-space: nowrap; }
+.sp-inv-r { text-align: right !important; white-space: nowrap; }
+
+.sp-inv-bottom { display: grid; grid-template-columns: 1fr 320px; gap: 28px; padding-top: 24px; align-items: start; }
+.sp-inv-pay p { margin: 3px 0; font-size: 13px; color: var(--inv-muted); line-height: 1.55; }
+.sp-inv-pay b { color: var(--inv-ink); }
+.sp-inv-words { margin-top: 12px !important; padding: 10px 12px; border-radius: 10px; background: #faf2ec; font-style: italic; }
+.sp-inv-taxnote { font-size: 12px !important; }
+.sp-inv-notes { margin-top: 10px !important; padding-left: 10px; border-left: 3px solid var(--inv-rose); }
+.sp-inv-totals { border: 1px solid var(--inv-line); border-radius: 16px; overflow: hidden; background: #fff; }
+.sp-inv-trow { display: flex; justify-content: space-between; padding: 10px 16px; font-size: 13.5px; color: var(--inv-muted); border-bottom: 1px solid var(--inv-line); }
+.sp-inv-trow.is-saving span:last-child { color: #2f7a3e; font-weight: 700; }
+.sp-inv-grand { display: flex; justify-content: space-between; align-items: baseline; padding: 16px; background: linear-gradient(135deg, var(--inv-copper), var(--inv-wine)); color: #fff; }
+.sp-inv-grand span { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; font-weight: 700; }
+.sp-inv-grand strong { font-family: var(--inv-serif); font-size: 28px; }
+
+.sp-inv-foot { margin-top: 30px; padding-top: 18px; border-top: 1px dashed var(--inv-line); text-align: center; }
+.sp-inv-foot p { margin: 4px 0; font-size: 11.5px; color: var(--inv-muted); }
+.sp-inv-foot .sp-inv-thanks { font-family: var(--inv-serif); font-style: italic; font-size: 17px; color: var(--inv-wine); }
+
+/* Phones */
+@media (max-width: 720px) {
+  .sp-inv-stage { padding: 14px 10px 40px; }
+  .sp-inv { padding: 30px 18px 24px; border-radius: 18px; }
+  .sp-inv-head { flex-direction: column; }
+  .sp-inv-title { text-align: left; }
+  .sp-inv-title h1 { font-size: 28px; }
+  .sp-inv-title dl div { justify-content: flex-start; }
+  .sp-inv-title dd { min-width: 0; }
+  .sp-inv-logo { height: 48px; }
+  .sp-inv-parties, .sp-inv-bottom { grid-template-columns: 1fr; }
+  .sp-inv-stamp { top: auto; bottom: auto; right: 10px; top: 4px; transform: rotate(-9deg) scale(.82); }
+  .sp-inv-table { display: block; overflow-x: auto; }
+  .sp-inv-toolbar { padding: 10px 12px; }
+  .sp-inv-btn { padding: 9px 14px; font-size: 13px; }
+}
+
+/* A4 print / Save as PDF */
+@page { size: A4; margin: 12mm; }
+@media print {
+  body.sp-inv-page { background: #fff; }
+  [data-no-print], .sp-inv-toolbar { display: none !important; }
+  .sp-inv-stage { padding: 0; }
+  .sp-inv { box-shadow: none; border-radius: 0; max-width: none; padding: 18px 6px 10px; }
+  .sp-inv-table, .sp-inv-totals, .sp-inv-party { break-inside: avoid; }
+  .sp-inv-title h1 { font-size: 28px; white-space: nowrap; }
+  .sp-inv-logo { height: 52px; }
+  .sp-inv-brand p { font-size: 10px; }
+}
